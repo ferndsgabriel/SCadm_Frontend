@@ -6,8 +6,7 @@ import Link from "next/link";
 import { FormEvent, useState, useContext, ChangeEvent } from "react";
 import { AuthContext } from "../../contexts/AuthContexts";
 import { toast } from "react-toastify";
-import isMobilePhone from 'validator/es/lib/isMobilePhone';
-import isEmail from "validator/lib/isEmail";
+import {isMobilePhone, isEmail} from 'validator'
 import zxcvbn from 'zxcvbn';
 import { canSSRGuest } from "../../utils/canSSRGuest";
 import Modal from "react-modal";

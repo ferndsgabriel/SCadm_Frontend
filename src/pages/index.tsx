@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import Link from "next/link";
 import {FormEvent, useContext, useState} from "react"
 import { AuthContext } from "../contexts/AuthContexts"
-import isEmail from "validator/lib/isEmail";
+import {isEmail} from "validator";
 import { toast } from "react-toastify";
 import { canSSRGuest } from "../utils/canSSRGuest";
 

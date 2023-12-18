@@ -17,7 +17,7 @@ export function formatHours (number:number) {
     }
 }
 
-export function formatDate (number) {
+export function formatDate (number: number | string) {
     if (number !== null){
         const inString = number.toString()
         const year = inString.substring(0,4);
