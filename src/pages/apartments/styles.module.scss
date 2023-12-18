@@ -1,0 +1,239 @@
+.container{
+    width: 100%;
+    max-width: 768px;
+    margin: auto;
+    padding: 3.6rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.6rem;
+    .createTowerArea{
+        display: flex;
+        flex-direction: column;
+        gap: 4;
+        width: 100%;
+        .formTower{
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            height: 100%;
+            .buttonTowerCreate{
+                background-color: var(--Primary-normal);
+                height: 4.8rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 8px;
+                border-radius: 5px;
+                aspect-ratio: 1/1;
+                font-size: 2.4rem;
+                transition: transform ease .5s;
+                &:hover{                                                
+                    transform: scale(1.1);
+                }
+                &:focus{
+                    border: solid 2px var(--White);
+                }
+            }
+        }
+    }
+
+
+    .allTowers{
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+        .buttonMoreTowers{
+            background-color: var(--Primary-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem;
+            border-radius: 5px;
+            align-self: self-start;
+            &:hover{
+                transform: scale(1.2);
+                transition: transform ease .5s;
+            }
+            &:focus{
+                border: solid 2px var(--White);
+            }                       
+        }
+        .allTowersCards{
+            display: grid;
+            grid-template-columns:(1fr);
+            gap: 0.8rem;
+            .towerCard{
+                background-color: var(--Primary-normal);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.4rem 0.8rem;
+                border-radius: 5px;
+                span{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.4rem;
+                }
+                .toolsTowers{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 1.6rem;
+                    .editTower{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        &:hover{
+                            transform: scale(1.2);
+                            transition: transform ease .5s;
+                        }
+                        &:focus{
+                            border: solid 2px var(--White);
+                        }       
+                    }
+                    i{
+                        display: flex;
+                        align-items: center;
+                        gap: 0.6rem;
+                        border: solid 1px var(--Transparente);
+                        border-radius: 5px;
+                        padding: 0.2rem;
+                    }
+                    .deleteTower{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        &:hover{
+                            transform: scale(1.2);
+                            transition: transform ease .5s;
+                        }
+                        &:focus{
+                            border: solid 2px var(--White);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .apartment{
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+        .optionTowers{
+            display: flex;
+            align-items: center;
+            gap: 1.6rem;
+            justify-content: space-between;
+            .buttonMoreApts{
+                background-color: var(--Primary-normal);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.8rem;
+                border-radius: 5px;
+                &:hover{
+                    transform: scale(1.2);
+                    transition: transform ease .5s;
+                }
+                &:focus{
+                    border: solid 2px var(--White);
+                }   
+            }
+            .selectApartment{
+                display: flex;
+                align-items: center;
+                gap: 1.6rem;            
+            }
+        }
+        .allApts{
+            display: grid;
+            grid-template-columns:(1fr);
+            gap: 0.8rem;
+            .cardApts{
+                background-color: var(--Primary-normal);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.4rem 0.8rem;
+                border-radius: 5px;
+                .toolsApartment{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 1.6rem;
+                    .editApartment{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        &:hover{
+                            transform: scale(1.2);
+                            transition: transform ease .5s;
+                        }
+                        &:focus{
+                            border: solid 2px var(--White);
+                        }       
+                    }
+                    i{
+                        display: flex;
+                        align-items: center;
+                        gap: 0.6rem;
+                        border: solid 1px var(--Transparente);
+                        border-radius: 5px;
+                        padding: 0.2rem;
+                        color: white;
+                    }
+                    .deleteApartment{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        &:hover{
+                            transform: scale(1.2);
+                            transition: transform ease .5s;
+                        }
+                        &:focus{
+                            border: solid 2px var(--White);
+                        }   
+                    }
+                }
+                span{
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+            }
+        }
+    }
+}
+
+
+@media (min-width: 640px) {
+    .container{
+        .allTowers{
+            .allTowersCards{
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+        .apartment{
+            .allApts{
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .container{
+        .allTowers{
+            .allTowersCards{
+                grid-template-columns:repeat(3,1fr);
+            }
+        }
+        .apartment{
+            .allApts{
+                grid-template-columns:repeat(3,1fr);
+            }
+        }
+    }
+}
