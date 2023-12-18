@@ -11,7 +11,7 @@ import Modal from "react-modal";
 import {AiFillCloseCircle} from 'react-icons/ai';
 import zxcvbn from 'zxcvbn';
 import Router from "next/router";
-import isMobilePhone from 'validator/es/lib/isMobilePhone';
+import {isMobilePhone} from 'validator';
 
 export default function Recovery(){
 Modal.setAppElement('#__next');
