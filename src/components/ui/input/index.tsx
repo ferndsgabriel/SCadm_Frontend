@@ -1,15 +1,14 @@
-import React, { InputHTMLAttributes, useState } from "react";
-import InputMask, { Props as InputMaskProps } from "react-input-mask";
-import { IoEyeSharp } from "react-icons/io5";
-import { BsEyeSlashFill } from "react-icons/bs";
+import { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import styles from "./styles.module.scss";
+import {IoEyeSharp} from "react-icons/io5";
+import {BsEyeSlashFill} from "react-icons/bs";
+import {useState} from "react";
+import InputMask from 'react-input-mask';
 
-interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
+
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   mask?: string;
-}
-
-interface InputProps extends CustomInputProps {
-  type?: string;
 }
 
 export const Input = ({ type, mask, ...rest }: InputProps) => {
@@ -17,35 +16,32 @@ export const Input = ({ type, mask, ...rest }: InputProps) => {
   const [inputIcon, setInputIcon] = useState(<BsEyeSlashFill />);
 
   function handleInputType() {
-    setInputType("text");
+    setInputType('text');
     setInputIcon(<IoEyeSharp />);
-    if (inputType === "text") {
+    if (inputType === 'text') {
       setInputType(type);
       setInputIcon(<BsEyeSlashFill />);
     }
   }
 
-  const inputMaskProps = rest as InputMaskProps;
-
   return (
     <label className={styles.inputContainer}>
       <InputMask
-        {...inputMaskProps}
+        className={styles.input}
         type={inputType}
         mask={mask}
-        tabIndex={rest.tabIndex || 1}
+        {...rest}
+        tabIndex={1}
       />
 
-      {type === "password" ? (
-        <button
-          onClick={handleInputType}
-          type="button"
-          className={styles.buttonEyes}
-          style={{ userSelect: "none" }}
-        >
+      {type === 'password' ? (
+        <button onClick={handleInputType} type="button" className={styles.buttonEyes}
+        style={{userSelect:'none'}}>
           {inputIcon}
         </button>
-      ) : null}
+      ) : (
+        null
+      )}
     </label>
   );
-};
+}

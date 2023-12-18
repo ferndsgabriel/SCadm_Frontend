@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Header from "../../components/header";
-import { Input } from "../../components/ui/input";
 import style from "./styles.module.scss";
 import { SetupApiClient } from "../../services/api";
 import { FormEvent, useState, useEffect } from "react";
