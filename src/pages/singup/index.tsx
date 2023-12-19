@@ -47,12 +47,12 @@ export default function Home() {
       return
     }
 
-    if (!isEmail(email)) {
+    if (!isEmail(email.trim())) {
       toast.error("E-mail inválido. Utilize um endereço do Gmail ou Hotmail.");
       return;
     }
 
-    if (!isEmailOfType(email)) {
+    if (!isEmailOfType(email.trim())) {
       toast.error("E-mail inválido. Utilize um endereço do Gmail ou Hotmail.");
       return;
     }
@@ -65,12 +65,12 @@ export default function Home() {
     setLoading(true);
 
     let data = {
-      name:name,
-      lastname:lastname,
-      cod:cod,
-      email:email,
-      pass:pass,
-      phone_number:phone_number
+      name,
+      lastname,
+      cod,
+      email:email.trim(),
+      pass,
+      phone_number,
     };
     await singUp(data);
     setLoading(false);
