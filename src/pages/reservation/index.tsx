@@ -4,7 +4,6 @@ import style from "./styles.module.scss";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
 import { useState, useEffect} from "react";
-import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { IoPeopleOutline } from "react-icons/io5";
 import {FaXmark,FaCheck} from "react-icons/fa6";
@@ -12,6 +11,7 @@ import { Loading } from "../../components/loading";
 import { ViewGuest } from "../../components/modals/guest";
 import {AllTaxed} from "../../components/modals/taxed";
 import {formatDate, formatHours} from "../../utils/formatted";
+import { Gmodal } from "../../components/myModal";
 
 type ReservationsProps = {
   id: string,
@@ -53,7 +53,6 @@ interface ReservationInterface {
 }
 
 export default function reservation({  newReservations, reservationTrue, towers }: ReservationInterface) {
-  Modal.setAppElement('#__next');
   const [listNewReservations, setListNewReservations] = useState (newReservations || null);
   const [listReservationsTrue, SetListReservationsTrue] = useState (reservationTrue || null);
   const [listTowers, setListTowers] = useState(towers || null);
@@ -305,12 +304,9 @@ export default function reservation({  newReservations, reservationTrue, towers 
       
 
       {/*- ------Modal aprovar ou recusar reservas ------------------ */}
-      <Modal
-      style={{overlay:{
-      backgroundColor: 'rgba(64, 89, 113, 0.4)'
-      }}}
+      <Gmodal
       isOpen={isOpenSetReservation}
-      onRequestClose={closeModalSetReservation}
+      onClose={closeModalSetReservation}
       className='modal'
       > 
         <div className='modalContainer'>
@@ -327,36 +323,27 @@ export default function reservation({  newReservations, reservationTrue, towers 
             <button onClick={closeModalSetReservation} className='false'><span>Cancelar</span></button>
           </div>
         </div>
-        </Modal>
+        </Gmodal>
 
         {/* -------------Modal ver lista de convidados -------------------*/}
-        <Modal
+        <Gmodal
           isOpen={isOpenGuest}
-          onRequestClose={closeModalGuest}
-          className={style.modalGuest}
-          style={{overlay:{
-            backgroundColor: 'rgba(64, 89, 113, 0.4)'
-            }}}>
+          onClose={closeModalGuest}
+          className={style.modalGuest}>
             <ViewGuest idViewGuest={reservation_id} closeModal={closeModalGuest}/>
-        </Modal>
+        </Gmodal>
 
         {/* -------------Modal ver taxados  -------------------*/}
-        <Modal isOpen={isOpenTaxed}
-        onRequestClose={closedTaxed}
-        style={{overlay:{
-        backgroundColor: 'rgba(64, 89, 113, 0.4)',
-        }}}
+        <Gmodal isOpen={isOpenTaxed}
+        onClose={closedTaxed}
         className={style.modalTaxed}>
           <AllTaxed closeFunction={closedTaxed}/>
-        </Modal>
+        </Gmodal>
 
       {/*- ------Modal deletarReservas ------------------ */}
-      <Modal
-      style={{overlay:{
-      backgroundColor: 'rgba(64, 89, 113, 0.4)'
-      }}}
+      <Gmodal
       isOpen={isOpenDeleteReservation}
-      onRequestClose={closeModalDeleteReservation}
+      onClose={closeModalDeleteReservation}
       className='modal'
       > 
         <div className='modalContainer'>
@@ -373,15 +360,12 @@ export default function reservation({  newReservations, reservationTrue, towers 
             <button onClick={closeModalDeleteReservation} className='false'><span>Cancelar</span></button>
           </div>
         </div>
-        </Modal>
+        </Gmodal>
 
         {/*----------------------Filtrar por torre------------------------------*/}
-        <Modal isOpen={isOpenFilterByTower}
-        onRequestClose={closeMModalFilterByTower}
-        className='modal'
-        style={{overlay:{
-        backgroundColor: 'rgba(64, 89, 113, 0.4)'
-        }}}>
+        <Gmodal isOpen={isOpenFilterByTower}
+        onClose={closeMModalFilterByTower}
+        className='modal'>
         <div className='modalContainer'> 
           <div className='beforeButtons'>
               <h3>Filtrar por torre</h3>
@@ -403,7 +387,7 @@ export default function reservation({  newReservations, reservationTrue, towers 
               <button onClick={closeMModalFilterByTower} className='false'><span>Não</span></button>   
           </div> 
         </div>
-      </Modal>
+      </Gmodal>
     </>
     );
   }

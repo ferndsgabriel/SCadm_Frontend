@@ -5,13 +5,12 @@ import style from "./styles.module.scss";
 import { SetupApiClient } from "../../services/api";
 import { useState, useEffect, FormEvent} from "react";
 import { toast } from "react-toastify";
-import Modal from 'react-modal';
 import { FaSpinner } from "react-icons/fa";
 import {AiOutlineSearch} from "react-icons/ai";
 import {BiEdit} from "react-icons/bi";
 import {FaXmark,FaCheck} from "react-icons/fa6";
 import { Loading } from "../../components/loading";
-
+import { Gmodal } from "../../components/myModal";
 
 
 type UserProps = {
@@ -94,7 +93,6 @@ useEffect(()=>{
   refreshDate();
 },[]);
 
-Modal.setAppElement('#__next');
 
 //------------------- -Aprovar ou recusar novos moradores ------------------------//
 function openModalNewUsers(id:string, setAccount:boolean) {
@@ -387,12 +385,9 @@ if (loadingPage){
 
 
     {/*------------------------------------Modal novos usuarios*/}
-    <Modal isOpen={isOpenNewUsers}
-        onRequestClose={closeModalNewUsers}
-        className='modal'
-        style={{overlay:{
-          backgroundColor: 'rgba(64, 89, 113, 0.4)'
-          }}}>   
+    <Gmodal isOpen={isOpenNewUsers}
+        onClose={closeModalNewUsers}
+        className='modal'>   
         <div className='modalContainer'>     
           <div className='beforeButtons'>
             <h3>Validação</h3>
@@ -407,14 +402,11 @@ if (loadingPage){
               <button onClick={closeModalNewUsers}className='false'><span>Cancelar</span></button> 
           </div>
         </div>
-      </Modal>
+      </Gmodal>
       {/*------------------------------------Modal pagamento apt */}
-      <Modal isOpen={isOpenPayment}
-        onRequestClose={closeModalPayment}
-        className='modal'
-        style={{overlay:{
-        backgroundColor: 'rgba(64, 89, 113, 0.4)'
-        }}}>
+      <Gmodal isOpen={isOpenPayment}
+        onClose={closeModalPayment}
+        className='modal'>
         <div className='modalContainer'> 
           <div className='beforeButtons'>
               <h3>Alterar Pagamento</h3>
@@ -425,14 +417,11 @@ if (loadingPage){
               <button onClick={closeModalPayment} className='false'><span>Cancelar</span></button>   
           </div> 
         </div>
-      </Modal>
+      </Gmodal>
       {/*------------------------------------Modal editar apt */}
-      <Modal isOpen={isOpenEditApt}
-      onRequestClose={closeModalEditApt}
-      className='modal'
-      style={{overlay:{
-        backgroundColor: 'rgba(64, 89, 113, 0.4)'
-        }}}>
+      <Gmodal isOpen={isOpenEditApt}
+      onClose={closeModalEditApt}
+      className='modal'>
           <form className='modalContainer' onSubmit={handleEditApt}>
             <div className='beforeButtons'>
               <h3>Editar apartamento</h3>
@@ -468,14 +457,11 @@ if (loadingPage){
               <button onClick={closeModalEditApt} className='false'><span>Cancelar</span></button>   
             </div>
           </form>
-      </Modal>
+      </Gmodal>
 {/*----------------------Filtrar por torre------------------------------*/}
-        <Modal isOpen={isOpenFilterByTower}
-        onRequestClose={closeMModalFilterByTower}
-        className='modal'
-        style={{overlay:{
-        backgroundColor: 'rgba(64, 89, 113, 0.4)'
-        }}}>
+        <Gmodal isOpen={isOpenFilterByTower}
+        onClose={closeMModalFilterByTower}
+        className='modal'>
         <div className='modalContainer'> 
           <div className='beforeButtons'>
               <h3>Filtrar por torre</h3>
@@ -498,7 +484,7 @@ if (loadingPage){
               <button onClick={closeMModalFilterByTower} className='false'><span>Cancelar</span></button>   
           </div> 
         </div>
-      </Modal>
+      </Gmodal>
     </>
     )
 }

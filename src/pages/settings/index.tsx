@@ -10,8 +10,8 @@ import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
 import { toast } from "react-toastify";
 import zxcvbn from 'zxcvbn';
-import Modal from "react-modal";
 import { Loading } from "../../components/loading";
+import { Gmodal } from "../../components/myModal";
 
 
 type admPropsItens = {
@@ -26,7 +26,6 @@ interface admInterface{
 }
 
 export default function Settings({admProps}: admInterface){
-Modal.setAppElement('#__next');
 const [admDate, setadmDate] = useState(admProps || null);
 const [inputPass, setInputPass] = useState(false);
 const [oldPass, setOldPass] = useState ('');
@@ -201,12 +200,9 @@ if (loading){
             </span>
         </main>
 
-        <Modal isOpen={isOpen}
-            onRequestClose={closeModal}
-            className='modal'
-            style={{overlay:{
-            backgroundColor: 'rgba(64, 89, 113, 0.4)'
-            }}}>
+        <Gmodal isOpen={isOpen}
+            onClose={closeModal}
+            className='modal'>
                 <form className='modalContainer' onSubmit={handleDeleteAccount}>
                     <div className='beforeButtons'>
                         <h3>Deletar conta</h3>
@@ -227,7 +223,7 @@ if (loading){
                     </div>
                 </form>
 
-        </Modal>
+        </Gmodal>
         </>
     )
 }

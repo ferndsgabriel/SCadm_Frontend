@@ -7,15 +7,13 @@ import { canSSRGuest } from "../../utils/canSSRGuest";
 import { useState, FormEvent } from "react";
 import { SetupApiClient } from "../../services/api";
 import { toast } from "react-toastify";
-import Modal from "react-modal";
 import {AiFillCloseCircle} from 'react-icons/ai';
 import zxcvbn from 'zxcvbn';
 import Router from "next/router";
 import {isMobilePhone} from 'validator';
+import { Gmodal } from "../../components/myModal";
 
 export default function Recovery(){
-Modal.setAppElement('#__next');
-
 const [phone_number, setPhone_number] = useState ('');
 const [isOpen, setIsOpen] = useState (false);
 const [cod, setCod] = useState ('');
@@ -122,38 +120,33 @@ async function handleGetEmail(){
                 </Link>
         </main>
 
-        <Modal isOpen={isOpen}
-        onRequestClose={closeModal}
-        className={style.modal}
-        style={{overlay:{
-            backgroundColor: 'rgba(22, 31, 40, 1)'
-            }}}>
-
-        <div className={style.modal}>
-            <button  className={style.buttonclose} onClick={closeModal}>
-                <AiFillCloseCircle size={30}/>
-            </button>
-            <img src="SalãoCondoDark.svg" alt="Logo SalãoCondo"/>
-
-            <form className={style.formmodal} onSubmit={handleRecovery}>
-                <Input type="text" placeholder="Digite o seu código:" value={cod} onChange={(e)=>setCod(e.target.value)}/>
-                <Input type="password" placeholder="Sua nova senha:" value={pass} onChange={(e)=>setPass(e.target.value)}/>
-                <Button type="submit">Alterar senha</Button>
-            </form>
-
-            <article className={style.buttonsOthersRecovery}>
-                <button onClick={handleGetEmail} className={style.buttonLink}>
-                    Esqueci meu email
+        <Gmodal isOpen={isOpen}
+        onClose={closeModal}
+        className={style.modal}>
+            <div className={style.modal}>
+                <button  className={style.buttonclose} onClick={closeModal}>
+                    <AiFillCloseCircle size={30}/>
                 </button>
+                <img src="SalãoCondoDark.svg" alt="Logo SalãoCondo"/>
 
-                <button onClick={handleCodigo} className={style.buttonLink}>
-                    Reenviar código
-                </button>
-            </article>
-            
-        </div>
-        
-        </Modal>
+                <form className={style.formmodal} onSubmit={handleRecovery}>
+                    <Input type="text" placeholder="Digite o seu código:" value={cod} onChange={(e)=>setCod(e.target.value)}/>
+                    <Input type="password" placeholder="Sua nova senha:" value={pass} onChange={(e)=>setPass(e.target.value)}/>
+                    <Button type="submit">Alterar senha</Button>
+                </form>
+
+                <article className={style.buttonsOthersRecovery}>
+                    <button onClick={handleGetEmail} className={style.buttonLink}>
+                        Esqueci meu email
+                    </button>
+
+                    <button onClick={handleCodigo} className={style.buttonLink}>
+                        Reenviar código
+                    </button>
+                </article>
+                
+            </div>
+        </Gmodal>
         </>
     )
 }

@@ -9,10 +9,9 @@ import { toast } from "react-toastify";
 import {isMobilePhone, isEmail} from 'validator'
 import zxcvbn from 'zxcvbn';
 import { canSSRGuest } from "../../utils/canSSRGuest";
-import Modal from "react-modal";
-import Termos from "../../components/termos";
+import Termos from "../../components/modals/termos";
 import { onlyString } from "../../utils/formatted";
-
+import { Gmodal } from "../../components/myModal";
 
 
 export default function Home() {
@@ -28,9 +27,6 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState (false);
 
 
-
-  
-Modal.setAppElement('#__next');
   async function handleRegister(e: FormEvent) {
     e.preventDefault();
 
@@ -126,12 +122,11 @@ Modal.setAppElement('#__next');
           </Link>
         </div>
       </main>
-      <Modal onRequestClose={closedModal}
+      <Gmodal onClose={closedModal}
       isOpen={isOpen}
-      className={styles.termos}
-      style={{overlay:{
-        backgroundColor: 'rgba(0, 0, 0, 0.1)'
-        }}}><Termos buttonAction={closedModal}/></Modal>
+      className={styles.termos}>
+        <Termos buttonAction={closedModal}/>
+      </Gmodal>
     </>
   );
 }

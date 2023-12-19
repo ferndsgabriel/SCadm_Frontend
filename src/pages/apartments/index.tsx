@@ -5,14 +5,13 @@ import { SetupApiClient } from "../../services/api";
 import { FormEvent, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { canSSRAuth } from "../../utils/canSSRAuth";
-import Modal from "react-modal";
 import { Loading } from "../../components/loading";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { TbTower } from "react-icons/tb";
 import { MdApartment, MdEdit } from "react-icons/md";
-
+import { Gmodal } from "../../components/myModal";
 
 type TowersProps = {
     id:string,
@@ -32,7 +31,6 @@ interface aptPropsInterface {
 }
 
 export default function Apartments({Alltowers, AllApts}:aptPropsInterface){
-Modal.setAppElement('#__next');
 
 const SetupApi = SetupApiClient();
 const [towers, setTowers] = useState(Alltowers || null);
@@ -378,12 +376,9 @@ async function handleEditApt(e:FormEvent){
         </main>
         
             {/* ----------------- Modal criar torre ------------------- */}
-            <Modal isOpen={isOpenCreateTower}
-            onRequestClose={closeModalCreateTower}
-            className='modal'
-            style={{overlay:{
-                backgroundColor: 'rgba(64, 89, 113, 0.4)'
-                }}}>
+            <Gmodal isOpen={isOpenCreateTower}
+            onClose={closeModalCreateTower}
+            className='modal'>
             <form className='modalContainer' onSubmit={handleCreateTower}>
                 <div className='beforeButtons'>
                     <h3>Criar torre</h3>
@@ -398,58 +393,48 @@ async function handleEditApt(e:FormEvent){
                     <button onClick={closeModalCreateTower} className='false'><span>Cancelar</span></button>
                 </div>
             </form>
-            </Modal>
+            </Gmodal>
 
             {/* ----------------- Modal deletar torre ------------------- */}
-            <Modal isOpen={isOpenTowerDelete}
-            onRequestClose={closeModalTowerDelete}
-            className='modal'
-            style={{overlay:{
-                backgroundColor: 'rgba(64, 89, 113, 0.4)'
-                }}}>
-            <div className='modalContainer'>
-                <div className='beforeButtons'>
-                    <h3>Deletar torre</h3>
-                    <p>Tem certeza de que deseja excluir permanentemente a Torre {numberTowerDelete}?</p>
+            <Gmodal isOpen={isOpenTowerDelete}
+            onClose={closeModalTowerDelete}
+            className='modal'>
+                <div className='modalContainer'>
+                    <div className='beforeButtons'>
+                        <h3>Deletar torre</h3>
+                        <p>Tem certeza de que deseja excluir permanentemente a Torre {numberTowerDelete}?</p>
+                    </div>
+                    <div className='buttonsModal'>
+                        <button onClick={DeleteTower} className='true' autoFocus={true}><span>Deletar</span></button>
+                        <button onClick={closeModalTowerDelete} className='false'><span>Cancelar</span></button>
+                    </div>
                 </div>
-                <div className='buttonsModal'>
-                    <button onClick={DeleteTower} className='true' autoFocus={true}><span>Deletar</span></button>
-                    <button onClick={closeModalTowerDelete} className='false'><span>Cancelar</span></button>
-                </div>
-            </div>
-
-            </Modal>
+            </Gmodal>
         
             {/* ----------------- Modal editar torre ------------------- */}
-            <Modal isOpen={isOpenTowerEdit}
-            onRequestClose={closeModalTowerEdit}
-            className='modal'
-            style={{overlay:{
-                backgroundColor: 'rgba(64, 89, 113, 0.4)'
-                }}}>
-            <form className='modalContainer' onSubmit={HandleEditTower}>
-                <div className='beforeButtons'>
-                    <h3>Editar torre</h3>
-                    <p>Altere o valor da Torre {numberTowerEdit}:</p>
-                    <input placeholder="Digite aqui a torre:" 
-                    className='inputModal' autoFocus={true}
-                    value={newTowerEdit}
-                    onChange={(e)=> setNewTowerEdit(e.target.value)}/>
-                </div>
-                <div className='buttonsModal'>
-                    <button type="submit" className='true'><span>Confirmar</span></button>
-                    <button onClick={closeModalTowerEdit} className='false'><span>Cancelar</span></button>
-                </div>
-            </form>
-            </Modal>
+            <Gmodal isOpen={isOpenTowerEdit}
+            onClose={closeModalTowerEdit}
+            className='modal'>
+                <form className='modalContainer' onSubmit={HandleEditTower}>
+                    <div className='beforeButtons'>
+                        <h3>Editar torre</h3>
+                        <p>Altere o valor da Torre {numberTowerEdit}:</p>
+                        <input placeholder="Digite aqui a torre:" 
+                        className='inputModal' autoFocus={true}
+                        value={newTowerEdit}
+                        onChange={(e)=> setNewTowerEdit(e.target.value)}/>
+                    </div>
+                    <div className='buttonsModal'>
+                        <button type="submit" className='true'><span>Confirmar</span></button>
+                        <button onClick={closeModalTowerEdit} className='false'><span>Cancelar</span></button>
+                    </div>
+                </form>
+            </Gmodal>
 
             {/* ----------------- Modal criar apartamento ------------------- */}
-            <Modal isOpen={isOpenCreateApt}
-            onRequestClose={closeModalCreateApt}
-            className='modal'
-            style={{overlay:{
-                backgroundColor: 'rgba(64, 89, 113, 0.4)'
-                }}}>
+            <Gmodal isOpen={isOpenCreateApt}
+            onClose={closeModalCreateApt}
+            className='modal'>
                 <form className='modalContainer' onSubmit={handleCreateApt}>
                     <div className='beforeButtons'>
                         <h3>Criar apartamento</h3>
@@ -473,15 +458,12 @@ async function handleEditApt(e:FormEvent){
                         <button onClick={closeModalCreateApt} className='false'><span>Cancelar</span></button>
                     </div>
                 </form>
-            </Modal>
+            </Gmodal>
 
             {/* ----------------- Modal edit apartamento ------------------- */}
-            <Modal isOpen={isOpenAptEdit}
-            onRequestClose={closeModalEditApt}
-            className='modal'
-            style={{overlay:{
-                backgroundColor: 'rgba(64, 89, 113, 0.4)'
-                }}}>
+            <Gmodal isOpen={isOpenAptEdit}
+            onClose={closeModalEditApt}
+            className='modal'>
                 <form className='modalContainer' onSubmit={handleEditApt}>
                     <div className='beforeButtons'>
                         <h3>Editar apartamento</h3>
@@ -496,15 +478,12 @@ async function handleEditApt(e:FormEvent){
                         <button onClick={closeModalEditApt} className='false'><span>Cancelar</span></button>
                     </div>
                 </form>
-            </Modal>
+            </Gmodal>
 
             {/* ----------------- Modal deletar apartamento ------------------- */}
-            <Modal isOpen={isOpenDeleteApartament}
-            onRequestClose={closeModalDeleteApartment}
-            className='modal'
-            style={{overlay:{
-            backgroundColor: 'rgba(64, 89, 113, 0.4)'
-            }}}>
+            <Gmodal isOpen={isOpenDeleteApartament}
+            onClose={closeModalDeleteApartment}
+            className='modal'>
             <div className='modalContainer'>
                 <div className='beforeButtons'>
                     <h3>Deletar apartamento</h3>
@@ -515,7 +494,7 @@ async function handleEditApt(e:FormEvent){
                     <button onClick={closeModalDeleteApartment}className='false'><span>Cancelar</span></button>
                 </div>
             </div>
-            </Modal>
+            </Gmodal>
         </>
     )
 }
