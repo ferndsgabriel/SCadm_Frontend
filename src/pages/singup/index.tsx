@@ -38,7 +38,7 @@ export default function Home() {
       toast.warning('Por favor, insira todas as informações necessárias.');
       return;
     }
-    if (!onlyString(name) || !onlyString(lastname)){
+    if (!onlyString(name.trim()) || !onlyString(lastname.trim())){
       toast.warning('Por favor, insira um nome válido.');
       return;
     }
@@ -65,8 +65,8 @@ export default function Home() {
     setLoading(true);
 
     let data = {
-      name,
-      lastname,
+      name:name.trim(),
+      lastname:lastname.trim(),
       cod,
       email:email.trim(),
       pass,
