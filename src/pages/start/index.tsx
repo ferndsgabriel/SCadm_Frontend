@@ -113,7 +113,11 @@ async function handleNewUser(){
         id:idNewUsers,
         accountStatus:accountStatus
     });  
-    toast.success("Ação executada!");
+    accountStatus?(
+      toast.success('Usuário aprovado com sucesso.')
+    ):(
+      toast.success('Usuário reprovado com sucesso.')
+    );
     refreshDate();
     closeModalNewUsers();
   }catch(error){
@@ -137,7 +141,7 @@ async function handlePayment(){
       await SetupApi.put("/adm/setpayment",{
           apartment_id:apartament_id
       })
-      toast.success("Pagamento alterado com êxito!");
+      toast.success("Pagamento alterado com êxito.");
       refreshDate();
 
       closeModalPayment();
@@ -197,7 +201,7 @@ async function handleEditApt(e:FormEvent){
       apartment_id:idApt ,
       user_id:user_id
     });
-    toast.success('Apartamento alterado com sucesso!');
+    toast.success('Apartamento alterado com sucesso.');
     refreshDate();
     closeModalEditApt();
   }catch(error){

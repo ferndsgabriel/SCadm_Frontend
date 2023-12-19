@@ -111,11 +111,11 @@ export default function reservation({  newReservations, reservationTrue, towers 
         reservation_id: reservation_id,
         status:reservationStatus,
       });
-      if (reservationStatus){
-        toast.success("Reserva aprovada :) ");
-      }else{
-        toast.success("Reserva recusada :( ");
-      }
+      reservationStatus ?(
+        toast.success("Reserva aprovada.")
+      ):(
+        toast.success("Reserva recusada.")
+      );
       refreshDate();
       closeModalSetReservation()
     } 
