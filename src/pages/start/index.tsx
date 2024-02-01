@@ -369,7 +369,7 @@ if (loadingPage){
                         </div>
                         {item.photo? (
                           <div className={style.photoArea}>
-                            <img src={`https://drive.google.com/uc?export=view&id=${item.photo}`} />
+                            <img src={item.photo} />
                           </div>
                         ) : null}
                       </div>
