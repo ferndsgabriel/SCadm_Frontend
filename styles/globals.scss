@@ -6,32 +6,32 @@
 }
 
 :root{
---White: #ffff;
---Black: #000;
---Black-light: rgba(0, 0, 0, 0.281);
---Primary-normal: #405971;
---Primary-dark: #161F28;
---Error: #f14a4a;
---Sucess: #51AB7B;
---Light: #ebeaea;
---Transparente: rgba(255, 255, 255, 0.438);
+  --White: #ffff;
+  --Black: #000;
+  --Black-light: rgba(0, 0, 0, 0.281);
+  --Primary-normal: #405971;
+  --Primary-dark: #161F28;
+  --Error: #f14a4a;
+  --Sucess: #51AB7B;
+  --Light: #ebeaea;
+  --Transparente: rgba(255, 255, 255, 0.438);
 }
 
 button, a, input {
-cursor: pointer;
-font-size: 1.6rem;
-border: none;
-background-color: transparent;
-text-decoration: none;
-border: none;
-outline: none;
-color: var(--White);
+  cursor: pointer;
+  font-size: 1.6rem;
+  border: none;
+  background-color: transparent;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  color: var(--White);
 }
 
 html{
-font: 400 1rem  -apple-system, BlinkMacSystemFont,
-'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-font-size: 62.5%;
+  font: 400 1rem  -apple-system, BlinkMacSystemFont,
+  'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 62.5%;
 }
 
 
@@ -103,43 +103,43 @@ pointer-events: none;
 }
 
 #nprogress .bar {
-background: var(--Light);
-position: fixed;
-z-index: 999999;
-top: 0;
-left: 0;
-width: 100%;
-height: 2px;
+  background: var(--Light);
+  position: fixed;
+  z-index: 999999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
 }
 
 #nprogress .spinner {
-display: block;
-position: fixed;
-z-index: 1031;
-top: 4px;
-right: 4px;
+  display: block;
+  position: fixed;
+  z-index: 1031;
+  top: 4px;
+  right: 4px;
 }
 
 #nprogress .spinner-icon {
-width: 18px;
-height: 18px;
-box-sizing: border-box;
-border: solid 2px transparent;
-border-top-color: var(--Light);
-border-left-color: var(--Light);
-border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: var(--Light);
+  border-left-color: var(--Light);
+  border-radius: 50%;
 }
 
 
 //------------------ modal styles 
-.modal{
-position: absolute;
-width: 100%;
-max-width: 40rem;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-box-shadow: 4px 4px 20px var(--Primary-dark);
+  .modal{
+  position: absolute;
+  width: 100%;
+  max-width: 40rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 4px 4px 20px var(--Primary-dark);
 .modalContainer{
   background-color: var(--Primary-dark);
   border-radius: 5px;
