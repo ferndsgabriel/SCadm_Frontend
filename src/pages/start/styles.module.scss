@@ -119,88 +119,36 @@
         }
 
       }
-
-
       .AreaAutomation{
-        position: relative;
-        width: 14rem;
-        &:hover{
-          .alert{
-            animation:animate 3s;
-          }
-        }
+        display: flex;
+        align-items: center;
 
-        
-        .automation{
-          background-color:var(--Light);
-          position: relative;
+        .inputFile{
+          display: none;
+        }
+        .span{
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.2rem 1rem;
-          border-radius: 4px;
-          overflow: hidden;
-          transition: background-color 2s ease-in;
-          width: 20rem;
-          &:focus{
-            border: solid 2px var(--Primary-normal);
-          } 
-          &:disabled{
-            svg{
-              animation: spinner infinite .5s;
-            }
-          }
-          p {
-            color: var(--Primary-dark);
-            
-            display: flex;
-            align-items: center;justify-content: center;
-            gap: 0.8rem;
-          }
-          svg{
-              z-index: 9999;
-              font-size: 1.4rem;
-              color: var(--Primary-dark);
-
-          }
-      }
-      
-      .automation::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
+          gap:0.8rem ;
           background-color: var(--Primary-normal);
-          transition: left 1s;
-      }
-      
-      .automation:not(:disabled):hover {
-          background-color:var(--Primary-dark);
-          a, p, svg{
-              color: var(--White);
-              z-index: 9999;
-          }
-      }
-      
-      .automation:not(:disabled):hover::before {
-          left: 0; 
-      } 
-
-        .alert{
-          background-color: var(--Light);
           padding: 1.6rem;
-          color: var(--Primary-dark);
-          width: 30rem;
           border-radius: 5px;
-          position: absolute;
-          bottom: 20;
-          visibility: hidden;
-          transition: visibility 0.5s ease-in;
-          border: solid 1px var(--Black-light);
+        }
+        .spanSpinner{
+          background-color: var(--Primary-normal);
+          padding: 1.6rem;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: not-allowed;
+          svg{
+            animation: infinite ease 2s spinner;
+          }
         }
       }
+
 
       .allcards {
         display: grid;
@@ -337,9 +285,6 @@
       }
       .allcards{
         grid-template-columns:repeat(2,1fr);
-        .cards{
-          
-        }
       }
     }
   }

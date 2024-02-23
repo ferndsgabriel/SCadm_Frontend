@@ -70,7 +70,7 @@ const [loadingPage, setLoadingPage] = useState (true);
 const [indexFilter, setIndexFilter] = useState(0);
 const [isOpenFilterByTower, setIsOpenFilterByTower] = useState(false);
 const [towerFilter, setTowerFilter] = useState(0);
-
+const [loadingExcel, setLoadingExcel] = useState(false);
 
 
 const SetupApi = SetupApiClient();
@@ -152,8 +152,8 @@ async function handlePayment(){
 
 //-------------------- Pagamento automatico excel -------------------------//
 async function HandleExcel(excel){
+  setLoadingExcel(true);
   try{  
-      console.log('im here2')
       const excelFile = excel;
       const data = new FormData();
       data.append('excel', excelFile);
@@ -162,6 +162,8 @@ async function HandleExcel(excel){
       refreshDate();
   }catch(error){
     toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
+  }finally{
+    setLoadingExcel(false);
   }
 }
 
@@ -321,8 +323,13 @@ if (loadingPage){
         </article>
 
         <label className={style.AreaAutomation} tabIndex={1}>
-            <input type="file"  accept=".xlsx" onChange={(e) => HandleExcel(e.target.files[0])}/>
-            <span>Importar tabela excel <FaRegFileExcel/></span>
+            <input type="file"  accept=".xlsx" onChange={(e) => HandleExcel(e.target.files[0])} className={style.inputFile}/>
+            {!loadingExcel?(
+              <span className={style.span}>Importar tabela excel <FaRegFileExcel/></span>
+            ):(
+              <span className={style.spanSpinner}><FaSpinner/></span>
+            )}
+
         </label>
 
 
