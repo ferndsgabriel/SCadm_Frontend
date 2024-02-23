@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 import {AiOutlineSearch} from "react-icons/ai";
 import {BiEdit} from "react-icons/bi";
-import {FaXmark,FaCheck} from "react-icons/fa6";
+import {FaXmark,FaCheck,FaRegFileExcel } from "react-icons/fa6";
 import { Loading } from "../../components/loading";
 import { Gmodal } from "../../components/myModal";
 
@@ -60,7 +60,6 @@ const [accountStatus, setAccountStatus] = useState(null);
 const [isOpenNewUsers, setIsOpenNewUsers] = useState (false);
 const [idNewUsers, setIdNewUsers] = useState ('');
 const [searchResident, setSearchResident] = useState('');
-const [isLoading, setIsLoading] = useState(true); //pagamento automatico spinner
 const [isOpenPayment, setIsOpenPayment] = useState(false);
 const [apartament_id, setapartament_id] = useState ('');
 const [isOpenEditApt, setIsOpenEditApt] = useState (false);
@@ -151,18 +150,19 @@ async function handlePayment(){
     }  
 }
 
-//-------------------- Pagamento automatico -------------------------//
-async function aumationPayment(){
-  setIsLoading(false);
-
-  try{
-    await SetupApi.put('/adm/automation');
-    setIsLoading(true);
+//-------------------- Pagamento automatico excel -------------------------//
+async function HandleExcel(excel){
+  try{  
+      console.log('im here2')
+      const excelFile = excel;
+      const data = new FormData();
+      data.append('excel', excelFile);
+      await SetupApi.post('/adm/excel', data);
+      toast.success('Tabela importada com sucesso.')
+      refreshDate();
   }catch(error){
-    console.log(error)
     toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
   }
-  refreshDate();
 }
 
 //-------------------- editar apartamento -------------------------//
@@ -321,20 +321,8 @@ if (loadingPage){
         </article>
 
         <label className={style.AreaAutomation} tabIndex={1}>
-            <button className={style.automation}
-              disabled={!isLoading}
-              onClick={aumationPayment}>
-            {isLoading ?(
-              <p className={style.p}>Atualizar pagamentos</p> 
-            ):(
-              <p className={style.p}>Atualizar pagamentos <FaSpinner/></p> 
-            )}
-
-            </button>
-          <div className={style.alert}>
-            <p>Este botão verifica todos os usuários cujos pagamentos estão ativos por mais
-              de 30 dias e altera seu status para 'inativo'.</p>
-          </div>
+            <input type="file"  accept=".xlsx" onChange={(e) => HandleExcel(e.target.files[0])}/>
+            <span>Importar tabela excel <FaRegFileExcel/></span>
         </label>
 
 
