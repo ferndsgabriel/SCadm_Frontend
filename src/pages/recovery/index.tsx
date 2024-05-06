@@ -10,11 +10,11 @@ import { toast } from "react-toastify";
 import {AiFillCloseCircle} from 'react-icons/ai';
 import zxcvbn from 'zxcvbn';
 import Router from "next/router";
-import {isMobilePhone} from 'validator';
+import {isEmail} from 'validator';
 import { Gmodal } from "../../components/myModal";
 
 export default function Recovery(){
-const [phone_number, setPhone_number] = useState ('');
+const [email, setEmail] = useState ('');
 const [isOpen, setIsOpen] = useState (false);
 const [cod, setCod] = useState ('');
 const [pass, setPass] = useState ('');
@@ -22,22 +22,21 @@ const [pass, setPass] = useState ('');
 async function handleCodigo (e:FormEvent){
     e.preventDefault();
 
-    if (phone_number === ''){
-        toast.warning('Por favor, insira seu número de telefone.');
+    if (!email){
+        toast.warning('Por favor, insira seu e-mail.');
         return
     }
-
-    if (!isMobilePhone(phone_number)){
-        toast.warning('Por favor, insira um número de telefone válido.');
+    if (!isEmail(email.trim())){
+        toast.warning('Por favor, insira um e-mail válido.');
         return
     }
 
     const AptClient = SetupApiClient();
     try{
         await AptClient.post('adm/cod',{
-            phone_number:phone_number
+            email:email
         })
-        toast.success('Código de recuperação enviado com sucesso para o seu telefone e e-mail.');
+        toast.success('Código de recuperação enviado com sucesso para seu e-mail.');
         openModal();
     }catch(error){{
         toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
@@ -51,7 +50,7 @@ function openModal(){
 
 function closeModal(){
     setIsOpen (false)
-    setPhone_number('');
+    setEmail('');
     setCod('');
     setPass('');
 }
@@ -59,7 +58,7 @@ function closeModal(){
 async function handleRecovery(e:FormEvent){
     e.preventDefault();{
         const setupApi = SetupApiClient();
-        if (phone_number === '' || cod === "" || pass === ""){
+        if (email === '' || cod === "" || pass === ""){
             toast.warning('Por favor, insira todos os dados necessários.');
             return;
         }
@@ -71,7 +70,7 @@ async function handleRecovery(e:FormEvent){
             await setupApi.put('adm/recovery',{
                 pass: pass,
                 cod:cod,
-                phone_number:phone_number
+                email:email
             })
             toast.success('Senha recuperada com êxito.');
             setTimeout(()=>{
@@ -84,22 +83,7 @@ async function handleRecovery(e:FormEvent){
 
     }
 }
-async function handleGetEmail(){
-    const setupApi = SetupApiClient();
-    if (phone_number ===''){
-        toast.warning('Por favor, insira o seu número de telefone.');
-        return;
-    }
-    try{
-        await setupApi.post('adm/recoveryemail',{
-            phone_number:phone_number
-        });
-        toast.success('Um SMS e um e-mail com seu endereço foram enviados com sucesso.');
-    }catch(error){
-        console.log(error);
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-    }
-}
+
 
     return(
         <>
@@ -110,9 +94,9 @@ async function handleGetEmail(){
                 <img src="SalãoCondoDark.svg" alt="Logo SalãoCondo"/>
                 <h1>Recuperar senha</h1>
                 <form className={style.form } onSubmit={handleCodigo}>    
-                    <Input type="text" placeholder="Digite seu telefone:"
-                    value={phone_number} mask="(99)99999-9999"
-                    onChange={(e)=>setPhone_number(e.target.value)}/>
+                    <Input type="email" placeholder="Digite seu email:"
+                    value={email}
+                    onChange={(e)=>setEmail(e.target.value)}/>
                     <Button type="submit">Enviar código</Button>
                 </form>
                 <Link href={'/'}>
@@ -122,7 +106,8 @@ async function handleGetEmail(){
 
         <Gmodal isOpen={isOpen}
         onClose={closeModal}
-        className={style.modal}>
+        className={style.modal}
+        >
             <div className={style.modal}>
                 <button  className={style.buttonclose} onClick={closeModal}>
                     <AiFillCloseCircle size={30}/>
@@ -130,16 +115,12 @@ async function handleGetEmail(){
                 <img src="SalãoCondoDark.svg" alt="Logo SalãoCondo"/>
 
                 <form className={style.formmodal} onSubmit={handleRecovery}>
-                    <Input type="text" placeholder="Digite o seu código:" value={cod} onChange={(e)=>setCod(e.target.value)}/>
+                    <Input type="tel" placeholder="Digite o seu código:" value={cod} onChange={(e)=>setCod(e.target.value)}/>
                     <Input type="password" placeholder="Sua nova senha:" value={pass} onChange={(e)=>setPass(e.target.value)}/>
                     <Button type="submit">Alterar senha</Button>
                 </form>
 
                 <article className={style.buttonsOthersRecovery}>
-                    <button onClick={handleGetEmail} className={style.buttonLink}>
-                        Esqueci meu email
-                    </button>
-
                     <button onClick={handleCodigo} className={style.buttonLink}>
                         Reenviar código
                     </button>
