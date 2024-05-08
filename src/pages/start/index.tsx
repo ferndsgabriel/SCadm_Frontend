@@ -107,6 +107,7 @@ function closeModalNewUsers() {
 }
 
 async function handleNewUser(){
+  console.log(accountStatus)
   try{
     await SetupApi.put("/adm/useron",{
         id:idNewUsers,
