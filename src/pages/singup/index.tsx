@@ -101,10 +101,10 @@ export default function Home() {
 
         <form className={styles.form} onSubmit={handleRegister}>
           <div className={styles.inputsRow }>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Digite seu nome:" type="text" />
-            <Input value={lastname} onChange={(e) => setLastname(e.target.value)} placeholder="Seu sobrenome:" type="text" />
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Seu primeiro nome:" type="text" />
+            <Input value={lastname} onChange={(e) => setLastname(e.target.value)} placeholder="Seu último nome:" type="text" />
           </div>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Seu email:" type="email" />
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Seu e-mail:" type="email" />
           <Input value={phone_number} onChange={(e) => setPhone_number(e.target.value)} placeholder="Número de telefone:" type="tel" mask="(99)99999-9999" />
           <Input value={cod} onChange={(e) => setCod(e.target.value)} placeholder="Código de administrador:" type="password" />
           <Input value={pass} onChange={(e) => setPass(e.target.value)} placeholder="Sua senha:" type="password"/>
