@@ -7,14 +7,14 @@
   border-radius: 5px;
   border: none;
   padding: 6px;
-  outline: 2px var(--Primary-dark) solid;
   justify-content: space-between;
   align-items: center;
   outline: none;
 
   &:focus-within {
-    border: solid 2px var(--Light);
+    border: solid 2px var(--ButtonColor);
   }
+
   .input {
     background-color: transparent;
     border: none;
@@ -23,7 +23,7 @@
     width: 96%;
 
     &::placeholder {
-      color: var(--Light);
+      color: var(--Placeholder);
     }
 
     &:focus {
@@ -37,7 +37,7 @@
 
   .buttonEyes {
     svg {
-      color: var(--Light);
+      color: var(--Placeholder);
       font-size: 1.6rem;
     }
   }

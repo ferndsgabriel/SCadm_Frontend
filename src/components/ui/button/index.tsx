@@ -8,14 +8,14 @@ interface ButtonProps extends ButtonHTMLAttributes <HTMLButtonElement>{
 }
 
 export function Button({loading, children,...rest}:ButtonProps){
-return (
-    <button
-        className={styles.button}
-        disabled={loading}
-        {...rest}
-    >
-        <a className={styles.textButton}>{children}</a>
-
-    </button>
-)
+    return (
+        <button
+            className={styles.button}
+            disabled={loading}
+            {...rest}
+            >
+                <a className={styles.textButton}>{children}</a>
+    
+        </button>
+    )
 }

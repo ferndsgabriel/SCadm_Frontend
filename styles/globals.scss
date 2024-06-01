@@ -1,21 +1,11 @@
 *{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  outline: 0;
-}
-
-:root{
-  --White: #ffff;
-  --Black: #000;
-  --Black-light: rgba(0, 0, 0, 0.281);
-  --Primary-normal: #405971;
-  --Primary-dark: #161F28;
-  --Error: #f14a4a;
-  --Sucess: #51AB7B;
-  --Light: #ebeaea;
-  --Transparente: rgba(255, 255, 255, 0.438);
-}
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    
+  }
 
 button, a, input {
   cursor: pointer;
@@ -25,7 +15,7 @@ button, a, input {
   text-decoration: none;
   border: none;
   outline: none;
-  color: var(--White);
+  color: var(--Text);
 }
 
 html{
@@ -33,201 +23,247 @@ html{
   'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 62.5%;
 }
-
-
-
-body{
-  background-color: var(--Primary-dark);
-  color: var(--White);
-  p, i, span, b{
-    font-size: 1.6rem;
-  }
-  h1{
-    font-size: 2.6rem;
-    text-transform: uppercase;
-  }
-  h2{
-    font-size: 2.2rem;
-  }
-  h3{
-    font-size: 2rem;
-  }
-  svg{
-    color: var(--White);
-    font-size: 1.8rem;
-  }
-}
-
-select, option{
-  background-color: var(--Primary-normal);
-  border: none;
-  color: var(--White);
-  border-radius: 5px;
-  padding: 0.4rem;
-  outline: none;
-  &:focus{
-    border: 2px solid var(--White  );
-  }
-}
-
-
-::-webkit-scrollbar{
-  width: 1.2rem;
-}
-::-webkit-scrollbar-track {
-  background-color: var(--Primary-normal);
-}
-::-webkit-scrollbar-thumb {
-  background-color: var(--Primary-dark);
-  border: solid 1px rgb(94, 94, 94);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--Black)
-}
-
-::selection{
-  background-color: var(--Primary-dark);
-  color: var(--White);
-}
-input:-webkit-autofill {
-  /* Defina os estilos que você deseja aplicar quando o campo estiver preenchido automaticamente */
-  background-color: transparent;
   
-}
-
-
-
-#nprogress {
-pointer-events: none;
-}
-
-#nprogress .bar {
-  background: var(--Light);
-  position: fixed;
-  z-index: 999999;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-}
-
-#nprogress .spinner {
-  display: block;
-  position: fixed;
-  z-index: 1031;
-  top: 4px;
-  right: 4px;
-}
-
-#nprogress .spinner-icon {
-  width: 18px;
-  height: 18px;
-  box-sizing: border-box;
-  border: solid 2px transparent;
-  border-top-color: var(--Light);
-  border-left-color: var(--Light);
-  border-radius: 50%;
-}
-
-
-//------------------ modal styles 
-  .modal{
-  position: absolute;
-  width: 100%;
-  max-width: 46rem;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 4px 4px 20px var(--Primary-dark);
-.modalContainer{
-  background-color: var(--Primary-dark);
-  border-radius: 5px;
-  .beforeButtons{
-    padding: 1.6rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
-    .modalCheckboxArea{
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      input{
-        margin-top: 0.2rem;
-      }
+body{
+  background-color: var(--Background);
+  color: var(--Text);
+    p, i, span, b{
+      font-size: 1.6rem;
     }
-    .modalOptions{
-      display: flex;
-      gap: 1.6rem;
-      width: 100%;
-      option,select{
-        flex: 1;
-      }
+    h1{
+      font-size: 2.6rem;
+      text-transform: uppercase;
     }
-    .inputModal{
-      background-color: var(--Light);
-      padding: 1.2rem;
-      border-radius: 2px;
-      color: var(--Primary-dark);
-      &::placeholder{
-        color: var(--Primary-normal);
-      }
+    h2{
+      font-size: 2.2rem;
     }
-  }
-  .buttonsModal{
-    background-color: var(--Black);
-    padding: 2.4rem 1.6rem;
-    display: flex;
-    gap: 1.6rem;
-    justify-content: end;
+    h3{
+      font-size: 2rem;
+    }
+    svg{
+      font-size: 1.8rem;
+    }
+}
+
+  select, option{
+    background-color: var(--Primary-normal);
+    cursor: pointer;
+    border: none;
+    color: var(--White);
     border-radius: 5px;
-    button{
-      background-color: var(--Primary-normal);
-      color: var(--White);
-      padding: 0.8rem 1.2rem;
-      border-radius: 5px;
-      border: 1px var(--Primary-normal) solid;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      &:focus{
-        border: solid 2px var(--Light);
-      }
-      &:disabled{
-        opacity: 0.5;
-      }
-      &:not(:disabled)::before{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background-color: var(--Primary-dark);
-        transition: all 1s;
-      }
-    }
-    button:hover::before{
-      left: 0%;
-    }
-    button:hover{
-      span{
-        z-index: 999;
-        color: var(--White);
-      }
-    }
-
-    .true{
-      background-color: var(--Primary-normal);
-      color: var(--White);
-
-    }
-    .false{
-      background-color: var(--White);
-      color: var(--Primary-dark);
+    padding: 0.4rem;
+    outline: none;
+    &:focus{
+      border: solid 2px var(--ButtonColor);
     }
   }
-}
-}
+
+
+  ::-webkit-scrollbar{
+    width: 1.2rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--Primary-normal);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--Background);
+    border: solid 1px var(--Primary-normal);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--Transparente);
+  }
+
+  //scoolbar
+
+  ::selection{
+    background-color: var(--Text);
+    color: var(--Background);
+  }
+
+  input:-webkit-autofill {
+    background-color: transparent;
+  }
+
+  #nprogress {
+    pointer-events: none;
+  }
+  #nprogress .bar {
+    background: var(--Text);
+    position: fixed;
+    z-index: 999999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+  }
+  #nprogress .spinner {
+    display: block;
+    position: fixed;
+    z-index: 1031;
+    top: 4px;
+    right: 4px;
+  }
+  #nprogress .spinner-icon {
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border: solid 2px transparent;
+    border-top-color: var(--Text);
+    border-left-color: var(--Text);
+    border-radius: 50%;
+  }
+
+
+  //------------------ modal styles 
+  .modal{
+    position: absolute;
+    width: 100%;
+    max-width: 46rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    .modalContainer{
+      width: 100%;
+      height: 100%;
+      background-color: var(--Background);
+      box-shadow: 4px 4px 20px var(--Black);
+      border-radius: 15px;
+      overflow: hidden;
+      .beforeButtons{
+        padding: 1.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+        .selectsHoursArea{
+          display: flex;
+          width: 100%;
+          gap: 1.6rem;
+          .selectsArea{
+            display: flex;
+            gap: 0.4rem;
+            flex: 1;
+            select{
+              width: 100%;
+            }
+          }
+        }
+        .modalCheckboxArea{
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          input{
+            margin-top: 0.2rem;
+          }
+        }
+        .inputModal{
+          background-color: var(--Transparente);
+          padding: 1.2rem;
+          border-radius: 2px;
+          color: var(--Text);
+          &::placeholder{
+            color: var(--Light);
+          }
+        }
+        .textAreaModal{
+          background-color: var(--Transparente);
+          padding: 1.2rem;
+          border-radius: 2px;
+          resize: none;
+          height: 30rem;
+          color: var(--Text);
+          &::placeholder{
+            color: var(--Light);
+          }
+        }
+      }
+      .buttonsModal{
+        background-color: var(--Transparente);
+        padding: 2.4rem 1.6rem;
+        display: flex;
+        gap: 1.6rem;
+        justify-content: end;
+        border-radius: 5px;
+        .true{
+          background-color: var(--Primary-normal);
+          color: var(--White);
+        }
+        .false{
+          background-color: var(--White);
+          color: var(--Primary-dark);
+        }
+      }
+    }
+  }
+
+
+  //------------------ button style
+  .buttonSlide {
+    display: inline-block;
+    padding: 1.2rem 1.6rem;
+    border-radius: 5px;
+    color: var(--White);
+    font-size: 1.6rem;
+    letter-spacing: .15rem;
+    transition: all .2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  
+    &:focus {
+      box-shadow: 2px 2px 4px var(--Light, 5%);
+    }
+  
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 70%;
+  
+      &:hover {
+        color: var(--White);
+  
+        &:before {
+          width: 0%;
+        }
+      }
+    }
+  
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--Primary-normal);
+      border-radius: 5px;
+      z-index: -2;
+    }
+  
+    &:before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: var(--ButtonHover);
+      transition: all .2s ease-in-out;
+      border-radius: 5px;
+      z-index: -1;
+    }
+  
+    @media (min-width: 768px) {
+      &:hover {
+        color: var(--White);
+  
+        &:before {
+          width: 100%;
+        }
+      }
+    }
+  }
+  

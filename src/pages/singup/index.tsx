@@ -4,6 +4,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Link from "next/link";
 import { FormEvent, useState, useContext, ChangeEvent } from "react";
+import { ThemeContext } from "../../contexts/ThemeContext";
 import { AuthContext } from "../../contexts/AuthContexts";
 import { toast } from "react-toastify";
 import {isMobilePhone, isEmail} from 'validator'
@@ -16,6 +17,7 @@ import { Gmodal } from "../../components/myModal";
 
 export default function Home() {
   const { singUp } = useContext(AuthContext);
+  const { dark } = useContext(ThemeContext);
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
@@ -97,7 +99,11 @@ export default function Home() {
         <title>SalãoCondo - Cadastrar</title>
       </Head>
       <main className={styles.container}>
-        <img src="SalãoCondoDark.svg" alt="Logo marca" />
+        {dark?(
+          <img src="./iconDark.svg" alt="SalãoCondo Logo" />
+            ):(
+          <img src="./iconLight.svg" alt="SalãoCondo Logo" />
+        )}
 
         <form className={styles.form} onSubmit={handleRegister}>
           <div className={styles.inputsRow }>
@@ -109,8 +115,8 @@ export default function Home() {
           <Input value={cod} onChange={(e) => setCod(e.target.value)} placeholder="Código de administrador:" type="password" />
           <Input value={pass} onChange={(e) => setPass(e.target.value)} placeholder="Sua senha:" type="password"/>
           <div className={styles.checkboxArea} tabIndex={0}>
-            <input type="checkbox" onChange={(e)=>setCheckbox(e.target.checked)}/> 
-            <p tabIndex={1} >Li e aceito os <a onClick={openModal} tabIndex={1}>termos de contratos</a>.</p>
+          <input type="checkbox" onChange={(e)=>setCheckbox(e.target.checked)}/> 
+                <a onClick={openModal} tabIndex={1} className={styles.link}> Li e aceito os termos de contratos.</a>
           </div> 
           <Button loading={loading} type="submit" disabled={!checkbox}>
             Cadastrar

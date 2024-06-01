@@ -1,16 +1,20 @@
 import Link from "next/link"
 import styles from "./styles.module.scss"
-import {AiOutlineClose, AiOutlineSchedule, AiOutlineMenu } from "react-icons/ai"
-import {IoPeopleOutline} from "react-icons/io5";
+import {AiOutlineClose, AiOutlineSchedule, AiOutlineMenu } from "react-icons/ai";
 import { MdApartment } from "react-icons/md";
+import { BsPeopleFill } from "react-icons/bs";
+import { IoSunny, IoMoon } from "react-icons/io5";
 import {FiSettings} from "react-icons/fi";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { ThemeContext } from "../../contexts/ThemeContext";
 import { useRouter} from 'next/router';
 
 export default function Header(){
-    const [openNav, setOpenNav] = useState(false);
     const routerActual = useRouter().pathname;
-    
+    const [openNav, setOpenNav] = useState(false);
+    const navRef = useRef<HTMLDivElement>(null);
+    const {dark, changeThemes} = useContext (ThemeContext);
+
     useEffect(()=>{
         function closeNavWithEsc(e:KeyboardEvent){
             if (openNav){
@@ -31,11 +35,10 @@ export default function Header(){
         {openNav?(
             <span className={styles.bgNav} onClick={()=>setOpenNav(false)}/>
         ):null}
-
         <header className={styles.header}>
             <div className={styles.container}>
                 <Link href={'/reservation'}>
-                    <img src="SalãoCondoHeader.svg" alt={'Logo Svg'}/>
+                    <img src="./iconDark.svg" alt={'Logo Svg'}/>
                 </Link>
 
                 {openNav?(
@@ -47,34 +50,45 @@ export default function Header(){
                         <AiOutlineMenu/>
                     </button>
                 )}
-
-                <nav style={openNav?{display:'block'}:{display:''}}>
+                
+                <nav style={openNav?{display:'block'}:{display:''}} ref={navRef}>
                     <ul>
-                        <li>
+                        <li className={styles.liTheme}>   
+                            <label className={`${styles.labelTheme} ${dark? styles.labelDark : styles.labelLight}`}>
+                                {!dark ?(
+                                    <IoSunny className={styles.svgSun}/>
+                                ):(
+                                    <IoMoon className={styles.svgMoon}/>
+                                )}
+                                <input type='checkbox' checked={dark} onChange={(e)=>changeThemes(e.target.checked)}/>
+                            </label>
+                        </li>
+                        
+                        <li className={styles.li}>
                             <Link href={'/reservation'}
                             className={routerActual === '/reservation'?styles.activeNav:''}>
                                 <span>Reservas</span>
                                 <AiOutlineSchedule/>        
                             </Link>
                         </li>  
-
-                        <li>
+                        
+                        <li className={styles.li}>
                             <Link href={'/start'}
                             className={routerActual === '/start'?styles.activeNav:''}>
                                 <span>Moradores</span>
-                                <IoPeopleOutline/>
+                                <BsPeopleFill />
                             </Link>
                         </li>
-
-                        <li>
+                        
+                        <li className={styles.li}>
                             <Link href={'/apartments'}
                             className={routerActual === '/apartments'?styles.activeNav:''}>
                                 <span>Residências</span>
-                                < MdApartment/>
+                                <MdApartment />
                             </Link>
                         </li>
 
-                        <li>
+                        <li className={styles.li}>
                             <Link href={'/settings'}
                             className={routerActual === '/settings'?styles.activeNav:''}>
                                 <span>Configurações</span>
@@ -85,9 +99,9 @@ export default function Header(){
                 </nav>
             </div>
         </header>
-
         <div className={styles.breakline}>
         </div> 
+            
         </>
     )
 }

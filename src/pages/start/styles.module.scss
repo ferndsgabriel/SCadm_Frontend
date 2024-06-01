@@ -1,294 +1,235 @@
-.container {
+.container{
   width: 100%;
-  max-width: 1024px;
-  margin: auto;
-  padding: 3.6rem 0.8rem;
   display: flex;
   flex-direction: column;
-  gap: 3.6rem;
-
-    .newUsers{
-      display: flex;
-      gap:1.2rem;
-      flex-direction: column;
-      .cards {
-        width: 100%;
-        display: grid;
-        grid-template-columns:  (1fr);
-        gap: 1.2rem;    
-        .card {
-          width: 100%;
-          padding: 1.2rem;
-          border-radius: 5px;
-          background-color: var(--Primary-normal);
+  gap: 3.2rem;
+  gap: 2.4rem;
+  padding: 4.2rem 2.4rem;
+  h1{
+      margin-bottom: 1.6rem;
+  }
+  .section1{
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--Primary-normal);
+    .cards{
+      display: grid;
+      grid-template-columns: repeat(1,fr);
+      gap: 1.2rem;
+      .card{
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+        background-color: var(--Primary-normal);
+        padding: 1.2rem;
+        border-radius: 5px;
+        color: var(--White);
+        .UserInfos{
           display: flex;
           flex-direction: column;
-          gap: 1.6rem;
-          .UserArea {
-            border-radius: 5px 5px 0px 0px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0.6rem;
-          }
-          .buttonUser {
-            display: flex;
+          gap: 0.4rem;
+          b{
+            margin-bottom: 0.8rem;
+        }
+        }
+        .buttonSet{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 1.2rem;
+          button{
             width: 100%;
-            flex-direction: row;
-            justify-content: space-between;
-            gap: 0.4rem;
-            button {
-              border: none;
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 0.4rem;
-              gap: 0.8rem;
-              border-radius: 2px;
-              transition: transform .1s ease;
-              p{
-                color: var(--Light);
-              }
-              &:focus{
-                border: solid 2px var(--White);
-              }
-              svg{
+            border-radius: 5px;
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--White);
+            &:focus{
+              border: solid 2px var(--White);
+            }
+            svg{
+              display: none;
+              color: var(--White);
+            }
+            &:hover{
+              span{
                 display: none;
               }
-              &:hover{
-                transform: scale(1.03);
-                svg{
-                  display: block;
-                  font-size: 2rem;
-                  color: var(--White);
-                }
-                p{
-                  display: none;
-                }
+              svg{
+                display: block;
+                animation: buttonSet .7s normal;
               }
             }
-            button:nth-of-type(2) {
-              background-color: var(--Error);
-            }
-            button:nth-of-type(1) {
-              background-color: var(--Sucess);
-            }
+          }
+          .true{
+            background-color: var(--Sucess);
+          }
+          .false{
+            background-color: var(--Error);
           }
         }
       }
-    }
-  
 
-    .residents{
+    }
+  }
+
+  .section2{
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    .filters{
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
-      h1 {
-        text-transform: uppercase;
-      }
-      .filters{
+      .inputLabel{
         display: flex;
-        gap: 1.2rem;
-        align-items:  flex-start;
-        justify-content: space-between;
         width: 100%;
-        .inputLabel{
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 22rem;
-          background-color: var(--Light);
-          border-radius: 2px;
-          padding: 0.8rem;
-          cursor: pointer;
-          &:focus-within {
-            border: solid 2px var(--Primary-normal);
-          }
-          svg{
-            color: var(--Primary-normal);
-            font-size: 1.6rem;
-          }
-          input{
-            background-color: transparent;
-            color: var(--Primary-dark);
-            &::placeholder {
-              color: var(--Primary-normal);
-            }
-          }
-        }
-
-      }
-      .AreaAutomation{
-        display: flex;
         align-items: center;
-        align-self: flex-start;
-
-        .inputFile{
-          display: none;
+        justify-content: space-between;
+        background-color: var(--Transparente);
+        padding: 1.2rem;
+        border-radius: 5px;
+        color: var(--Text);
+        &:focus-within{
+          border: solid 1px var(--Text);
         }
-        .span{
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap:0.8rem ;
-          background-color: var(--Primary-normal);
-          padding: 1.6rem;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-        .spanSpinner{
-          background-color: var(--Primary-normal);
-          padding: 1.6rem;
-          border-radius: 5px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: not-allowed;
-          svg{
-            animation: infinite ease 2s spinner;
+        input{
+          width: 100%;
+          &::placeholder{
+            color: var(--Light);
           }
         }
       }
-
-
-      .allcards {
-        display: grid;
-        grid-template-columns: (1fr);
-        gap: 1.2rem;
-        .cards {
-          background-color: var(--Primary-normal);
-          width: 100%;
+      select{
+        align-self: self-start;
+        height: 3.4rem;
+      }
+    }
+    .LabelExcel{
+      display: none;
+    }
+    .allcards{
+      display: grid;
+      grid-template-columns: repeat(1,1fr);
+      gap: 1.2rem;
+      .card{
+        background-color: var(--Primary-normal);
+        padding: 1.2rem;
+        color: var(--White);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 2.4rem;
+        justify-content: space-between;
+        .cardInfos{
           display: flex;
           flex-direction: column;
-          padding: 1.2rem;
-          border-radius: 5px;
-          gap: 1.6rem;
-          .cardData{
+          gap: 0.8rem;
+          .imgAndName{
             display: flex;
-            flex-direction: row;
+            align-items: flex-start;
             justify-content: space-between;
+            gap: 1.6rem;
+            img{
+              width: 8rem;
+              aspect-ratio: 1/1;
+              object-fit: cover;
+              border-radius: 100%;
+            }
+          }
+          .userData{
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
             .editApt{
               display: flex;
-              flex-direction: row;
               align-items: center;
-              gap: 0.8rem;
+              gap:1.2rem;
               button{
-                background-color: transparent;
                 display: flex;
                 align-items: center;
                 svg{
                   color: var(--White);
-                  transition: transform .5s ease;
-                }
-                &:hover{
-                  svg{
-                    transform: scale(1.3);
-                  }
-                }
-                &:focus{
-                  border: solid 2px var(--White);
                 }
               }
             }
-            .photoArea{
-              width: 6rem;
-              height: 6rem;
-              border-radius: 50%;
-              overflow: hidden;
-            }
-            img {
-              width: 6rem;
-              height: 6rem;
-              object-fit: cover;
-              margin-bottom: 5rem;
-              
-            }
           }
-        }
-        .button {
-              position: relative;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 0.6rem 1rem;
-              background-color:var(--Primary-dark);
-              border-radius: 4px;
-              overflow: hidden;
-              transition: background-color 1s;
-              a, p, svg{
-                  
-                  font-size: 1.4rem;
-                  color: var(--White);
-              }
-              &:focus{
-                border: solid 2px var(--White);
-              }
-          }
-          
-          .button::before {
-              content: "";
-              position: absolute;
-              top: 0;
-              left: -100%;
-              width: 100%;
-              height: 100%;
-              background-color: var(--Light);
-              transition: left 1s;
-          }
-          
-          .button:not(:disabled):hover {
-              background-color:var(--Primary-dark);
-              a, p, svg{
-                color: var(--Primary-dark);
-                z-index: 9999;
-              }
-          }
-          
-          .button:not(:disabled):hover::before {
-              left: 0; 
-          }
-          
         }
       }
     }
-
-@keyframes animate{
-  0%{
-      visibility: visible;
-  }
-  100%{
-    visibility: hidden;
   }
 }
 
-@keyframes spinner{
-  0%{
-      transform: rotate(0deg);
-  }
-  100%{
-    transform: rotate(360deg);
-  }
-}
-
-    
-@media (min-width: 640px) {
+@media (min-width:768px){
   .container{
-    .newUsers{
-      .cards{
-        grid-template-columns:repeat(2,1fr);
-      }
-    }
-    .residents{
-      .filters{
-        .inputLabel{
-          width: 30rem;
+      max-width: 768px;
+      margin: auto;
+      .section1{
+        .cards{
+          grid-template-columns: repeat(2,1fr);
         }
       }
-      .allcards{
-        grid-template-columns:repeat(2,1fr);
+      .section2{
+        .filters{
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          .inputLabel{
+            max-width: 40rem;
+          }
+        }
+        .LabelExcel{
+          display: block;
+          background-color: var(--Primary-normal);
+          align-self: self-start;
+          padding: 1.2rem;
+          border-radius: 5px;
+          cursor: pointer;
+          input{
+            display: none;
+          }
+          span{
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+          }
+        }
+        .allcards{
+          grid-template-columns: repeat(2,1fr);
+        }
       }
-    }
-  }
-} 
 
+
+  }
+}
+
+@media (min-width:1280px){
+  .container{
+      max-width: 960px;
+      margin: auto;
+  }
+}
+
+@media (min-width:1536px){
+  .container{
+      max-width: 1024px;
+      margin: auto;
+  }
+}
+
+
+@keyframes buttonSet{
+  0%{
+    transform: translateX(-80px);
+  }
+  50%{
+    transform: translateX(80px);
+  }
+  100%{
+    transform: translateX(0px);
+  }
+}

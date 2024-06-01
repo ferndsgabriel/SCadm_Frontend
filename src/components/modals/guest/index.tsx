@@ -4,6 +4,9 @@ import styles from "./styles.module.scss";
 import { Loading } from "../../loading";
 import { AiOutlineClose } from "react-icons/ai";
 import {formatDate, formatHours} from "../../../utils/formatted";
+import { SlPrinter } from "react-icons/sl";
+
+
 
 type reservationGuestType =  {
     id: string,
@@ -93,17 +96,18 @@ export const ViewGuest = ({idViewGuest, closeModal}:allGuest) =>{
         )
     }
     return(
-        <>
-            <div className={styles.container}>
-                <div className={styles.guest}>
-                    <div className={styles.borderArea}>
-                        <h2>Lista de convidados</h2>
-                        <button onClick={closeModal}>
-                            <AiOutlineClose />
-                        </button>
-                    </div>
+        
+        <div className={styles.container}>          
+            <div className={styles.borderArea}>
+                <h2>Lista de convidados</h2>
+                <button onClick={closeModal}>
+                    <AiOutlineClose />
+                </button>
+            </div>
 
-                    <div className={styles.reservationDate} ref={modalContentRefData}>
+            <div className={styles.all}>
+                <div className={styles.beforeUl} ref={modalContentRefData}>
+                    <div>
                         <p><b>{listGuest.name}</b> - {listGuest.phone_number}  </p>
                         <p>Data: {formatDate(listGuest.date)} - {formatHours(listGuest.start)} às {formatHours(listGuest.finish)}</p>
                         {listGuest.cleaningService?(
@@ -112,24 +116,23 @@ export const ViewGuest = ({idViewGuest, closeModal}:allGuest) =>{
                             <p>Serviço de limpeza: não</p>
                         )}
                         <p>Torre {listGuest.apartment.tower.numberTower} - Apartamento {listGuest.apartment.numberApt}</p>
-                    </div>
+                        </div>
 
-                    <ul className={styles.ul} ref={modalContentRef}>
-                        {guestInList.map((item, index)=>{
-                            return(
-                                <li key={index}>
-                                    {index + 1} - {item}
-                                </li>
-                            )
-                        })}
-                    </ul>
-                    
-                    <div className={styles.buttonImpression}>
-                        <button
-                        onClick={handlePrint} autoFocus={true}>Imprimir</button>
-                    </div>
-                </div>
+                    <button onClick={handlePrint} autoFocus={true}>
+                        <SlPrinter/>
+                    </button>
+                </div>    
+                <ul className={styles.ul} ref={modalContentRef}>
+                    {guestInList.map((item, index)=>{
+                        return(
+                            <li key={index}>
+                                {index + 1} - {item}
+                            </li>
+                        )
+                    })}
+                </ul>
             </div>
-        </>
+        </div>
+    
     )
 }

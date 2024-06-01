@@ -4,27 +4,29 @@
     align-items: center;
     width: 100%;
     height: 4.8rem;
-    background-color: var(--White);
+    background-color: var(--ButtonColor);
     border-radius: 0.5rem;
     border: none;
+    color: var(--ButtonText);
     padding: 0.6rem;
     font-size: 1.8rem;
     text-transform: uppercase;
     font-weight: bold;
+    transition: box-shadow .5s ease;
     &:hover{
-        box-shadow: 2px 2px 8px var(--Transparente);
+        box-shadow: 2px 2px 8px var(--Light);
     }
     &:focus{
-        box-shadow: 2px 2px 8px var(--Transparente);
+        box-shadow: 2px 2px 8px var(--Light);
     }
     a{
-        color: var(--Primary-dark);
+        color: var(--ButtonText);
     }
-        &:disabled{
+    &:disabled{
+        opacity: 70%;
+        cursor: not-allowed;
+        a{
             cursor: not-allowed;
-
-            a{
-                cursor: not-allowed;
-            }
+        }
     }
 }

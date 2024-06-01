@@ -1,19 +1,19 @@
-import Head from "next/head";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/header";
-import style from "./styles.module.scss";
+import { Loading } from "../../components/loading";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
-import { useState, useEffect} from "react";
-import { toast } from "react-toastify";
-import { IoPeopleOutline } from "react-icons/io5";
+import styles from "./styles.module.scss";
+import { AiOutlineLeft, AiOutlineRight} from "react-icons/ai";
 import {FaXmark,FaCheck} from "react-icons/fa6";
-import { Loading } from "../../components/loading";
-import { ViewGuest } from "../../components/modals/guest";
-import {AllTaxed} from "../../components/modals/taxed";
-import {formatDate, formatHours} from "../../utils/formatted";
+import { IoPeopleOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
+import { formatDate, formatHours } from "../../utils/formatted";
 import { Gmodal } from "../../components/myModal";
+import { ViewGuest } from "../../components/modals/guest";
+import { AllTaxed } from "../../components/modals/taxed";
 
-type ReservationsProps = {
+type AllReservationsProps = {
   id: string,
   date: number,
   start: number,
@@ -38,7 +38,7 @@ type ReservationsProps = {
       phone_number:string
     }
   }
-}
+};
 
 type TowersProps = {
   id:string,
@@ -46,15 +46,35 @@ type TowersProps = {
   apartment:[]
 }
 
-interface ReservationInterface {
-  newReservations: ReservationsProps[];
-  reservationTrue: ReservationsProps[];
+interface CalendarProps {
+  reservationsTrue: AllReservationsProps[];
+  reservationsNull: AllReservationsProps[];
   towers:TowersProps[];
 }
 
-export default function reservation({  newReservations, reservationTrue, towers }: ReservationInterface) {
-  const [listNewReservations, setListNewReservations] = useState (newReservations || null);
-  const [listReservationsTrue, SetListReservationsTrue] = useState (reservationTrue || null);
+export default function Reservation({ reservationsNull, reservationsTrue, towers }: CalendarProps) {
+  const [newReservations, setNewReservations] = useState(reservationsNull || null);
+  const [trueReservations, setTrueReservations] = useState(reservationsTrue || null);
+  const [loading, setLoading] = useState(true);
+  const [calendar, setCalendar] = useState([]);
+  const monthNow = new Date().getMonth();
+  const yearNow = new Date().getFullYear();
+  const [monthCalendar, setMonthCalendar] = useState(monthNow);
+  const [yearCalendar, setYearCalendar] = useState(yearNow);
+  const [nextMonthBoolean, setNextMonthBoolean] = useState(false);
+
+  const setupApi = SetupApiClient();
+
+  const monthString = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril',
+    'Maio', 'Junho', 'Julho', 'Agosto',
+    'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+
+  const [reservationTrueCalendar, SetReservationTrueCalendar] = useState([]);
+  const [reservationNewCalendar, setReservationNewCalendar] = useState([]);
+  const [daysBefore, setDaysBefore] = useState([]);
+
   const [listTowers, setListTowers] = useState(towers || null);
   const [isOpenSetReservation, setIsOpenSetReservation] = useState(false);
   const [reservationStatus, setReservationStatus] = useState(null);
@@ -67,167 +87,259 @@ export default function reservation({  newReservations, reservationTrue, towers 
   const [towerFilter, setTowerFilter] = useState(0);
   const [isOpenDeleteReservation, setIsOpenDeleteReservation] = useState(false);
 
-  const setupApi = SetupApiClient();
-
-  async function refreshDate(){
-    try{
-        const response = await setupApi.get("/adm/reservations");
-        const response2 = await setupApi.get("/adm/actreservations");
-        setListNewReservations(response.data);
-        SetListReservationsTrue(response2.data);
-        setLoadingPage(false)
-    }
-    catch(err){
-      console.log('Erro ao obter dados do servidor');
+  // --------------------------------------------------------/////////
+  async function refreshDate() {
+    try {
+      const setupApi = SetupApiClient();
+      const response = await setupApi.get("/adm/reservations");
+      const response2 = await setupApi.get("/adm/actreservations");
+      setNewReservations(response.data);
+      setTrueReservations(response2.data);
+      setLoading(false);
+    } catch (err) {
       setTimeout(refreshDate, 500);
     }
   }
 
-  useEffect(()=>{
-      refreshDate();
-  },[]);
+  useEffect(() => {
+    refreshDate();
+  }, []);
 
-
-  //--------------------- Deletar ou aprovar reservas ------------------------//
-
-  function openModalSetReservation(id: string, status: boolean) {
-    setReservationStatus(status);
-    setReservation_id(id);
-    setIsOpenSetReservation(true);
-  }
-
-  function closeModalSetReservation() {
-    setReservationStatus(null);
-    setReservation_id('');
-    setIsOpenSetReservation(false);
-  }
-
-  async function handleSetReservation() {
-    if (!reservation_id || reservationStatus === null){
-      toast.warning('Informe os dados!');
-    }
-    try {
-      await setupApi.put('/adm/setreservations', {
-        reservation_id: reservation_id,
-        status:reservationStatus,
-      });
-      reservationStatus ?(
-        toast.success("Reserva aprovada.")
-      ):(
-        toast.success("Reserva recusada.")
-      );
-      refreshDate();
-      closeModalSetReservation()
-    } 
-    catch (error) {
-      console.log(error);
-      toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
+  // -----------------------Passar para o formato data minhas datas number --------------------------/////////
+  function formatInDate(date: number) {
+    if (date !== null) {
+      const dateString = date.toString();
+      const year = dateString.substring(0, 4);
+      const month = dateString.substring(4, 6);
+      const day = dateString.substring(6, 8);
+      const monthInt = parseInt(month);
+      const inDate = new Date();
+      inDate.setDate(parseInt(day));
+      inDate.setFullYear(parseInt(year));
+      inDate.setMonth(monthInt - 1);
+      return inDate;
     }
   }
-  
-  //--------------------- Ver lista de convidados ------------------------//
 
-  function openModalGuest(id: string, guest: string) {
-    setReservation_id(id);
-    setIsOpenGuest(true);
-  }
+  useEffect(() => {
+    const formatByTrue = trueReservations.map((item) => formatInDate(item.date));
+    SetReservationTrueCalendar(formatByTrue);
 
-  function closeModalGuest() {
-    setReservation_id('');
-    setIsOpenGuest(false);
-  }
-  
+    const formatByNew = newReservations.map((item) => formatInDate(item.date));
+    setReservationNewCalendar(formatByNew);
 
- //--------------------- Ver lista de taxados ------------------------//
+    const onDay = new Date();
+    const lastDay = onDay.getDate();
 
-  function openTaxed(){
-    setIsOpenTaxed(true);
-  }
-
-  function closedTaxed(){
-    setIsOpenTaxed(false);
-  }
-   //---------------------------------------------------//
-  const filterAll = listReservationsTrue;
-  
-  
-  const filterByTower = listReservationsTrue.filter((item) => {
-    return item.apartment.tower.id === listTowers[towerFilter].id;
-  });
-  
-  const filteredUsers = [filterAll, filterByTower];
-
-  function handleChangeFilter(e:React.ChangeEvent<HTMLSelectElement>){
-    const indexOption = parseInt(e.target.value);
-    if (indexOption === 1){
-      openModalFilterByTower();
+    for (var x = 1; x <= lastDay; x++) {
+      const days = new Date();
+      days.setDate(x);
+      setDaysBefore((prevDays) => [...prevDays, new Date(days)]);
     }
-    setIndexFilter(indexOption);
-  }
-  
-  function openModalFilterByTower(){
-    setIsOpenFilterByTower(true);
-  }
-  function closeMModalFilterByTower(){
-    setIsOpenFilterByTower(false);
-    setIndexFilter(0);
-    setTowerFilter(0);
-  }
-  function changeTowerFilter(e:React.ChangeEvent<HTMLSelectElement>){
-    const indexOption = parseInt(e.target.value);
-    setTowerFilter(indexOption);
+  }, [newReservations, trueReservations]);
+
+  // -------------------- Alterar o mês  -----------------------/////////
+  function changeMonth(number: number) {
+    setNextMonthBoolean(!nextMonthBoolean);
+    const newMonth = monthCalendar + number;
+    if (newMonth > 11) {
+      setMonthCalendar(0);
+      setYearCalendar(yearCalendar + 1);
+    } else {
+      setMonthCalendar(newMonth);
+    }
+    if (newMonth < 0) {
+      setMonthCalendar(11);
+      setYearCalendar(yearCalendar - 1);
+    }
   }
 
+  // -------------------- Renderizar calendario -----------------------/////////
+  useEffect(() => {
+    const currentDate = new Date();
+    currentDate.setMonth(monthCalendar);
+    currentDate.setFullYear(yearCalendar);
 
-  //--------------------- Deletar reservas -------------------------//
+    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const firstDayOfWeek = firstDay.getDay();
 
-  function openModalDeleteReservation(id:string){
-    setReservation_id(id);
-    setIsOpenDeleteReservation(true);
-  }
+    const newCalendar = [];
+    let dayOfMonth = 1;
 
-  function closeModalDeleteReservation(){
-    setReservation_id('');
-    setIsOpenDeleteReservation(false);
-  }
+    for (let i = 0; i < 6; i++) {
+      const row = [];
+      for (let j = 0; j < 7; j++) {
+        if (i === 0 && j < firstDayOfWeek) {
+          row.push(null);
+        } 
+      else if (dayOfMonth <= daysInMonth) {
 
-  async function handleDeleteReservation(){
-    try{
-      await setupApi.delete('/adm/reservation',{
-        data:{
-          reservation_id:reservation_id
+          const isNew = reservationNewCalendar.some(
+            (reservation) =>
+              new Date(reservation).getDate() === dayOfMonth &&
+              new Date(reservation).getMonth() === monthCalendar &&
+              new Date(reservation).getFullYear() === yearCalendar
+          );
+
+          const isTrue = reservationTrueCalendar.some(
+            (reservation) =>
+              new Date(reservation).getDate() === dayOfMonth &&
+              new Date(reservation).getMonth() === monthCalendar &&
+              new Date(reservation).getFullYear() === yearCalendar
+          );
+
+          const daysPast = daysBefore.some(
+            (reservation) =>
+              new Date(reservation).getDate() === dayOfMonth &&
+              new Date(reservation).getMonth() === monthCalendar &&
+              new Date(reservation).getFullYear() === yearCalendar
+          );
+
+          row.push({ day: dayOfMonth, isTrue, isNew, daysPast });
+          dayOfMonth++;
+        } else {
+          row.push(null);
         }
-      })
-      toast.success('Reserva cancelada com sucesso.');
-      refreshDate();
-      closeModalDeleteReservation();
-    }catch(error){
-      console.log(error);
-      toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
+      }
+      newCalendar.push(row);
     }
+    setCalendar(newCalendar);
+  }, [monthCalendar, reservationTrueCalendar, reservationNewCalendar, yearCalendar]);
+
+//---------------------------------------------------------------------------------------------------------///
+function openModalSetReservation(id: string, status: boolean) {
+  setReservationStatus(status);
+  setReservation_id(id);
+  setIsOpenSetReservation(true);
+}
+
+function closeModalSetReservation() {
+  setReservationStatus(null);
+  setReservation_id('');
+  setIsOpenSetReservation(false);
+}
+
+async function handleSetReservation() {
+  if (!reservation_id || reservationStatus === null){
+    toast.warning('Informe os dados!');
   }
-   //--------------------------------------------------//
-  if (loadingPage){
-    return <Loading/>
+  try {
+    await setupApi.put('/adm/setreservations', {
+      reservation_id: reservation_id,
+      status:reservationStatus,
+    });
+    reservationStatus ?(
+      toast.success("Reserva aprovada.")
+    ):(
+      toast.success("Reserva recusada.")
+    );
+    refreshDate();
+    closeModalSetReservation()
+  } 
+  catch (error) {
+    console.log(error);
+    toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
+  }
+}
+//---------------------------------------------------------------------------------------------------//
+const filterAll = trueReservations;
+  
+  
+const filterByTower = trueReservations.filter((item) => {
+  return item.apartment.tower.id === listTowers[towerFilter].id;
+});
+
+const filteredUsers = [filterAll, filterByTower];
+
+function handleChangeFilter(e:React.ChangeEvent<HTMLSelectElement>){
+  const indexOption = parseInt(e.target.value);
+  if (indexOption === 1){
+    openModalFilterByTower();
+  }
+  setIndexFilter(indexOption);
+}
+
+function openModalFilterByTower(){
+  setIsOpenFilterByTower(true);
+}
+function closeMModalFilterByTower(){
+  setIsOpenFilterByTower(false);
+  setIndexFilter(0);
+  setTowerFilter(0);
+}
+
+function changeTowerFilter(e:React.ChangeEvent<HTMLSelectElement>){
+  const indexOption = parseInt(e.target.value);
+  setTowerFilter(indexOption);
+}
+
+function openModalGuest(id: string, guest: string) {
+  setReservation_id(id);
+  setIsOpenGuest(true);
+}
+
+function closeModalGuest() {
+  setReservation_id('');
+  setIsOpenGuest(false);
+}
+function openModalDeleteReservation(id:string){
+  setReservation_id(id);
+  setIsOpenDeleteReservation(true);
+}
+
+function closeModalDeleteReservation(){
+  setReservation_id('');
+  setIsOpenDeleteReservation(false);
+}
+
+async function handleDeleteReservation(){
+  try{
+    await setupApi.delete('/adm/reservation',{
+      data:{
+        reservation_id:reservation_id
+      }
+    })
+    toast.success('Reserva cancelada com sucesso.');
+    refreshDate();
+    closeModalDeleteReservation();
+  }catch(error){
+    console.log(error);
+    toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
+  }
+}
+
+function openTaxed(){
+  setIsOpenTaxed(true);
+}
+
+function closedTaxed(){
+  setIsOpenTaxed(false);
+}
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
     <>
-      <Head>
-        <title>SalãoCondo - Agendamentos</title>
-      </Head>
-      {isOpenGuest || isOpenTaxed? null :<Header />}
+    {!isOpenGuest && ! isOpenTaxed?(
+      <Header/>
+    ):null}
+      
 
-      <main className={style.container}>
+      <main className={styles.container}>
         <h1>Reservas</h1>
-          {listNewReservations.length > 0 ? (
-            <section className={style.section1}>
+
+          {newReservations.length > 0 ? (
+            <section className={styles.section1}>
               <h2>Reservas solicitadas</h2>          
-              <div className={style.allCards}>
-                {listNewReservations.map((item) => (
-                  <div key={item.id} className={style.map}>
-                    <div className={style.card}>
-                      <div className={style.userArea}>
+              <div className={styles.cards}>
+                {newReservations.map((item) => (
+                  <div key={item.id} className={styles.map}>
+                    <div className={styles.card}>
+                      <div className={styles.userInfo}>
                         <b>{item.name}</b>
                         <p>Data: {formatDate(item.date)} - {formatHours(item.start)} às {formatHours(item.finish)}</p>
                         {item.cleaningService ?(
@@ -239,14 +351,14 @@ export default function reservation({  newReservations, reservationTrue, towers 
                         <p>Telefone: {item.phone_number}</p>
                         <p style={{fontSize:'14px'}}>{item.email}</p>
                       </div>
-                        <div className={style.buttons}>
-                          <button onClick={() => { openModalSetReservation(item.id, 
-                            false); 
-                            }}>
-                          <p>Recusar</p><FaXmark/></button>
-                          <button onClick={() => { openModalSetReservation(item.id, 
-                            true)}}>
-                          <p>Aceitar</p> <FaCheck/></button>
+                        <div className={styles.buttonSet}>
+                          <button className={styles.false} onClick={() => { openModalSetReservation(item.id, false);}}>
+                            <span>Recusar</span><FaXmark/>
+                          </button>
+
+                          <button className={styles.true} onClick={() => { openModalSetReservation(item.id,true)}}>
+                            <span>Aceitar</span><FaCheck/>
+                          </button>
                       </div>
                     </div>
                   </div>
@@ -254,38 +366,93 @@ export default function reservation({  newReservations, reservationTrue, towers 
               </div>
             </section>
           ) : null}
-          
-          {listReservationsTrue.length > 0 ?(
-            <section className={style.section2}>
+
+        <div className={styles.calendarAndTrue}>
+          <section className={styles.section2}>
+            <div className={styles.calendarArea}>
+
+              <article className={styles.dateInfo}>
+                <button onClick={() => changeMonth(-1)} disabled={!nextMonthBoolean}><AiOutlineLeft /></button>
+                <p>{monthString[monthCalendar]} - {yearCalendar}</p>
+                <button onClick={() => changeMonth(+1)} disabled={nextMonthBoolean}><AiOutlineRight /></button>
+              </article>
+
+            <table className={styles.calendar}>
+              <thead>
+                <tr>
+                  <th>Dom</th>
+                  <th>Seg</th>
+                  <th>Ter</th>
+                  <th>Qua</th>
+                  <th>Qui</th>
+                  <th>Sex</th>
+                  <th>Sáb</th>
+                </tr>
+              </thead>
+              <tbody>
+                {calendar.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={`${rowIndex}-${cellIndex}`}>
+                        {cell ? (
+                          <span
+                            style={{
+                              backgroundColor: cell.isTrue ? '#51AB7B' : (cell.isNew ? '#405971' : ''),
+                              color: cell.isTrue ? 'white' : (cell.isNew ? 'white' : (cell.daysPast ? 'gray' : '')),
+                              pointerEvents: cell.isTrue || cell.isNew || cell.daysPast ? 'none' : 'auto',
+                            }}
+                          >
+                            {cell.day}
+                          </span>
+                        ) : null}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <article className={styles.legends}>
+              <p style={{ color: "#51AB7B", fontSize: '1.2rem' }}>Aprovadas</p>
+              <p style={{ color: '#405971', fontSize: '1.2rem' }}>Aguardando resposta</p>
+            </article>
+          </div>
+          </section>
+
+          {trueReservations.length > 0 ?(
+            <section className={styles.section3}>
               <h2>Reservas aceitas</h2>
-              <div>
-              <select value={indexFilter} onChange={handleChangeFilter} className={style.select}>
+              <select value={indexFilter} onChange={handleChangeFilter} className={styles.select}>
                 <option value={0}>Todas</option>
                 <option value={1}>Torre</option>
               </select>
-              </div>
-              <div className={style.allcards2}>
+              <div className={styles.cards}>
                 {filteredUsers[indexFilter].map((item, index)=>{
                   return(
-                    <div key={item.id} className={style.card} style={{ backgroundColor: item.apartment.payment ? '' : '#f14a4a' }}>
-                      <b>{item.name}</b>
-                      <p>Data: {formatDate(item.date)} - {formatHours(item.start)} às {formatHours(item.finish)}</p>
-                      {item.cleaningService ?(
-                        <p>Serviço de limpeza: sim</p>
-                      ):(
-                        <p>Serviço de limpeza: não</p>
-                      )}
-                      <p>Torre {item.apartment.tower.numberTower} - Apartamento {item.apartment.numberApt}</p>
-                      <p>Telefone: {item.phone_number}</p>
-                      <p style={{fontSize:'14px'}}>{item.email}</p>
-                      <div className={style.buttonsCard}>
+                    <div key={item.id} className={`${styles.card} ${!item.apartment.payment? styles.noPayment : ''}`}>
+                      <div className={styles.userInfo}>
+                        <b>{item.name}</b>
+                        <p>Data: {formatDate(item.date)} - {formatHours(item.start)} às {formatHours(item.finish)}</p>
+                        {item.cleaningService ?(
+                          <p>Serviço de limpeza: sim</p>
+                        ):(
+                          <p>Serviço de limpeza: não</p>
+                        )}
+                        <p>Torre {item.apartment.tower.numberTower} - Apartamento {item.apartment.numberApt}</p>
+                        <p>Telefone: {item.phone_number}</p>
+                        <p>{item.email}</p>
+                      </div>
+
+                      <div className={styles.buttonsCard}>
                         {item.guest ? (
-                          <button onClick={() => openModalGuest(item.id, item.guest)}>
-                            <p>Convidados </p> <IoPeopleOutline/>
+                          <button onClick={() => openModalGuest(item.id, item.guest)} className="buttonSlide">
+                            Convidados <IoPeopleOutline/>
                           </button>   
                         ) : null}
                         {item.apartment.payment?(null):(
-                          <button onClick={()=>openModalDeleteReservation(item.id)}><p>Deletar</p><FaXmark/></button>
+                          <button onClick={()=>openModalDeleteReservation(item.id)}className="buttonSlide">
+                            Deletar<FaXmark/>
+                          </button>
                         )}
                       </div>
                     </div>
@@ -294,14 +461,15 @@ export default function reservation({  newReservations, reservationTrue, towers 
               </div>
           </section>
           ):null}
+        </div>
 
-          <article className={style.taxed}>
-            <button onClick={openTaxed}>
-                  Reservas canceladas com taxa
+        <section className={styles.section4}>
+          <h2>Taxados</h2>
+          <button onClick={openTaxed} className="buttonSlide">
+                  Reservas taxadas
             </button>
-          </article>
+        </section>
       </main>
-      
 
       {/*- ------Modal aprovar ou recusar reservas ------------------ */}
       <Gmodal
@@ -319,8 +487,8 @@ export default function reservation({  newReservations, reservationTrue, towers 
             )}
           </div>
           <div className='buttonsModal'>
-            <button onClick={handleSetReservation} className='true' autoFocus={true}><span>Confirmar</span></button>
-            <button onClick={closeModalSetReservation} className='false'><span>Cancelar</span></button>
+            <button onClick={handleSetReservation} className='buttonSlide' autoFocus={true}>Confirmar</button>
+            <button onClick={closeModalSetReservation} className='buttonSlide'>Cancelar</button>
           </div>
         </div>
         </Gmodal>
@@ -329,14 +497,14 @@ export default function reservation({  newReservations, reservationTrue, towers 
         <Gmodal
           isOpen={isOpenGuest}
           onClose={closeModalGuest}
-          className={style.modalGuest}>
+          className={styles.modalGuest}>
             <ViewGuest idViewGuest={reservation_id} closeModal={closeModalGuest}/>
         </Gmodal>
 
         {/* -------------Modal ver taxados  -------------------*/}
         <Gmodal isOpen={isOpenTaxed}
         onClose={closedTaxed}
-        className={style.modalTaxed}>
+        className={styles.modalTaxed}>
           <AllTaxed closeFunction={closedTaxed}/>
         </Gmodal>
 
@@ -356,8 +524,8 @@ export default function reservation({  newReservations, reservationTrue, towers 
             </p>
           </div>
           <div className='buttonsModal'>
-            <button onClick={handleDeleteReservation} className='true' autoFocus={true}><span>Confirmar</span></button>
-            <button onClick={closeModalDeleteReservation} className='false'><span>Cancelar</span></button>
+            <button onClick={handleDeleteReservation} className='buttonSlide' autoFocus={true}>Confirmar</button>
+            <button onClick={closeModalDeleteReservation} className='buttonSlide'>Cancelar</button>
           </div>
         </div>
         </Gmodal>
@@ -383,40 +551,37 @@ export default function reservation({  newReservations, reservationTrue, towers 
           </div>
           
           <div className='buttonsModal'>
-              <button onClick={()=>setIsOpenFilterByTower(false)} className='true'><span>Filtrar</span></button>
-              <button onClick={closeMModalFilterByTower} className='false'><span>Não</span></button>   
+              <button onClick={()=>setIsOpenFilterByTower(false)} className='buttonSlide'>Filtrar</button>
+              <button onClick={closeMModalFilterByTower} className='buttonSlide'>Não</button>   
           </div> 
         </div>
       </Gmodal>
+
     </>
-    );
-  }
-
-
+  );
+}
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
   try {
-    const apiClient = SetupApiClient(ctx);
-    const response = await apiClient.get("/adm/reservations");
-    const response2 = await apiClient.get("/adm/actreservations");
-    const response3 = await apiClient.get('/towers');
-    console.log(response.data)
+    const SetupApi = SetupApiClient(ctx);
+    const response1 = await SetupApi.get("/adm/reservations");
+    const response2 = await SetupApi.get("/adm/actreservations");
+    const response3 = await SetupApi.get('/towers');
     return {
       props: {
-        newReservations: response.data,
-        reservationTrue: response2.data,
+        reservationsNull: response1.data,
+        reservationsTrue: response2.data,
         towers:response3.data,
-      },
+      }
     };
   } catch (error) {
-  console.error('Erro ao obter dados da api');
-  return {
+    console.error('Erro ao obter dados da api');
+    return {
       props: {
-        newReservations: [],
-        reservationTrue: [],
+        reservationsNull: [],
+        reservationsTrue: [],
         towers:[]
       },
-  };
-}
+    };
+  }
 });
-

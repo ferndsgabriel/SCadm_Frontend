@@ -1,20 +1,186 @@
 .container{
     width: 100%;
-    max-width: 1024px;
-    margin: auto;
-    padding: 3.6rem 0.8rem;
     display: flex;
     flex-direction: column;
-    gap: 3.6rem;
+    gap: 2.4rem;
+    padding: 4.2rem 2.4rem;
+    h1{
+        margin-bottom: 1.6rem;
+    }
 
     .section1{
         display: flex;
-        gap:1.2rem;
         flex-direction: column;
-        .allCards{
+        width: 100%;
+        gap: 2.4rem;
+        padding-bottom: 1.2rem;
+        border-bottom: 1px solid var(--Primary-normal);
+        .cards{
             display: grid;
-            grid-template-columns: (1fr);
             gap: 1.2rem;
+            grid-template-columns: repeat(1,1fr);
+            .card{
+                background-color: var(--Primary-normal);
+                padding: 1.2rem;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                gap: 1.6rem;
+                .userInfo{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.4rem;
+                    b{
+                        margin-bottom: 0.8rem;
+                    }
+                }
+                .buttonSet{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 1.2rem;
+                    button{
+                        width: 100%;
+                        border-radius: 5px;
+                        padding: 0.8rem;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        overflow: hidden;
+                        color: var(--White);
+                        &:focus{
+                        border: solid 2px var(--White);
+                        }
+                        svg{
+                        display: none;
+                        color: var(--White);
+                        }
+                        &:hover{
+                        span{
+                            display: none;
+                        }
+                        svg{
+                            display: block;
+                            animation: buttonSet .7s normal;
+                        }
+                        }
+                    }
+                    .true{
+                        background-color: var(--Sucess);
+                    }
+                    .false{
+                        background-color: var(--Error);
+                    }
+                }
+            }
+        }
+    }
+
+    .calendarAndTrue{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 2.4rem;
+        .section2{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--Primary-normal);
+            .calendarArea{
+                width: 100%;
+                max-width: 54rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1.2rem;
+                margin: auto;
+                .dateInfo{
+                    background-color: var(--Transparente);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1.6rem;
+                    border-radius: 5px;
+                    box-shadow: 4px 4px 4px var(--Transparente2);
+                    p{
+                        text-transform: uppercase;
+                        font-weight: 500;
+                    }
+                    button{
+                        &:hover{
+                            svg{
+                                transform: scale(1.2);
+                            }
+                        }
+                        &:disabled{
+                            opacity: 0;
+                            cursor: not-allowed;
+                        }
+                        svg{
+                            transition: all .2s ease-in-out;
+                        }
+                    }
+    
+                }
+                .calendar{
+                    width: 100%;
+                    background-color: var(--Transparente);
+                    box-shadow: 4px 4px 4px var(--Transparente2);
+                    padding: 0.8rem;
+                    border-radius: 5px;
+                    thead{
+                        width: 100%;
+                        tr{
+                            width: 100%;
+                        }
+                    }
+                    tbody{
+                        tr{
+                            td{
+
+                                span{
+                                    aspect-ratio: 1/1;
+                                    padding: 0.8rem;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+                .legends{
+                    background-color: var(--Transparente);
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1.6rem;
+                    color: var(--Primary-normal);
+                    border-radius: 5px;
+                    box-shadow: 4px 4px 4px var(--Transparente2);
+                }
+            }
+        }
+        .section3{
+            width: 100%;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--Primary-normal);
+            .select{
+                padding: 0.8rem;
+                align-self: flex-start;
+            }
+            .cards{
+                display: grid;
+                gap: 1.2rem;
+                grid-template-columns: repeat(1,fr);
                 .card{
                     background-color: var(--Primary-normal);
                     padding: 1.2rem;
@@ -22,159 +188,134 @@
                     display: flex;
                     flex-direction: column;
                     gap: 1.6rem;
-                    .userArea{
+                    justify-content: space-between;
+                    .userInfo{
                         display: flex;
                         flex-direction: column;
-                        gap: 0.2rem;
-                    }
-                    .buttons{
-                        display: flex;
-                        width: 100%;
-                        justify-content: space-between;
-                        gap: 0.8rem;
-                        button {    
-                            border: none;
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            padding: 0.4rem;
-                            gap: 0.8rem;
-                            border-radius: 2px;
-                            transition: transform .1s ease;
-                            p{
-                                color: var(--Light);
-                            }
-                            svg{
-                                display: none;
-                            }
-                
-                            &:hover{
-                                transform: scale(1.03);
-                                svg{
-                                display: block;
-                                font-size: 2rem;
-                                color: var(--White);
-                                }
-                                p{
-                                display: none;
-                                }
-                            }
-                            }            
-                            button:nth-of-type(1) {
-                            background-color: var(--Error);
-                            }    
-                            button:nth-of-type(2) {
-                            background-color: var(--Sucess);
-                            }
+                        gap: 0.4rem;
+                        color: var(--White);
+                        b{
+                            margin-bottom: 0.8rem;
                         }
                     }
-                }
-            }
-        
-        .section2{
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-            .allcards2{
-                display: grid;
-                grid-template-columns: (1fr);
-                gap: 1.2rem;
-                .card{
-                    background-color: var(--Primary-normal);
-                    border-radius: 5px;
-                    padding: 1.2rem;
-                    display: flex;
-                    flex-direction: column;
                     .buttonsCard{
                         display: flex;
                         align-items: center;
-                        gap: 0.8rem;
-                        button {
-                            position: relative;
+                        gap: 1.2rem;
+                        justify-content: space-between;
+                        button{
                             display: flex;
                             align-items: center;
-                            justify-content: space-between;
-                            padding: 0.6rem 1rem;
-                            background-color:var(--White);
-                            color: var(--Primary-dark);
-                            border-radius: 4px;
-                            overflow: hidden;
-                            transition: background-color 1s;
-                            border: solid 1px var(--Black-light);
+                            justify-content: center;
                             gap: 1.2rem;
-                            align-self: flex-end;
-                            margin-top: 1.6rem;
-                            a, p, svg{
-                                font-size: 1.4rem;
-                                color: var(--Primary-dark);
-                            }
-                        }
-                        button::before {
-                            content: "";
-                            position: absolute;
-                            top: 0;
-                            left: -100%;
                             width: 100%;
-                            height: 100%;
-                            background-color: var(--Primary-dark);
-                            transition: left 1s;
+                            border: solid 1px var(--White);
                         }
-                        button:not(:disabled):hover {
-                            background-color:var(--Primary-dark);
-                            a, p, svg{
-                                color: var(--Light);
-                                z-index: 99;
-                            }
-                        }
-                        
-                        button:not(:disabled):hover::before {
-                            left: 0; 
-                        }   
-                    }   
+                    }
+                }
+                .noPayment{
+                    border: solid 5px var(--Error);
+                }
+            }
+        }
+    }    
+
+    .section4{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 2.4rem;
+        button{
+            align-self: flex-start;
+        }
+    }
+
+}
+
+@media (min-width:768px){
+    .container{
+        max-width: 768px;
+        margin: auto;
+        .section1{
+            .cards{
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+        .calendarAndTrue{
+            .section2{
+                .calendarArea{
+                    max-width: 60rem;
+                }
+            }
+            .section3{
+                .cards{
+                    grid-template-columns: repeat(2,1fr);
                 }
             }
         }
 
-        .taxed{
-            width: 100%;
-            margin-top: 5.6rem;
-            button{
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: var(--Transparente);
-                transition: color ease 1s;
-                &:hover{
-                    color: var(--White);
+    }
+}
+@media (min-width:1280px){
+    .container{
+        max-width: 960px;
+        margin: auto;
+        .calendarAndTrue{
+            flex-direction: row;
+            align-items: center;
+            justify-content: start;
+            border-bottom: 1px solid var(--Primary-normal);
+            .section2{
+                border: none;
+            }
+            .section3{
+                height: calc(100vh - 20rem);
+                border: none;
+                .cards{
+                    grid-template-columns: repeat(1,1fr);
+                    overflow-y: auto;
+                    padding-right: 0.8rem;
                 }
             }
         }
-    
+    }
 }
-//------------------------- modal
+@media (min-width:1536px){
+    .container{
+        max-width: 1024px;
+        margin: auto;
+    }
+}
 
 .modalGuest{
-    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 94vh;
+    max-width: 60rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 4px 4px 20px var(--Black);
 }
 .modalTaxed{
-    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 94vh;
+    max-width: 60rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 4px 4px 20px var(--Black);
 }
 
-
-@media (min-width: 768px){
-    .container{
-        .section1{
-            .allCards{
-                grid-template-columns: repeat(2,1fr);
-            }
-        }
-        .section2{
-            .allcards2{  
-                grid-template-columns: repeat(2,1fr);
-            }
-        }
-    
+@keyframes buttonSet{
+    0%{
+        transform: translateX(-80px);
+    }
+    50%{
+        transform: translateX(80px);
+    }
+    100%{
+        transform: translateX(0px);
     }
 }

@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 import {AiOutlineSearch} from "react-icons/ai";
 import {BiEdit} from "react-icons/bi";
-import {FaXmark,FaCheck,FaRegFileExcel } from "react-icons/fa6";
+import {FaXmark,FaCheck } from "react-icons/fa6";
+import { SiMicrosoftexcel } from "react-icons/si";
 import { Loading } from "../../components/loading";
 import { Gmodal } from "../../components/myModal";
 
@@ -273,35 +274,35 @@ if (loadingPage){
     <main className={style.container}>
       <h1>Moradores</h1>
       {allUsersRequest.length > 0 ? (
-        <section className={style.newUsers}>
+        <section className={style.section1}>
           <h2>Novos moradores</h2>
           <div className={style.cards}>
           {allUsersRequest.map((item)=>{
             return(
               <article key={item.id} className={style.card}> 
-                <div className={style.UserArea} >
+                <div className={style.UserInfos} >
                   <p><b>{item.name} {item.lastname}</b></p>
                   <p>CPF: {item.cpf} </p>
                   <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p>
-                  <p style={{fontSize:'14px'}}>{item.email}</p>
-              </div>
-              <div className={style.buttonUser}>
-                <button onClick={() => { openModalNewUsers(item.id, true); 
-                  }}><p>Aceitar</p> <FaCheck/>
-                </button>
-                <button onClick={() => { openModalNewUsers(item.id, false);
-                  }}><p>Recusar</p> <FaXmark/>
-                </button>
-              </div>
+                  <p>Telefone: {item.phone_number} </p>
+                  <p>{item.email}</p>
+                </div>
+                <div className={style.buttonSet}>
+                  <button onClick={() => { openModalNewUsers(item.id, true); }} className={style.true}>
+                    <span>Aceitar</span><FaCheck/>
+                  </button>
+                  <button onClick={() => { openModalNewUsers(item.id, false);}} className={style.false}>
+                    <span>Recusar</span><FaXmark/>
+                  </button>
+                </div>
             </article>
             )
           })}
           </div> 
-
       </section>
     ):null}
 
-      <section className={style.residents}>
+      <section className={style.section2}>
         <h2>Controle de moradores</h2>
 
         <article className={style.filters}>
@@ -323,14 +324,13 @@ if (loadingPage){
           </select>
         </article>
 
-        <label className={style.AreaAutomation} tabIndex={1}>
+        <label className={`${style.LabelExcel} buttonSlide`} tabIndex={1}>
             <input type="file"  accept=".xlsx" onChange={(e) => HandleExcel(e.target.files[0])} className={style.inputFile}/>
             {!loadingExcel?(
-              <span className={style.span}>Importar tabela excel <FaRegFileExcel/></span>
+              <span className={style.span}>Importar planilha<SiMicrosoftexcel/></span>
             ):(
               <span className={style.spanSpinner}><FaSpinner/></span>
             )}
-
         </label>
 
 
@@ -338,42 +338,37 @@ if (loadingPage){
           <div className={style.allcards}>
             {filteredUsers[indexFilter].map((item) => {
                 return (
-                    <div  className={style.cards} key={item.id}>
-                      <div className={style.cardData}>
-                          <div>
-                          <p>
-                            <b> {item.name} {item.lastname}</b>
-                          </p>
-                          {item.apartment.payment? (
-                            <p>Status: adimplente</p>
-                          ) : (
-                            <p>Status: inadimplente</p>
-                          )}
-                          <div className={style.editApt}>
-                          <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p> 
-                            <button onClick={() =>openModalEditApt(item.id)}>
-                              <BiEdit/>
-                            </button>
+                    <div  className={style.card} key={item.id}>
+                      <div className={style.cardInfos}>
+                          <div className={style.imgAndName}>
+                              {item.photo? (
+                                <img src={item.photo} />
+                              ) : null}
+                              <b> {item.name} {item.lastname}</b>
                           </div>
-                            
-                          
-                          {item.phone_number ? (
-                            <p>Contato: {item.phone_number}</p>
-                          ) : null}
-                          <p style={{fontSize:'14px'}}> {item.email}</p>
 
-                        </div>
-                        {item.photo? (
-                          <div className={style.photoArea}>
-                            <img src={item.photo} />
-                          </div>
-                        ) : null}
+                          <div className={style.userData}>
+                            {item.apartment.payment? (
+                              <p>Status: adimplente</p>
+                            ) : (
+                              <p>Status: inadimplente</p>
+                            )}
+                            <div className={style.editApt}>
+                              <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p> 
+                              <button onClick={() =>openModalEditApt(item.id)}>
+                                <BiEdit/>
+                              </button>
+                            </div>
+                            <p>Contato: {item.phone_number}</p>
+                            <p> {item.email}</p>
+                          </div>         
                       </div>
-                        <button onClick={()=>openModalPayment(item.apartment_id)} className={style.button}>
-                          <p>Alterar status de pagamento</p></button> 
+                        <button onClick={()=>openModalPayment(item.apartment_id)} className='buttonSlide'
+                        style={{border:'solid 2px var(--Primary-dark)'}}>
+                          Alterar status de pagamento
+                        </button> 
                     </div >        
                   );
-                  
                 })}
             </div>
             
@@ -398,8 +393,8 @@ if (loadingPage){
             )}
           </div>
           <div className='buttonsModal'>
-              <button onClick={handleNewUser} className='true'><span>Confirmar</span></button>
-              <button onClick={closeModalNewUsers}className='false'><span>Cancelar</span></button> 
+              <button onClick={handleNewUser} className='buttonSlide' autoFocus={true}>Confirmar</button>
+              <button onClick={closeModalNewUsers} className='buttonSlide'>Cancelar</button> 
           </div>
         </div>
       </Gmodal>
@@ -413,8 +408,8 @@ if (loadingPage){
               <p>Tem certeza de que deseja modificar o pagamento deste usuário?</p>
           </div>  
           <div className='buttonsModal'>
-              <button onClick={handlePayment} className='true' autoFocus={true}><span>Confirmar</span></button>
-              <button onClick={closeModalPayment} className='false'><span>Cancelar</span></button>   
+              <button onClick={handlePayment} className='buttonSlide' autoFocus={true}>Confirmar</button>
+              <button onClick={closeModalPayment} className='buttonSlide'>Cancelar</button>   
           </div> 
         </div>
       </Gmodal>
@@ -429,7 +424,8 @@ if (loadingPage){
               </p>
 
               <div className="modalOptions">
-                <select value={towerAptEditIndex} onChange={changeOptionTower}>
+                <select value={towerAptEditIndex} onChange={changeOptionTower}
+                style={{marginRight:'16px'}}>
                   {allTowersList.filter((item)=>item.apartment.length >0
                   ).map((item, index)=>{
                     return(
@@ -453,8 +449,8 @@ if (loadingPage){
               </div>
             </div>
             <div className='buttonsModal'>
-              <button type="submit" className='true' autoFocus={true}><span>Confirmar</span></button>
-              <button onClick={closeModalEditApt} className='false'><span>Cancelar</span></button>   
+              <button type="submit" className='buttonSlide' autoFocus={true}>Confirmar</button>
+              <button onClick={closeModalEditApt} className='buttonSlide'>Cancelar</button>   
             </div>
           </form>
       </Gmodal>
@@ -480,8 +476,8 @@ if (loadingPage){
           </div>
           
           <div className='buttonsModal'>
-              <button onClick={()=>setIsOpenFilterByTower(false)} className='true'><span>Filtrar</span></button>
-              <button onClick={closeMModalFilterByTower} className='false'><span>Cancelar</span></button>   
+              <button onClick={()=>setIsOpenFilterByTower(false)} className='buttonSlide' autoFocus={true}>Filtrar</button>
+              <button onClick={closeMModalFilterByTower} className='buttonSlide'>Cancelar</button>   
           </div> 
         </div>
       </Gmodal>

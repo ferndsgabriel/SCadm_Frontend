@@ -2,6 +2,7 @@ import { SetupApiClient } from "../../../services/api";
 import {useState, useEffect, useRef} from "react";
 import styles from "./styles.module.scss";
 import {AiOutlineClose} from "react-icons/ai"
+import { SlPrinter } from "react-icons/sl";
 
 type taxedType = {
         dateGuest:Date,
@@ -87,14 +88,18 @@ export const AllTaxed = ({ closeFunction }: AllTaxedProps) => {
     }
     return(
         <div className={styles.container}>
-            <div className={styles.taxed}>
-                <div className={styles.borderArea}>
-                    <h2>Lista de taxados</h2>
-                    <button onClick={closeFunction}>
-                        <AiOutlineClose />
-                    </button>
-                </div>
-
+            <div className={styles.borderArea}>
+                <h2>Lista de taxados</h2>
+                <button onClick={closeFunction}>
+                    <AiOutlineClose />
+                </button>
+            </div>
+            <div className={styles.all}>
+            <div className={styles.beforeUl}>
+                <button onClick={handlePrint} autoFocus={true}>
+                    <SlPrinter/>
+                </button>
+            </div>
             <ul className={styles.ul} ref={modalContentRefData}>
                 {taxed.map((item, index)=>{
                     return(
@@ -107,10 +112,6 @@ export const AllTaxed = ({ closeFunction }: AllTaxedProps) => {
                     )
                 })}
             </ul>
-            <div className={styles.buttonImpression}>
-                <button
-                onClick={handlePrint} autoFocus={true}>Imprimir</button>
-            </div>
         </div>
     </div>
     )

@@ -170,13 +170,13 @@ if (loading){
 
                         <div className={style.buttons}>
                         {!inputPass ?(
-                            <button onClick={changeInputPass}><p>Alterar</p></button>
+                            <button onClick={changeInputPass} className="buttonSlide">Alterar</button>
                         ):null}   
 
                         {inputPass ?(
                             <>
-                            <button onClick={handlePass} type="submit"><p>Salvar</p></button> 
-                            <button onClick={cancelPass}><p>Cancelar</p></button>
+                            <button onClick={handlePass} type="submit" className="buttonSlide">Salvar</button> 
+                            <button onClick={cancelPass} className="buttonSlide">Cancelar</button>
                                 
                             </>
                         ):null}
@@ -188,14 +188,14 @@ if (loading){
 
             <section className={style.section3}>
                 <h2>Apagar conta</h2>
-                <button onClick={openModal}>Deletar minha conta <AiTwotoneDelete/></button>
+                <button onClick={openModal} className="buttonSlide"><span>Deletar minha conta <AiTwotoneDelete/></span></button>
             </section>
 
 
-            <span className={style.logout}>
+            <span className={style.section4}>
                 <h2>Fazer logout</h2>
                 <div className={style.areaButton}>
-                    <button onClick={singOut}><FiLogOut/></button>
+                    <button onClick={singOut} className="buttonSlide"><span>Sair da conta<FiLogOut/></span></button>
                 </div>
             </span>
         </main>
@@ -218,8 +218,8 @@ if (loading){
                         </div>
                     </div>
                     <div className='buttonsModal'>
-                        <button disabled={!checkBox} type="submit" className='true'><span>Deletar</span></button>
-                        <button onClick={closeModal} className="false"><span>Cancelar</span></button>
+                        <button disabled={!checkBox} type="submit" className='buttonSlide'>Deletar</button>
+                        <button onClick={closeModal} className='buttonSlide'>Cancelar</button>
                     </div>
                 </form>
 

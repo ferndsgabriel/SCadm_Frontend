@@ -292,27 +292,29 @@ async function handleEditApt(e:FormEvent){
             <Header/>
             <main className={style.container}>
             <h1>Residências</h1>
-                <section className={style.allTowers}>
-                <h2>Torres</h2>
-                <button className={style.buttonMoreTowers}
-                onClick={openModalCreateTower}>
-                    <AiOutlinePlus/>
-                </button>
-                <div className={style.allTowersCards}>
+                <section className={style.section1}>
+                <div className={style.btnNewItem}>
+                    <h2>Torres</h2>
+                    <button className={style.buttonMoreTowers}
+                    onClick={openModalCreateTower}>
+                        <AiOutlinePlus/>
+                    </button>
+                </div>
+                <div className={style.allCards}>
                     {towers.map((item, index)=>{
                         return(
-                            <div key={item.id} className={style.towerCard}>
-                                <span><TbTower />{`Torre - ${item.numberTower}`}</span>
-                                <div className={style.toolsTowers}>
-                                    <button className={style.editTower}
-                                    onClick={()=>openModalTowerEdit(item.id, item.numberTower)}>
+                            <div key={item.id} className={style.card}>
+                                <span className={style.itemInfos}><TbTower />{`Torre - ${item.numberTower}`}</span>
+                                <div className={style.itemTools}>
+
+                                    <button onClick={()=>openModalTowerEdit(item.id, item.numberTower)}>
                                         <MdEdit/>
                                     </button>
+
                                     {item.apartment.length > 0 ?(
                                         <i><MdApartment />{item.apartment.length}</i>
                                     ):(
-                                        <button className={style.deleteTower}
-                                        onClick={()=>openModalTowerDelete(item.id, item.numberTower)}>
+                                        <button onClick={()=>openModalTowerDelete(item.id, item.numberTower)}>
                                             <IoClose/>
                                         </button>
                                     )}
@@ -324,43 +326,44 @@ async function handleEditApt(e:FormEvent){
             </section>
 
             {towers.length > 0 ?(
-                <section className={style.apartment}>
-                    <h2>Apartamentos</h2>
-                    <div className={style.optionTowers}>
+                <section className={style.section2}>
+                    <div className={style.btnNewItem}>
+                        <h2>Apartamentos</h2>
                         <button className={style.buttonMoreApts}
                             onClick={(()=>openModalCreateApt())}>
                                 <AiOutlinePlus/>
                         </button>
-                        <div className={style.selectApartment}>
-                            <h3>Torre</h3>
-                            <select value={optionTower} onChange={handleViewApts}>
-                                {towers.map((item, index)=>{
-                                    return(
-                                        <option value={index} key={item.id}>
-                                            {item.numberTower}
-                                        </option>
-                                    )
-                                })}
-                            </select>
-                        </div>
                     </div>
-                    <div className={style.allApts}>
+
+                    <div className={style.selectTower}>
+                        <h3>Torre</h3>
+                        <select value={optionTower} onChange={handleViewApts}>
+                            {towers.map((item, index)=>{
+                                return(
+                                    <option value={index} key={item.id}>
+                                        {item.numberTower}
+                                    </option>
+                                )
+                            })}
+                        </select>
+                    </div>
+
+                    <div className={style.allCards}>
                         {apts.filter((itemApts)=>
                             itemApts.tower_id === towers[optionTower].id
                         ).map((item)=>{
                             return(
-                                <div key={item.id} className={style.cardApts}>
-                                    <span><MdApartment /> Apartamento - {item.numberApt}</span>
-                                    <div className={style.toolsApartment}>
-                                        <button className={style.editApartment}
-                                        onClick={()=>openModalEditApt(item.id, item.numberApt)}> 
+                                <div key={item.id} className={style.card}>
+                                    <span className={style.itemInfos}><MdApartment /> Apartamento - {item.numberApt}</span>
+
+                                    <div className={style.itemTools}>
+                                        <button onClick={()=>openModalEditApt(item.id, item.numberApt)}> 
                                             <MdEdit/>
                                         </button>
                                         {item.user.length > 0 ?(
                                             <i><FaUser/>{item.user.length}</i>
                                         ):(
-                                            <button className={style.deleteApartment}
-                                            onClick={()=>openModalDeleteApartment(item.id, item.numberApt)}>
+                                            <button onClick={()=>openModalDeleteApartment(item.id, item.numberApt)}>
                                                 <IoClose/>
                                             </button>
                                         )}
@@ -369,7 +372,6 @@ async function handleEditApt(e:FormEvent){
                             )
                         })}
                     </div>
-                    
                 </section>
             ):null}
                 
@@ -389,8 +391,8 @@ async function handleEditApt(e:FormEvent){
                     onChange={(e)=> setCreateTowerInput(e.target.value)}/>
                 </div>
                 <div className='buttonsModal'>
-                    <button type="submit" className='true'><span>Criar</span></button>
-                    <button onClick={closeModalCreateTower} className='false'><span>Cancelar</span></button>
+                    <button type="submit" className='buttonSlide'>Criar</button>
+                    <button onClick={closeModalCreateTower} className='buttonSlide'>Cancelar</button>
                 </div>
             </form>
             </Gmodal>
@@ -405,8 +407,8 @@ async function handleEditApt(e:FormEvent){
                         <p>Tem certeza de que deseja excluir permanentemente a Torre {numberTowerDelete}?</p>
                     </div>
                     <div className='buttonsModal'>
-                        <button onClick={DeleteTower} className='true' autoFocus={true}><span>Deletar</span></button>
-                        <button onClick={closeModalTowerDelete} className='false'><span>Cancelar</span></button>
+                        <button onClick={DeleteTower} className='buttonSlide' autoFocus={true}>Deletar</button>
+                        <button onClick={closeModalTowerDelete} className='buttonSlide'>Cancelar</button>
                     </div>
                 </div>
             </Gmodal>
@@ -425,8 +427,8 @@ async function handleEditApt(e:FormEvent){
                         onChange={(e)=> setNewTowerEdit(e.target.value)}/>
                     </div>
                     <div className='buttonsModal'>
-                        <button type="submit" className='true'><span>Confirmar</span></button>
-                        <button onClick={closeModalTowerEdit} className='false'><span>Cancelar</span></button>
+                        <button type="submit" className='buttonSlide'>Confirmar</button>
+                        <button onClick={closeModalTowerEdit} className='buttonSlide'>Cancelar</button>
                     </div>
                 </form>
             </Gmodal>
@@ -454,8 +456,8 @@ async function handleEditApt(e:FormEvent){
                         onChange={(e)=> setCreateAptInput(e.target.value)}/>
                     </div>
                     <div className='buttonsModal'>
-                        <button type="submit" className='true' ><span>Criar</span></button>
-                        <button onClick={closeModalCreateApt} className='false'><span>Cancelar</span></button>
+                        <button type="submit" className='buttonSlide'>Criar</button>
+                        <button onClick={closeModalCreateApt} className='buttonSlide'>Cancelar</button>
                     </div>
                 </form>
             </Gmodal>
@@ -474,8 +476,8 @@ async function handleEditApt(e:FormEvent){
                         onChange={(e)=> setInputNewApt(e.target.value)}/>
                     </div>
                     <div className='buttonsModal'>
-                        <button type="submit" className='true'><span>Confirmar</span></button>
-                        <button onClick={closeModalEditApt} className='false'><span>Cancelar</span></button>
+                        <button type="submit" className='buttonSlide'>Confirmar</button>
+                        <button onClick={closeModalEditApt} className='buttonSlide'>Cancelar</button>
                     </div>
                 </form>
             </Gmodal>
@@ -490,8 +492,8 @@ async function handleEditApt(e:FormEvent){
                     <p>Tem certeza de que deseja excluir permanentemente o Apartamento {numberAptDelete}?</p>
                 </div>
                 <div className='buttonsModal'>
-                    <button onClick={handleDeleteApt} className='true'autoFocus={true}><span>Deletar</span></button>
-                    <button onClick={closeModalDeleteApartment}className='false'><span>Cancelar</span></button>
+                    <button onClick={handleDeleteApt} className='buttonSlide' autoFocus={true}>Deletar</button>
+                    <button onClick={closeModalDeleteApartment} className='buttonSlide'>Cancelar</button>
                 </div>
             </div>
             </Gmodal>

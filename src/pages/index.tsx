@@ -8,16 +8,19 @@ import { AuthContext } from "../contexts/AuthContexts"
 import {isEmail} from "validator";
 import { toast } from "react-toastify";
 import { canSSRGuest } from "../utils/canSSRGuest";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 export default function Home(){
 
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
-  const [loading, setLoading] = useState (false)
+  const [loading,setLoading] = useState(false);
   const {singIn} = useContext(AuthContext)
+  const {dark} = useContext(ThemeContext)
 
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
+    setLoading(true);
     if (email === "" && pass === ""){
       return;
     }
@@ -30,13 +33,17 @@ export default function Home(){
       return;
     }
     
-    setLoading(true)
     let data = {
       email:email.trim(),
       pass
     };
-    await singIn(data);
-    setLoading(false)
+    try{
+      await singIn(data);
+    }catch(err){
+      console.log(err)
+    }finally{
+      setLoading(false);
+    }
   }
 
 
@@ -48,7 +55,11 @@ export default function Home(){
         </title>
     </Head>
     <main className={styles.container}>
-      <img src="SalãoCondoDark.svg" alt="Logo marca"/>
+      {dark?(
+          <img src="./iconDark.svg" alt="SalãoCondo Logo" />
+      ):(
+          <img src="./iconLight.svg" alt="SalãoCondo Logo" />
+      )}
   
       <form className={styles.form} onSubmit={handleLogin}>
         <Input placeholder="Insira seu email:" type="email"
@@ -58,7 +69,7 @@ export default function Home(){
         value={pass} onChange={(e)=>setPass(e.target.value)}/>
 
         <Button
-          loading={loading}
+          disabled={loading}
           type="submit"
           >
           Entrar
