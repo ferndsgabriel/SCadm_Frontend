@@ -324,10 +324,7 @@ function closedTaxed(){
 
   return (
     <>
-    
       <Header/>
-   
-      
       <div className={styles.bodyArea}>
         <main className={styles.container}>
           <h1>Reservas</h1>
@@ -367,7 +364,6 @@ function closedTaxed(){
               </section>
             ) : null}
 
-         
           <section className={styles.section2}>
             <div className={styles.calendarArea}>
 
