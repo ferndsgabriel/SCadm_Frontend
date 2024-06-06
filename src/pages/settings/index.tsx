@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import zxcvbn from 'zxcvbn';
 import { Loading } from "../../components/loading";
 import { Gmodal } from "../../components/myModal";
-
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 type admPropsItens = {
     email: String;
@@ -23,6 +23,14 @@ type admPropsItens = {
 }
 interface admInterface{
     admProps: admPropsItens
+}
+interface FAQItem {
+    question: string;
+    answers: string[];
+}
+
+interface FAQData {
+    faq: FAQItem[];
 }
 
 export default function Settings({admProps}: admInterface){
@@ -35,6 +43,16 @@ const [checkBox, setCheckBox] = useState (false);
 const [inputDelete, setInputDelete] = useState ('');
 const [loading, setLoading ] = useState(true);
 
+const faqData = require ("../../faq.json");
+const faq: FAQData = faqData as FAQData;
+const [expandedQuestions, setExpandedQuestions] = useState({});
+
+const handleCheckboxFAQ = (question) => {
+    setExpandedQuestions({
+        ...expandedQuestions,
+        [question]: !expandedQuestions[question]
+    });
+};
 
 const setupApi = SetupApiClient();
 
@@ -185,16 +203,47 @@ if (loading){
                             </div>
                         </form> 
                     </div>
-                    
+                </section>
+                
+                <section className={style.section3}>
+                <h2>FAQ - Perguntas frequentes</h2>
+                <div className={style.questionsArea}>
+                    {faq.faq.map((item, index) => {
+                        const isExpanded = expandedQuestions[item.question];
+                        return (
+                            <div key={item.question} className={style.cardQuestion}>
+                                <label className={style.labelQuestion}>
+                                    <h4>{item.question}</h4>
+                                    <input
+                                        type="checkbox"
+                                        checked={isExpanded}
+                                        onChange={() => handleCheckboxFAQ(item.question)}
+                                    />
+                                    {isExpanded ?(
+                                        <FaAngleUp/>
+                                    ):<FaAngleDown />}
+                                    
+                                </label>
+                                {isExpanded && (
+                                    <ul className={style.answer}>
+                                        {item.answers.map((answer, index) => (
+                                            <li key={index}>{answer}</li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
                 </section>
 
-                <section className={style.section3}>
+                <section className={style.section4}>
                     <h2>Apagar conta</h2>
                     <button onClick={openModal} className="buttonSlide"><span>Deletar minha conta <AiTwotoneDelete/></span></button>
                 </section>
 
 
-                <span className={style.section4}>
+                <span className={style.section5}>
                     <h2>Fazer logout</h2>
                     <div className={style.areaButton}>
                         <button onClick={singOut} className="buttonSlide"><span>Sair da conta<FiLogOut/></span></button>

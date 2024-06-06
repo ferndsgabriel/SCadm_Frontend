@@ -1,0 +1,25 @@
+{
+    "faq": [
+        {
+        "question": "Posso cancelar uma reserva já aprovada?",
+        "answers": [
+            "Não, a menos que o morador fique inadimplente antes da data da reserva. Cancelar uma reserva já aprovada pode causar constrangimento ao morador."
+        ]
+        },
+        {
+        "question": "Para que serve a função de planilha?",
+        "answers": [
+            "A função de planilha serve para importar e atualizar o status de pagamento dos moradores no sistema de reservas. Você deve carregar uma planilha de moradores que contenha informações atualizadas sobre o status de pagamento (adimplente ou inadimplente). O sistema usará essas informações para permitir ou bloquear solicitações de reserva de acordo com o status de cada morador."
+        ]
+        },
+        {
+        "question": "Como importar e atualizar o status de pagamento usando a planilha?",
+        "answers": [
+            "Prepare uma planilha com os dados dos moradores, incluindo CPF e status de pagamento.",
+            "Acesse a função de planilha no sistema de reservas.",
+            "Carregue a planilha no sistema.",
+            "O sistema atualizará automaticamente o status de pagamento dos moradores de acordo com as informações fornecidas na planilha."
+        ]
+        }
+    ]
+}
