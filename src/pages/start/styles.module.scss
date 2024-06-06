@@ -1,159 +1,162 @@
-.container{
+.bodyArea{
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 3.2rem;
-  gap: 2.4rem;
-  padding: 4.2rem 2.4rem;
-  h1{
-      margin-bottom: 1.6rem;
-  }
-  .section1{
+  .container{
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.6rem;
-    padding-bottom: 1.2rem;
-    border-bottom: 1px solid var(--Primary-normal);
-    .cards{
-      display: grid;
-      grid-template-columns: repeat(1,fr);
-      gap: 1.2rem;
-      .card{
-        display: flex;
-        flex-direction: column;
-        gap: 1.6rem;
-        background-color: var(--Primary-normal);
-        padding: 1.2rem;
-        border-radius: 5px;
-        color: var(--White);
-        .UserInfos{
-          display: flex;
-          flex-direction: column;
-          gap: 0.4rem;
-          b{
-            margin-bottom: 0.8rem;
-        }
-        }
-        .buttonSet{
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 1.2rem;
-          button{
-            width: 100%;
-            border-radius: 5px;
-            padding: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            color: var(--White);
-            &:focus{
-              border: solid 2px var(--White);
-            }
-            svg{
-              display: none;
-              color: var(--White);
-            }
-            &:hover{
-              span{
-                display: none;
-              }
-              svg{
-                display: block;
-                animation: buttonSet .7s normal;
-              }
-            }
-          }
-          .true{
-            background-color: var(--Sucess);
-          }
-          .false{
-            background-color: var(--Error);
-          }
-        }
-      }
-
+    gap: 3.2rem;
+    gap: 2.4rem;
+    padding: 4.2rem 2.4rem;
+    h1{
+        margin-bottom: 1.6rem;
     }
-  }
-
-  .section2{
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
-    .filters{
+    .section1{
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
-      .inputLabel{
-        display: flex;
-        width: 100%;
-        align-items: center;
-        justify-content: space-between;
-        background-color: var(--Transparente);
-        padding: 1.2rem;
-        border-radius: 5px;
-        color: var(--Text);
-        &:focus-within{
-          border: solid 1px var(--Text);
-        }
-        input{
-          width: 100%;
-          &::placeholder{
-            color: var(--Light);
-          }
-        }
-      }
-      select{
-        align-self: self-start;
-        height: 3.4rem;
-      }
-    }
-    .LabelExcel{
-      display: none;
-    }
-    .allcards{
-      display: grid;
-      grid-template-columns: repeat(1,1fr);
-      gap: 1.2rem;
-      .card{
-        background-color: var(--Primary-normal);
-        padding: 1.2rem;
-        color: var(--White);
-        border-radius: 5px;
-        display: flex;
-        flex-direction: column;
-        gap: 2.4rem;
-        justify-content: space-between;
-        .cardInfos{
+      gap: 1.6rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--Primary-normal);
+      .cards{
+        display: grid;
+        grid-template-columns: repeat(1,fr);
+        gap: 1.2rem;
+        .card{
           display: flex;
           flex-direction: column;
-          gap: 0.8rem;
-          .imgAndName{
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 1.6rem;
-            img{
-              width: 8rem;
-              aspect-ratio: 1/1;
-              object-fit: cover;
-              border-radius: 100%;
-            }
-          }
-          .userData{
+          gap: 1.6rem;
+          background-color: var(--Primary-normal);
+          padding: 1.2rem;
+          border-radius: 5px;
+          color: var(--White);
+          .UserInfos{
             display: flex;
             flex-direction: column;
             gap: 0.4rem;
-            .editApt{
+            b{
+              margin-bottom: 0.8rem;
+          }
+          }
+          .buttonSet{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1.2rem;
+            button{
+              width: 100%;
+              border-radius: 5px;
+              padding: 0.8rem;
               display: flex;
               align-items: center;
-              gap:1.2rem;
-              button{
+              justify-content: center;
+              overflow: hidden;
+              color: var(--White);
+              &:focus{
+                border: solid 2px var(--White);
+              }
+              svg{
+                display: none;
+                color: var(--White);
+              }
+              &:hover{
+                span{
+                  display: none;
+                }
+                svg{
+                  display: block;
+                  animation: buttonSet .7s normal;
+                }
+              }
+            }
+            .true{
+              background-color: var(--Sucess);
+            }
+            .false{
+              background-color: var(--Error);
+            }
+          }
+        }
+  
+      }
+    }
+  
+    .section2{
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+      .filters{
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        .inputLabel{
+          display: flex;
+          width: 100%;
+          align-items: center;
+          justify-content: space-between;
+          background-color: var(--Transparente);
+          padding: 1.2rem;
+          border-radius: 5px;
+          color: var(--Text);
+          &:focus-within{
+            border: solid 1px var(--Text);
+          }
+          input{
+            width: 100%;
+            &::placeholder{
+              color: var(--Light);
+            }
+          }
+        }
+        select{
+          align-self: self-start;
+          height: 3.4rem;
+        }
+      }
+      .LabelExcel{
+        display: none;
+      }
+      .allcards{
+        display: grid;
+        grid-template-columns: repeat(1,1fr);
+        gap: 1.2rem;
+        .card{
+          background-color: var(--Primary-normal);
+          padding: 1.2rem;
+          color: var(--White);
+          border-radius: 5px;
+          display: flex;
+          flex-direction: column;
+          gap: 2.4rem;
+          justify-content: space-between;
+          .cardInfos{
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            .imgAndName{
+              display: flex;
+              align-items: flex-start;
+              justify-content: space-between;
+              gap: 1.6rem;
+              img{
+                width: 8rem;
+                aspect-ratio: 1/1;
+                object-fit: cover;
+                border-radius: 100%;
+              }
+            }
+            .userData{
+              display: flex;
+              flex-direction: column;
+              gap: 0.4rem;
+              .editApt{
                 display: flex;
                 align-items: center;
-                svg{
-                  color: var(--White);
+                gap:1.2rem;
+                button{
+                  display: flex;
+                  align-items: center;
+                  svg{
+                    color: var(--White);
+                  }
                 }
               }
             }
@@ -164,8 +167,10 @@
   }
 }
 
+
 @media (min-width:768px){
-  .container{
+  .bodyArea{
+    .container{
       max-width: 768px;
       margin: auto;
       .section1{
@@ -202,22 +207,29 @@
           grid-template-columns: repeat(2,1fr);
         }
       }
-
-
+    }
   }
+
 }
 
 @media (min-width:1280px){
-  .container{
+  .bodyArea{
+    max-width: calc(100% - 360px);
+    margin-left: 360px;
+    .container{
       max-width: 960px;
       margin: auto;
+      padding: 3.2rem 1.6rem;
+    }
   }
 }
 
 @media (min-width:1536px){
-  .container{
-      max-width: 1024px;
-      margin: auto;
+  .bodyArea{
+      .container{
+        max-width: 1024px;
+        margin: auto;
+    }
   }
 }
 

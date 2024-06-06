@@ -271,112 +271,115 @@ if (loadingPage){
         <title>SalãoCondo - Início</title>
       </Head>
       <Header/>
-    <main className={style.container}>
-      <h1>Moradores</h1>
-      {allUsersRequest.length > 0 ? (
-        <section className={style.section1}>
-          <h2>Novos moradores</h2>
-          <div className={style.cards}>
-          {allUsersRequest.map((item)=>{
-            return(
-              <article key={item.id} className={style.card}> 
-                <div className={style.UserInfos} >
-                  <p><b>{item.name} {item.lastname}</b></p>
-                  <p>CPF: {item.cpf} </p>
-                  <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p>
-                  <p>Telefone: {item.phone_number} </p>
-                  <p>{item.email}</p>
-                </div>
-                <div className={style.buttonSet}>
-                  <button onClick={() => { openModalNewUsers(item.id, true); }} className={style.true}>
-                    <span>Aceitar</span><FaCheck/>
-                  </button>
-                  <button onClick={() => { openModalNewUsers(item.id, false);}} className={style.false}>
-                    <span>Recusar</span><FaXmark/>
-                  </button>
-                </div>
+      <div className={style.bodyArea}>
+        <main className={style.container}>
+          <h1>Moradores</h1>
+          {allUsersRequest.length > 0 ? (
+            <section className={style.section1}>
+              <h2>Novos moradores</h2>
+              <div className={style.cards}>
+              {allUsersRequest.map((item)=>{
+                return(
+                  <article key={item.id} className={style.card}> 
+                    <div className={style.UserInfos} >
+                      <p><b>{item.name} {item.lastname}</b></p>
+                      <p>CPF: {item.cpf} </p>
+                      <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p>
+                      <p>Telefone: {item.phone_number} </p>
+                      <p>{item.email}</p>
+                    </div>
+                    <div className={style.buttonSet}>
+                      <button onClick={() => { openModalNewUsers(item.id, true); }} className={style.true}>
+                        <span>Aceitar</span><FaCheck/>
+                      </button>
+                      <button onClick={() => { openModalNewUsers(item.id, false);}} className={style.false}>
+                        <span>Recusar</span><FaXmark/>
+                      </button>
+                    </div>
+                </article>
+                )
+              })}
+              </div> 
+          </section>
+        ):null}
+
+          <section className={style.section2}>
+            <h2>Controle de moradores</h2>
+
+            <article className={style.filters}>
+              {indexFilter > 0 ?
+              null:(
+                <label className={style.inputLabel}>
+                  <input type="text" autoFocus={true} 
+                  value={searchResident} onChange={(e) => setSearchResident(e.target.value)}
+                  placeholder="Digite um nome:"/>
+                  <AiOutlineSearch/>
+                </label>
+              )}
+
+              <select value={indexFilter} onChange={handleChangeFilter} className={style.select}>
+                <option value={0}>Todos</option>
+                <option value={1}>Torre</option>
+                <option value={2}>Adimplentes</option>
+                <option value={3}>Inadimplentes</option>
+              </select>
             </article>
-            )
-          })}
-          </div> 
-      </section>
-    ):null}
 
-      <section className={style.section2}>
-        <h2>Controle de moradores</h2>
-
-        <article className={style.filters}>
-          {indexFilter > 0 ?
-          null:(
-            <label className={style.inputLabel}>
-              <input type="text" autoFocus={true} 
-              value={searchResident} onChange={(e) => setSearchResident(e.target.value)}
-              placeholder="Digite um nome:"/>
-              <AiOutlineSearch/>
+            <label className={`${style.LabelExcel} buttonSlide`} tabIndex={1}>
+                <input type="file"  accept=".xlsx" onChange={(e) => HandleExcel(e.target.files[0])} className={style.inputFile}/>
+                {!loadingExcel?(
+                  <span className={style.span}>Importar planilha<SiMicrosoftexcel/></span>
+                ):(
+                  <span className={style.spanSpinner}><FaSpinner/></span>
+                )}
             </label>
-          )}
-
-          <select value={indexFilter} onChange={handleChangeFilter} className={style.select}>
-            <option value={0}>Todos</option>
-            <option value={1}>Torre</option>
-            <option value={2}>Adimplentes</option>
-            <option value={3}>Inadimplentes</option>
-          </select>
-        </article>
-
-        <label className={`${style.LabelExcel} buttonSlide`} tabIndex={1}>
-            <input type="file"  accept=".xlsx" onChange={(e) => HandleExcel(e.target.files[0])} className={style.inputFile}/>
-            {!loadingExcel?(
-              <span className={style.span}>Importar planilha<SiMicrosoftexcel/></span>
-            ):(
-              <span className={style.spanSpinner}><FaSpinner/></span>
-            )}
-        </label>
 
 
-        {allResidents.length > 0 ? (
-          <div className={style.allcards}>
-            {filteredUsers[indexFilter].map((item) => {
-                return (
-                    <div  className={style.card} key={item.id}>
-                      <div className={style.cardInfos}>
-                          <div className={style.imgAndName}>
-                              {item.photo? (
-                                <img src={item.photo} />
-                              ) : null}
-                              <b> {item.name} {item.lastname}</b>
+            {allResidents.length > 0 ? (
+              <div className={style.allcards}>
+                {filteredUsers[indexFilter].map((item) => {
+                    return (
+                        <div  className={style.card} key={item.id}>
+                          <div className={style.cardInfos}>
+                              <div className={style.imgAndName}>
+                                  {item.photo? (
+                                    <img src={item.photo} />
+                                  ) : null}
+                                  <b> {item.name} {item.lastname}</b>
+                              </div>
+
+                              <div className={style.userData}>
+                                {item.apartment.payment? (
+                                  <p>Status: adimplente</p>
+                                ) : (
+                                  <p>Status: inadimplente</p>
+                                )}
+                                <div className={style.editApt}>
+                                  <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p> 
+                                  <button onClick={() =>openModalEditApt(item.id)}>
+                                    <BiEdit/>
+                                  </button>
+                                </div>
+                                <p>Contato: {item.phone_number}</p>
+                                <p> {item.email}</p>
+                              </div>         
                           </div>
-
-                          <div className={style.userData}>
-                            {item.apartment.payment? (
-                              <p>Status: adimplente</p>
-                            ) : (
-                              <p>Status: inadimplente</p>
-                            )}
-                            <div className={style.editApt}>
-                              <p>Torre {item.apartment.tower.numberTower} - apartamento {item.apartment.numberApt} </p> 
-                              <button onClick={() =>openModalEditApt(item.id)}>
-                                <BiEdit/>
-                              </button>
-                            </div>
-                            <p>Contato: {item.phone_number}</p>
-                            <p> {item.email}</p>
-                          </div>         
-                      </div>
-                        <button onClick={()=>openModalPayment(item.apartment_id)} className='buttonSlide'
-                        style={{border:'solid 2px var(--Primary-dark)'}}>
-                          Alterar status de pagamento
-                        </button> 
-                    </div >        
-                  );
-                })}
-            </div>
-            
-          ) : (
-            <p>Não há nenhum morador cadastrado</p>
-          )}
-        </section>
-      </main>
+                            <button onClick={()=>openModalPayment(item.apartment_id)} className='buttonSlide'
+                            style={{border:'solid 2px var(--Primary-dark)'}}>
+                              Alterar status de pagamento
+                            </button> 
+                        </div >        
+                      );
+                    })}
+                </div>
+                
+              ) : (
+                <p>Não há nenhum morador cadastrado</p>
+              )}
+            </section>
+        </main>
+      </div>
+      
 
 
     {/*------------------------------------Modal novos usuarios*/}

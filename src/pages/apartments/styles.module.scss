@@ -1,126 +1,142 @@
-.container{
+.bodyArea{
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 2.4rem;
-    padding: 4.2rem 2.4rem;
-    h1{
-        margin-bottom: 1.6rem;
-    }
-    .section1{
-        padding-bottom: 1.2rem;
-        border-bottom: 1px solid var(--Primary-normal);
-    }
-    
-    .section1, .section2{
+    .container{
         width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 1.6rem;
-        .btnNewItem{
-            display: flex;
-            flex-direction: row;
-            align-items: start;
-            justify-content: space-between;
-            button{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: var(--Primary-normal);
-                padding: 0.8rem;
-                border-radius: 4px;
-                transition: all .2s ease-in-out;
-                &:hover{
-                    transform: scale(1.2);
-                }
-                svg{
-                    color: var(--White);
-                }
-            }
+        gap: 3.2rem;
+        padding: 4.2rem 2.4rem;
+        h1{
+            margin-bottom: 1.6rem;
         }
-        .selectTower{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 1.2rem;
+        .section1{
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--Primary-normal);
         }
-        .allCards{
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(1,1fr);
-            gap: 1.2rem;
-            .card{
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                background-color: var(--Primary-normal);
-                padding: 1.8rem 1.6rem;
-                color: var(--White);
-                border-radius: 5px;
-                .itemInfos{
-                    display: flex;
-                    align-items: center;
-                    gap: 1.2rem;
-                }
-                .itemTools{
-                    display: flex;
-                    align-items: center;
-                    i{
-                        display: flex;
-                        align-items: center;
-                        gap: 0.8rem;
-                        padding: 0.2rem;
-                        border: solid 1px var(--White);
-                        border-radius: 5px;
-                    }
-                    gap: 1.2rem;
-                    button{
-                        &:hover{
-                            svg{
-                                transform: scale(1.2);
-                            }
-                        }
-                        svg{
-                            color: var(--White);
-                            transition: all .2s ease-in-out;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@media (min-width:768px){
-    .container{
-        max-width: 768px;
-        margin: auto;
+        
         .section1, .section2{
+            width: 100%;
             display: flex;
             flex-direction: column;
             gap: 1.6rem;
-            .allCards{
-                grid-template-columns: repeat(2,1fr);
+            .btnNewItem{
+                display: flex;
+                flex-direction: row;
+                align-items: start;
+                justify-content: space-between;
+                button{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: var(--Primary-normal);
+                    padding: 0.8rem;
+                    border-radius: 4px;
+                    transition: all .2s ease-in-out;
+                    &:hover{
+                        transform: scale(1.2);
+                    }
+                    svg{
+                        color: var(--White);
+                    }
+                }
             }
-        }   
+            .selectTower{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 1.2rem;
+            }
+            .allCards{
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(1,1fr);
+                gap: 1.2rem;
+                .card{
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    background-color: var(--Primary-normal);
+                    padding: 1.8rem 1.6rem;
+                    color: var(--White);
+                    border-radius: 5px;
+                    .itemInfos{
+                        display: flex;
+                        align-items: center;
+                        gap: 1.2rem;
+                    }
+                    .itemTools{
+                        display: flex;
+                        align-items: center;
+                        i{
+                            display: flex;
+                            align-items: center;
+                            gap: 0.8rem;
+                            padding: 0.2rem;
+                            border: solid 1px var(--White);
+                            border-radius: 5px;
+                        }
+                        gap: 1.2rem;
+                        button{
+                            &:hover{
+                                svg{
+                                    transform: scale(1.2);
+                                }
+                            }
+                            svg{
+                                color: var(--White);
+                                transition: all .2s ease-in-out;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+}    
+    
+
+@media (min-width:768px){
+    .bodyArea{
+        .container{
+            max-width: 768px;
+            margin: auto;
+            padding: 3.2rem 1.6rem;
+            .section1, .section2{
+                display: flex;
+                flex-direction: column;
+                gap: 1.6rem;
+                .allCards{
+                    grid-template-columns: repeat(2,1fr);
+                }
+            }   
+        }
+    }
+
 }
 
 @media (min-width:1280px){
-    .container{
-        max-width: 960px;
-        margin: auto;
-        .section1, .section2{
-            .allCards{
-                grid-template-columns: repeat(3,1fr);
-            }
-        }   
+    .bodyArea{
+        max-width: calc(100% - 360px);
+        margin-left: 360px;
+        .container{
+            max-width: 960px;
+            margin: auto;
+            padding: 3.2rem 1.6rem;
+            .section1, .section2{
+                .allCards{
+                    grid-template-columns: repeat(3,1fr);
+                }
+            }   
+        }
     }
+
 }
 
 @media (min-width:1536px){
-    .container{
-        max-width: 1024px;
-        margin: auto;
+    .bodyArea{
+        .container{
+            max-width: 1024px;
+            margin: auto;
+        }
     }
 }

@@ -14,11 +14,11 @@ export default function ThemeProvider({ children }) {
     const changeThemes = (boolean) => {
         setDark(boolean);
         const localStorageTheme = JSON.stringify(boolean);
-        localStorage.setItem('portfolioThemeAdm', localStorageTheme);
+        localStorage.setItem('themeAdm', localStorageTheme);
     }
 
     useEffect(() => {
-        const theme = localStorage.getItem('portfolioThemeAdm');
+        const theme = localStorage.getItem('themeAdm');
         if (theme) {
             setDark(JSON.parse(theme));
         }

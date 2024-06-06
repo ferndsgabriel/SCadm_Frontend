@@ -1,107 +1,110 @@
-import Link from "next/link"
-import styles from "./styles.module.scss"
-import {AiOutlineClose, AiOutlineSchedule, AiOutlineMenu } from "react-icons/ai";
-import { MdApartment } from "react-icons/md";
+import styles from "./styles.module.scss";
+import { IoSunny, IoMoon} from "react-icons/io5";
+import {AiOutlineClose, AiOutlineSchedule, AiOutlineMenu, } from "react-icons/ai";
 import { BsPeopleFill } from "react-icons/bs";
-import { IoSunny, IoMoon } from "react-icons/io5";
-import {FiSettings} from "react-icons/fi";
-import { useState, useEffect, useRef, useContext } from "react";
+import {FiSettings, FiLogOut } from "react-icons/fi";
+import { MdApartment } from "react-icons/md";
+import Link from "next/link";
+import { useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useContext } from "react";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import { useRouter} from 'next/router';
+import { AuthContext } from "../../contexts/AuthContexts";
 
-export default function Header(){
-    const routerActual = useRouter().pathname;
-    const [openNav, setOpenNav] = useState(false);
+
+export default function Header (){
+    const [isOpenNav, setIsOpenNav] = useState (false);
+    const blackAreaRef = useRef<HTMLDivElement>(null);
     const navRef = useRef<HTMLDivElement>(null);
-    const {dark, changeThemes} = useContext (ThemeContext);
+    const routerActual = useRouter().pathname;
+    const {changeThemes, dark} = useContext(ThemeContext);
+    const {singOut} = useContext(AuthContext);
 
-    useEffect(()=>{
-        function closeNavWithEsc(e:KeyboardEvent){
-            if (openNav){
-                if (e.key === 'Escape'){
-                    setOpenNav(false);
-                }   
-            }else{
-                return;
-            }
-        }
-        document.addEventListener('keydown', closeNavWithEsc);
+    function handleOpenNav(){
+        setIsOpenNav(true);
+        blackAreaRef.current?.classList.add(styles.blackAreaGet);
+        navRef.current?.classList.add(styles.openNavBar);
+    }
 
-        return ()=> document.removeEventListener('keydown', closeNavWithEsc);
-    },[openNav]);
+    function handleCloseNav(){
+        setIsOpenNav(false);
+        blackAreaRef.current?.classList.remove(styles.blackAreaGet);
+        navRef.current?.classList.remove(styles.openNavBar);
+    }
 
-    return (
+    return(
         <>
-        {openNav?(
-            <span className={styles.bgNav} onClick={()=>setOpenNav(false)}/>
-        ):null}
-        <header className={styles.header}>
-            <div className={styles.container}>
-                <Link href={'/reservation'}>
-                    <img src="./iconDark.svg" alt={'Logo Svg'}/>
+            <span className={styles.blackArea} ref={blackAreaRef} onClick={handleCloseNav}></span>
+
+            <header className={styles.headerArea}>
+                <Link href={'/start'}>
+                    <img src="./iconDark.svg" alt="icon"/>
                 </Link>
-
-                {openNav?(
-                    <button onClick={()=>setOpenNav(false)} className={styles.buttonMenu}>
-                        <AiOutlineClose/>
-                    </button>
-                ):(
-                    <button onClick={()=>setOpenNav(true)} className={styles.buttonMenu}>
-                        <AiOutlineMenu/>
-                    </button>
-                )}
-                
-                <nav style={openNav?{display:'block'}:{display:''}} ref={navRef}>
-                    <ul>
-                        <li className={styles.liTheme}>   
-                            <label className={`${styles.labelTheme} ${dark? styles.labelDark : styles.labelLight}`}>
-                                {!dark ?(
-                                    <IoSunny className={styles.svgSun}/>
-                                ):(
-                                    <IoMoon className={styles.svgMoon}/>
-                                )}
-                                <input type='checkbox' checked={dark} onChange={(e)=>changeThemes(e.target.checked)}/>
-                            </label>
-                        </li>
-                        
-                        <li className={styles.li}>
-                            <Link href={'/reservation'}
-                            className={routerActual === '/reservation'?styles.activeNav:''}>
-                                <span>Reservas</span>
-                                <AiOutlineSchedule/>        
-                            </Link>
-                        </li>  
-                        
-                        <li className={styles.li}>
-                            <Link href={'/start'}
-                            className={routerActual === '/start'?styles.activeNav:''}>
-                                <span>Moradores</span>
-                                <BsPeopleFill />
-                            </Link>
-                        </li>
-                        
-                        <li className={styles.li}>
-                            <Link href={'/apartments'}
-                            className={routerActual === '/apartments'?styles.activeNav:''}>
-                                <span>Residências</span>
-                                <MdApartment />
-                            </Link>
-                        </li>
-
-                        <li className={styles.li}>
-                            <Link href={'/settings'}
-                            className={routerActual === '/settings'?styles.activeNav:''}>
-                                <span>Configurações</span>
-                                <FiSettings/>
-                            </Link>
-                        </li>  
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <div className={styles.breakline}>
-        </div> 
             
+                {isOpenNav?(
+                    <button onClick={handleCloseNav}><AiOutlineClose/></button>
+                ):(
+                    <button onClick={handleOpenNav}><AiOutlineMenu/></button>
+                )}  
+            </header>
+
+            <nav className={styles.navBar} ref={navRef}>
+                <div className={styles.imgAndButton}>
+                    <Link href={'/start'}>
+                        <img src="./iconDark.svg" alt="icon"/>
+                    </Link>
+                    <button onClick={handleCloseNav}><AiOutlineClose/></button>
+                </div>
+                
+                <ul>
+                    <li className={styles.liTheme}>   
+                        <label className={`${styles.labelTheme} ${dark? styles.labelDark : styles.labelLight}`}>
+                            {!dark ?(
+                                <IoSunny className={styles.svgSun}/>
+                            ):(
+                                <IoMoon className={styles.svgMoon}/>
+                            )}
+                            <input type='checkbox' checked={dark} onChange={(e)=>changeThemes(e.target.checked)}/>
+                        </label>
+                    </li>
+                    
+                    <li className={styles.li}>
+                        <Link href={'/reservation'}
+                        className={routerActual === '/reservation'?styles.activeNav:''}>
+                            <AiOutlineSchedule/>   
+                            Reservas
+                        </Link>
+                    </li>  
+                    
+                    <li className={styles.li}>
+                        <Link href={'/start'}
+                        className={routerActual === '/start'?styles.activeNav:''}>
+                            <BsPeopleFill />
+                            Moradores
+                        </Link>
+                    </li>
+                    
+                    <li className={styles.li}>
+                        <Link href={'/apartments'}
+                        className={routerActual === '/apartments'?styles.activeNav:''}>
+                            <MdApartment />
+                            Residências
+                        </Link>
+                    </li>
+
+                    <li className={styles.li}>
+                        <Link href={'/settings'}
+                        className={routerActual === '/settings'?styles.activeNav:''}>
+                            <FiSettings/>
+                            Configurações
+                        </Link>
+                    </li>  
+                </ul>
+
+                <button className={styles.logout} onClick={singOut}>Sair<FiLogOut /></button>
+            </nav>
+
+            <span className={styles.breakArea}></span>
         </>
     )
 }

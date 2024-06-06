@@ -290,80 +290,32 @@ async function handleEditApt(e:FormEvent){
                 <title>SalãoCondo - Residências</title>
             </Head>
             <Header/>
-            <main className={style.container}>
-            <h1>Residências</h1>
-                <section className={style.section1}>
-                <div className={style.btnNewItem}>
-                    <h2>Torres</h2>
-                    <button className={style.buttonMoreTowers}
-                    onClick={openModalCreateTower}>
-                        <AiOutlinePlus/>
-                    </button>
-                </div>
-                <div className={style.allCards}>
-                    {towers.map((item, index)=>{
-                        return(
-                            <div key={item.id} className={style.card}>
-                                <span className={style.itemInfos}><TbTower />{`Torre - ${item.numberTower}`}</span>
-                                <div className={style.itemTools}>
-
-                                    <button onClick={()=>openModalTowerEdit(item.id, item.numberTower)}>
-                                        <MdEdit/>
-                                    </button>
-
-                                    {item.apartment.length > 0 ?(
-                                        <i><MdApartment />{item.apartment.length}</i>
-                                    ):(
-                                        <button onClick={()=>openModalTowerDelete(item.id, item.numberTower)}>
-                                            <IoClose/>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-            </section>
-
-            {towers.length > 0 ?(
-                <section className={style.section2}>
+            <div className={style.bodyArea}>
+                <main className={style.container}>
+                <h1>Residências</h1>
+                    <section className={style.section1}>
                     <div className={style.btnNewItem}>
-                        <h2>Apartamentos</h2>
-                        <button className={style.buttonMoreApts}
-                            onClick={(()=>openModalCreateApt())}>
-                                <AiOutlinePlus/>
+                        <h2>Torres</h2>
+                        <button className={style.buttonMoreTowers}
+                        onClick={openModalCreateTower}>
+                            <AiOutlinePlus/>
                         </button>
                     </div>
-
-                    <div className={style.selectTower}>
-                        <h3>Torre</h3>
-                        <select value={optionTower} onChange={handleViewApts}>
-                            {towers.map((item, index)=>{
-                                return(
-                                    <option value={index} key={item.id}>
-                                        {item.numberTower}
-                                    </option>
-                                )
-                            })}
-                        </select>
-                    </div>
-
                     <div className={style.allCards}>
-                        {apts.filter((itemApts)=>
-                            itemApts.tower_id === towers[optionTower].id
-                        ).map((item)=>{
+                        {towers.map((item, index)=>{
                             return(
                                 <div key={item.id} className={style.card}>
-                                    <span className={style.itemInfos}><MdApartment /> Apartamento - {item.numberApt}</span>
-
+                                    <span className={style.itemInfos}><TbTower />{`Torre - ${item.numberTower}`}</span>
                                     <div className={style.itemTools}>
-                                        <button onClick={()=>openModalEditApt(item.id, item.numberApt)}> 
+
+                                        <button onClick={()=>openModalTowerEdit(item.id, item.numberTower)}>
                                             <MdEdit/>
                                         </button>
-                                        {item.user.length > 0 ?(
-                                            <i><FaUser/>{item.user.length}</i>
+
+                                        {item.apartment.length > 0 ?(
+                                            <i><MdApartment />{item.apartment.length}</i>
                                         ):(
-                                            <button onClick={()=>openModalDeleteApartment(item.id, item.numberApt)}>
+                                            <button onClick={()=>openModalTowerDelete(item.id, item.numberTower)}>
                                                 <IoClose/>
                                             </button>
                                         )}
@@ -373,9 +325,60 @@ async function handleEditApt(e:FormEvent){
                         })}
                     </div>
                 </section>
-            ):null}
-                
-        </main>
+
+                {towers.length > 0 ?(
+                    <section className={style.section2}>
+                        <div className={style.btnNewItem}>
+                            <h2>Apartamentos</h2>
+                            <button className={style.buttonMoreApts}
+                                onClick={(()=>openModalCreateApt())}>
+                                    <AiOutlinePlus/>
+                            </button>
+                        </div>
+
+                        <div className={style.selectTower}>
+                            <h3>Torre</h3>
+                            <select value={optionTower} onChange={handleViewApts}>
+                                {towers.map((item, index)=>{
+                                    return(
+                                        <option value={index} key={item.id}>
+                                            {item.numberTower}
+                                        </option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+
+                        <div className={style.allCards}>
+                            {apts.filter((itemApts)=>
+                                itemApts.tower_id === towers[optionTower].id
+                            ).map((item)=>{
+                                return(
+                                    <div key={item.id} className={style.card}>
+                                        <span className={style.itemInfos}><MdApartment /> Apartamento - {item.numberApt}</span>
+
+                                        <div className={style.itemTools}>
+                                            <button onClick={()=>openModalEditApt(item.id, item.numberApt)}> 
+                                                <MdEdit/>
+                                            </button>
+                                            {item.user.length > 0 ?(
+                                                <i><FaUser/>{item.user.length}</i>
+                                            ):(
+                                                <button onClick={()=>openModalDeleteApartment(item.id, item.numberApt)}>
+                                                    <IoClose/>
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </section>
+                ):null}
+                    
+                </main>
+            </div>
+            
         
             {/* ----------------- Modal criar torre ------------------- */}
             <Gmodal isOpen={isOpenCreateTower}

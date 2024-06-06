@@ -136,69 +136,72 @@ if (loading){
             <title>SalãoCondo - Configurações</title>
         </Head>
         <Header/>
-
-        <main className={style.container}>
-            <h1>Configurações</h1>
-            <section className={style.section1}>
-                <h2>Dados</h2>
-                <div className={style.conteudo1}>
-                    <p>Nome: {admDate.name}</p>
-                    <p>Sobrenome: {admDate.lastname}</p>
-                    <p>Email: {admDate.email}</p>
-                    <p>Telefone: {admDate.phone_number}</p>
-                </div>
-            </section>
-
-            <section className={style.section2}>
-                <h2>Segurança</h2>
-                <div className={style.conteudo2}>
-                    <p>Alterar senha: </p>
-                    <form className={style.formChangePass}>   
-                        <Input placeholder="Digite sua senha atual:"
-                        type="password" 
-                        disabled={!inputPass}
-                        value={oldPass}
-                        onChange={(e)=>setOldPass(e.target.value)}
-                        />
-
-                        <Input placeholder="Sua nova senha:"
-                        type="password"
-                        disabled={!inputPass}
-                        value={newPass}
-                        onChange={(e)=>setNewPass(e.target.value)}
-                        />
-
-                        <div className={style.buttons}>
-                        {!inputPass ?(
-                            <button onClick={changeInputPass} className="buttonSlide">Alterar</button>
-                        ):null}   
-
-                        {inputPass ?(
-                            <>
-                            <button onClick={handlePass} type="submit" className="buttonSlide">Salvar</button> 
-                            <button onClick={cancelPass} className="buttonSlide">Cancelar</button>
-                                
-                            </>
-                        ):null}
-                        </div>
-                    </form> 
-                </div>
+        <div className={style.bodyArea}>
+            
+            <main className={style.container}>
                 
-            </section>
+                <h1>Configurações</h1>
+                <section className={style.section1}>
+                    <h2>Dados</h2>
+                    <div className={style.conteudo1}>
+                        <p>Nome: {admDate.name}</p>
+                        <p>Sobrenome: {admDate.lastname}</p>
+                        <p>Email: {admDate.email}</p>
+                        <p>Telefone: {admDate.phone_number}</p>
+                    </div>
+                </section>
 
-            <section className={style.section3}>
-                <h2>Apagar conta</h2>
-                <button onClick={openModal} className="buttonSlide"><span>Deletar minha conta <AiTwotoneDelete/></span></button>
-            </section>
+                <section className={style.section2}>
+                    <h2>Segurança</h2>
+                    <div className={style.conteudo2}>
+                        <p>Alterar senha: </p>
+                        <form className={style.formChangePass}>   
+                            <Input placeholder="Digite sua senha atual:"
+                            type="password" 
+                            disabled={!inputPass}
+                            value={oldPass}
+                            onChange={(e)=>setOldPass(e.target.value)}
+                            />
+
+                            <Input placeholder="Sua nova senha:"
+                            type="password"
+                            disabled={!inputPass}
+                            value={newPass}
+                            onChange={(e)=>setNewPass(e.target.value)}
+                            />
+
+                            <div className={style.buttons}>
+                            {!inputPass ?(
+                                <button onClick={changeInputPass} className="buttonSlide">Alterar</button>
+                            ):null}   
+
+                            {inputPass ?(
+                                <>
+                                <button onClick={handlePass} type="submit" className="buttonSlide">Salvar</button> 
+                                <button onClick={cancelPass} className="buttonSlide">Cancelar</button>
+                                    
+                                </>
+                            ):null}
+                            </div>
+                        </form> 
+                    </div>
+                    
+                </section>
+
+                <section className={style.section3}>
+                    <h2>Apagar conta</h2>
+                    <button onClick={openModal} className="buttonSlide"><span>Deletar minha conta <AiTwotoneDelete/></span></button>
+                </section>
 
 
-            <span className={style.section4}>
-                <h2>Fazer logout</h2>
-                <div className={style.areaButton}>
-                    <button onClick={singOut} className="buttonSlide"><span>Sair da conta<FiLogOut/></span></button>
-                </div>
-            </span>
-        </main>
+                <span className={style.section4}>
+                    <h2>Fazer logout</h2>
+                    <div className={style.areaButton}>
+                        <button onClick={singOut} className="buttonSlide"><span>Sair da conta<FiLogOut/></span></button>
+                    </div>
+                </span>
+            </main>
+        </div>
 
         <Gmodal isOpen={isOpen}
             onClose={closeModal}

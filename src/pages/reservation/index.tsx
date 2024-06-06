@@ -324,50 +324,50 @@ function closedTaxed(){
 
   return (
     <>
-    {!isOpenGuest && ! isOpenTaxed?(
+    
       <Header/>
-    ):null}
+   
       
+      <div className={styles.bodyArea}>
+        <main className={styles.container}>
+          <h1>Reservas</h1>
 
-      <main className={styles.container}>
-        <h1>Reservas</h1>
+            {newReservations.length > 0 ? (
+              <section className={styles.section1}>
+                <h2>Reservas solicitadas</h2>          
+                <div className={styles.cards}>
+                  {newReservations.map((item) => (
+                    <div key={item.id} className={styles.map}>
+                      <div className={styles.card}>
+                        <div className={styles.userInfo}>
+                          <b>{item.name}</b>
+                          <p>Data: {formatDate(item.date)} - {formatHours(item.start)} às {formatHours(item.finish)}</p>
+                          {item.cleaningService ?(
+                            <p>Serviço de limpeza: sim</p>
+                          ):(
+                            <p>Serviço de limpeza: não</p>
+                          )}
+                          <p>Torre {item.apartment.tower.numberTower} - Apartamento {item.apartment.numberApt}</p>
+                          <p>Telefone: {item.phone_number}</p>
+                          <p style={{fontSize:'14px'}}>{item.email}</p>
+                        </div>
+                          <div className={styles.buttonSet}>
+                            <button className={styles.false} onClick={() => { openModalSetReservation(item.id, false);}}>
+                              <span>Recusar</span><FaXmark/>
+                            </button>
 
-          {newReservations.length > 0 ? (
-            <section className={styles.section1}>
-              <h2>Reservas solicitadas</h2>          
-              <div className={styles.cards}>
-                {newReservations.map((item) => (
-                  <div key={item.id} className={styles.map}>
-                    <div className={styles.card}>
-                      <div className={styles.userInfo}>
-                        <b>{item.name}</b>
-                        <p>Data: {formatDate(item.date)} - {formatHours(item.start)} às {formatHours(item.finish)}</p>
-                        {item.cleaningService ?(
-                          <p>Serviço de limpeza: sim</p>
-                        ):(
-                          <p>Serviço de limpeza: não</p>
-                        )}
-                        <p>Torre {item.apartment.tower.numberTower} - Apartamento {item.apartment.numberApt}</p>
-                        <p>Telefone: {item.phone_number}</p>
-                        <p style={{fontSize:'14px'}}>{item.email}</p>
-                      </div>
-                        <div className={styles.buttonSet}>
-                          <button className={styles.false} onClick={() => { openModalSetReservation(item.id, false);}}>
-                            <span>Recusar</span><FaXmark/>
-                          </button>
-
-                          <button className={styles.true} onClick={() => { openModalSetReservation(item.id,true)}}>
-                            <span>Aceitar</span><FaCheck/>
-                          </button>
+                            <button className={styles.true} onClick={() => { openModalSetReservation(item.id,true)}}>
+                              <span>Aceitar</span><FaCheck/>
+                            </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ) : null}
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
-        <div className={styles.calendarAndTrue}>
+         
           <section className={styles.section2}>
             <div className={styles.calendarArea}>
 
@@ -461,15 +461,17 @@ function closedTaxed(){
               </div>
           </section>
           ):null}
-        </div>
+          
 
-        <section className={styles.section4}>
-          <h2>Taxados</h2>
-          <button onClick={openTaxed} className="buttonSlide">
-                  Reservas taxadas
-            </button>
-        </section>
-      </main>
+          <section className={styles.section4}>
+            <h2>Taxados</h2>
+            <button onClick={openTaxed} className="buttonSlide">
+                    Reservas taxadas
+              </button>
+          </section>
+        </main>
+      </div>
+
 
       {/*- ------Modal aprovar ou recusar reservas ------------------ */}
       <Gmodal
