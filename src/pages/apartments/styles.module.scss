@@ -100,7 +100,6 @@
         .container{
             max-width: 768px;
             margin: auto;
-            padding: 3.2rem 1.6rem;
             .section1, .section2{
                 display: flex;
                 flex-direction: column;
@@ -121,7 +120,6 @@
         .container{
             max-width: 960px;
             margin: auto;
-            padding: 3.2rem 1.6rem;
             .section1, .section2{
                 .allCards{
                     grid-template-columns: repeat(3,1fr);
