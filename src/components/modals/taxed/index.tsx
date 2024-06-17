@@ -3,6 +3,7 @@ import {useState, useEffect, useRef} from "react";
 import styles from "./styles.module.scss";
 import {AiOutlineClose} from "react-icons/ai"
 import { SlPrinter } from "react-icons/sl";
+import {formatDate} from "../../../utils/formatted";
 
 type taxedType = {
         dateGuest:Date,
@@ -66,26 +67,6 @@ export const AllTaxed = ({ closeFunction }: AllTaxedProps) => {
         printWindow.print();
     };
     
-    const addZero = (number:number) => {
-        if (number < 10){
-            return `0${number}`;
-        }else{
-            return number;
-        }
-    }
-    const formatDate = (date: Date | string) => {
-        if (!(date instanceof Date)) {
-            date = new Date(date);
-        }
-        if (isNaN(date.getTime())) {
-            return "Invalid Date";
-        }
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-
-        return `${addZero(day)}/${addZero(month + 1)}/${year}`;
-    }
     return(
         <div className={styles.container}>
             <div className={styles.borderArea}>
