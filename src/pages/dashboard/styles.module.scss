@@ -1,0 +1,532 @@
+.bodyArea{
+    width: 100%;
+    background-color: var(--Transparente);
+    min-height: 100vh;
+    .container{
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2.4rem;
+        .h1WithSelect{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            select{
+                padding: 1.2rem;
+            }
+        }
+        .allSections{
+            min-height: 100vh;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(6,1fr);
+            gap: 1.2rem;
+            .section1{
+                grid-column-start: 1;
+                grid-column-end: 3;
+                grid-row-start: 1;
+                grid-row-end: 2;
+                background-color: var(--White);
+                border-radius: 10px;
+                box-shadow:  1px 1px 5px var(--Black);
+                padding: 1.2rem;
+                width: 100%;
+                display: flex;
+                align-items: start;
+                flex-direction: column;
+                justify-content: space-between;
+                gap: 1.2rem;
+                .card1item1{
+                    display: flex;
+                    align-items: start;
+                    justify-content: space-between;
+                    color: var(--Black);
+                    width: 100%;
+                    .card1item1Infos{
+                        display: flex;
+                        flex-direction: column;
+                        text-align: end;
+                        gap: 0.8rem;
+                        color: var(--Light);
+                    }
+                }
+                .card1item2{
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    justify-content: start;
+                    align-items: end;
+                    width: 100%;
+                    gap: 1.2rem;
+                    .barContainer{
+                        width: 20%;
+                        display: flex;
+                        align-items: end;
+                        justify-content: start;
+                        height: 100%;
+                        animation: forwards 1s bar;
+                        span{
+                            background-color: var(--Primary-normal);
+                            width: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 1.2rem;
+                            color: var(--White);
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+            }
+            
+            .section2{
+                grid-column-start: 1;
+                grid-column-end: 3;
+                grid-row-start: 2;
+                grid-row-end: 3;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                gap: 1.2rem;
+                .card2item1, .card2item2{
+                    background-color: var(--White);
+                    border-radius: 10px;
+                    box-shadow:  1px 1px 5px var(--Black);
+                    padding: 1.2rem;
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
+                    position: relative;
+                    .text{
+                        font-weight: bold;
+                        color: var(--Black);
+                    }
+                    .number{
+                        font-size: 6.4rem;
+                        font-weight: bold;
+                        color: var(--Primary-normal);
+                    }
+                    .controlCardContainer{
+                        display: flex;
+                        align-items: center;
+                        gap: 1.2rem;
+                        span{
+                            width: 10px;
+                            aspect-ratio: 1/1;
+                            display: block;
+                            border-radius: 100%;
+                            background-color: var(--Transparente2);
+                        }
+                        .chosen{
+                            background-color: var(--Primary-normal);
+                        }
+                    }
+                    button{
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        background-color: var(--Transparente2);
+                        width: 3.6rem;
+                        margin: 0 0.2rem;
+                        border-radius: 100%;
+                        aspect-ratio: 1/1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all .2s ease-in-out;
+                        &:hover{
+                            box-shadow:  1px 1px 5px var(--Black);
+                        }
+                        svg{
+                            color: var(--White);
+                        }
+                    }
+                    .left{
+                        left: 0;
+                    }
+                    .right{
+                        right: 0;
+                    }
+                }
+            }
+
+            .section3{
+                grid-column-start: 1;
+                grid-column-end: 3;
+                grid-row-start: 3;
+                grid-row-end: 4;
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2,1fr);
+                gap: 1.2rem;
+                .card1item1, .card1item2{
+                    background-color: var(--White);
+                    border-radius: 10px;
+                    box-shadow:  1px 1px 5px var(--Black);
+                    padding: 1.2rem;
+                    width: 100%;
+                }
+                .card1item1{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 1.2rem;
+                    span{
+                        font-weight: bold;
+                        color: var(--Primary-normal);
+                    }
+                    .circuloContainer{
+                        width: 160px;
+                        aspect-ratio: 1/1;
+                        border-radius: 100%;
+                        overflow: hidden;
+                        background-color: var(--Transparente);
+                        position: relative;
+                        .circuloContainerRadius{
+                            background-color: var(--Primary-normal);
+                            width: 100%;
+                            animation: forwards 1s bar !important;
+                            height: auto;
+                            .percentage{
+                                background-color: var(--White);
+                                width: 86%;
+                                aspect-ratio: 1/1;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border-radius: 100%;
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                display: flex;
+                                flex-direction: column;
+                                span{
+                                    color: var(--Light);
+                                    padding: 1.2rem;
+                                    &:nth-child(1){
+                                        border-bottom: solid 1px var(--Primary-normal);
+                                        color: var(--Primary-normal);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .card1item2{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0;
+                    overflow: hidden;
+                    span{
+                        margin: 1.2rem;
+                        font-size: 1.2rem;
+                        font-weight: bold;
+                        color: var(--Black);
+                    }
+                    .imgArea{
+                        animation: imgs 2s linear infinite alternate-reverse;
+                        background-position: top;
+                        background-size: contain;
+                        width: 100%;
+                        display: flex;
+                        align-items: end;
+                        justify-content: center;
+                        color: var(--White);
+                        span{
+                            color: var(--White);
+                        }
+                    }
+                }
+            }
+
+            .section4{
+                grid-column-start: 1;
+                grid-column-end: 3;
+                grid-row-start: 4;
+                grid-row-end: 5;
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2,1fr);
+                gap: 1.2rem;
+                .card2item1{
+                    background-color: var(--White);
+                    border-radius: 10px;
+                    box-shadow:  1px 1px 5px var(--Black);
+                    padding: 1.2rem;
+                    width: 100%;
+                    display: flex;
+                    align-items: start;
+                    flex-direction: column;
+                    justify-content: start;
+                    gap: 4.2rem;
+                    span{
+                        font-weight: bold;
+                        color: var(--Black);
+                    }
+                    .avaliation{
+                        display: flex;
+                        align-items: start;
+                        gap: 1.6rem;
+                        .info{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: start;
+                            .number{
+                                font-size: 6.4rem;
+                                color: var(--Primary-normal);
+                            }
+                        }
+                        svg{
+                            font-size: 5.6rem;
+                        }
+
+                    }
+                }
+                .card2item2{
+                    background-color: var(--White);
+                    border-radius: 10px;
+                    box-shadow:  1px 1px 5px var(--Black);
+                    padding: 1.2rem;
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    flex-direction: column;
+                    gap: 3.2rem;
+                    span{     
+                        font-size: 1.2rem;
+                        font-weight: bold;
+                        color: var(--Black);
+                    }
+                    .containerList{
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1.2rem;
+                        align-self: self-start;
+                        height: 100%;
+                        width: 100%;
+                        .list{
+                            width: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.8rem;
+                            .text{
+                                color: var(--Primary-normal);
+                                font-weight: bold;
+                            }
+                            .containerBar{
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                gap: 0.8rem;
+                                .bar{
+                                    background-color: var(--Transparente);
+                                    height: 100%;
+                                    width: 100%;
+                                    animation: barHorizon forwards 1s;
+                                    .progress{
+                                        background-color: var(--Primary-normal);
+                                        height: 100%;
+                                        display: block;
+                                        padding: 0.8rem;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .section5{
+                grid-column-start: 1;
+                grid-column-end: 3;
+                grid-row-start: 5;
+                grid-row-end: 6;
+                background-color: var(--White);
+                border-radius: 10px;
+                box-shadow:  1px 1px 5px var(--Black);
+                padding: 1.2rem;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                justify-content: space-between;
+                .text{
+                    font-weight: bold;
+                    color: var(--Black);
+                }
+                gap: 1.2rem;
+                .card1item2{
+                    display: flex;
+                    width: 100%;
+                    height: 100%;
+                    gap: 0.8rem;
+                    justify-content: space-between;
+                    align-items: end;
+                    .barArea{
+                        display: flex;
+                        flex-direction: column;
+                        height: 100%;
+                        align-items: center;
+                        justify-content: end;
+                        gap: 1.2rem;
+                        width: 100%;
+                        animation: forwards 1s bar;
+                        .bar{
+                            background-color: var(--Primary-normal);
+                            padding: 1.2rem 0rem;
+                            text-align: center;
+                            font-size: 1.2rem;
+                            color: var(--White);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 100%;
+
+                        }
+                    }
+                }
+            }
+
+            .section6{
+                grid-column-start: 1;
+                grid-column-end: 3;
+                grid-row-start: 6;
+                grid-row-end: 8;
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2,1fr);
+                gap: 1.2rem;
+                grid-template-rows: repeat(2,1fr);
+                .card2item1, .card2item2, .card2item3, .card2item4{
+                    background-color: var(--White);
+                    border-radius: 10px;
+                    box-shadow:  1px 1px 5px var(--Black);
+                    padding: 1.2rem;
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: end;
+                    text-align: end;
+                    .legend{
+                        font-size: 1.2rem;
+                        font-weight: bold;
+                        color: var(--Black);
+                    }
+                    span{
+                        font-size: 3.2rem;
+                        color: var(--Primary-normal);
+                    }
+                }
+            }
+
+        }
+
+    }
+}
+
+@media (min-width:768px){
+    .bodyArea{
+        .container{
+            max-width: 800px;
+            margin: auto;
+        }
+    }
+}
+
+@media (min-width:900px){
+    .bodyArea{
+        .container{
+            max-width: 900px;
+            margin: auto;
+            .allSections{
+                grid-template-rows: repeat(3,1fr);
+                .section1{
+                    grid-column-start: 1;
+                    grid-column-end: 2;
+                    grid-row-start: 1;
+                    grid-row-end: 2;
+                }
+                .section2{
+                    grid-column-start: 2;
+                    grid-column-end: 3;
+                    grid-row-start: 1;
+                    grid-row-end: 2;
+                }
+                .section3{
+                    grid-column-start: 1;
+                    grid-column-end: 2;
+                    grid-row-start: 2;
+                    grid-row-end: 3;
+                }
+                .section4{
+                    grid-column-start: 2;
+                    grid-column-end: 3;
+                    grid-row-start: 2;
+                    grid-row-end: 3;
+                }
+                .section5{
+                    grid-column-start: 1;
+                    grid-column-end: 2;
+                    grid-row-start: 3;
+                    grid-row-end: 4;
+                }
+                .section6{
+                    grid-column-start: 2;
+                    grid-column-end: 3;
+                    grid-row-start: 3;
+                    grid-row-end: 4;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width:1280px){
+    .bodyArea{
+        max-width: calc(100% - 360px);
+        margin-left: 360px;
+        .container{
+            max-width: 1100px;
+            margin: auto;
+        }
+    }
+}
+
+@keyframes imgs{
+    0%{
+        background-image: url("../../../public/WaterStyle/2.png");
+    }
+    50%{
+        background-image: url("../../../public/WaterStyle/3.png");
+    }
+    100%{
+        background-image: url("../../../public/WaterStyle/2.png");
+    }
+}
+
+@keyframes bar{
+    0%{
+        height: 0;
+    }
+    90%{
+        height: 100%;
+    }
+}
+
+@keyframes barHorizon{
+    0%{
+        width: 0%;
+    }
+    90%{
+        width: 100%;
+    }
+}

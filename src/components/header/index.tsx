@@ -10,6 +10,8 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { AuthContext } from "../../contexts/AuthContexts";
+import { MdOutlineDashboard } from "react-icons/md";
+
 
 
 export default function Header (){
@@ -92,6 +94,14 @@ export default function Header (){
                         </Link>
                     </li>
 
+                    <li className={styles.li}>
+                        <Link href={'/dashboard'}
+                        className={routerActual === '/dashboard'?styles.activeNav:''}>
+                            <MdOutlineDashboard/>   
+                            Dashboard
+                        </Link>
+                    </li>  
+                    
                     <li className={styles.li}>
                         <Link href={'/settings'}
                         className={routerActual === '/settings'?styles.activeNav:''}>
