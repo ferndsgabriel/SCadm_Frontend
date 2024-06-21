@@ -205,7 +205,6 @@ export default function Dashboard() {
                                             style={{ height: `${dashboardList.StatusApartment[0]?.Percentage ?? 0}%` }}
                                         >
                                             <div className={styles.percentage}>
-                                                <div></div>
                                                 <span>{dashboardList.StatusApartment[0]?.Percentage ?? 0}%</span>
                                                 <span>{dashboardList.StatusApartment[1]?.Percentage ?? 0}%</span>
                                             </div>
