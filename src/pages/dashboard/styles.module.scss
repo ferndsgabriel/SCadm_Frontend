@@ -62,19 +62,19 @@
                     .barContainer{
                         width: 20%;
                         display: flex;
-                        align-items: end;
-                        justify-content: start;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: end;
                         height: 100%;
                         animation: forwards 1s bar;
-                        span{
+                        .legend{
+                            font-size: 1.2rem;
+                            margin-bottom: 0.4rem;
+                            color: var(--Black);
+                        }
+                        .progress{
                             background-color: var(--Primary-normal);
                             width: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            padding: 1.2rem;
-                            color: var(--White);
-                            font-size: 1.2rem;
                         }
                     }
                 }
@@ -376,20 +376,25 @@
                         height: 100%;
                         align-items: center;
                         justify-content: end;
-                        gap: 1.2rem;
+                        gap: 0rem;
                         width: 100%;
                         animation: forwards 1s bar;
+                        .legends{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 0.4rem;
+                            color: var(--Black);
+                            span{
+                                font-size: 1.2rem;
+                                &:nth-child(2){
+                                    margin-bottom: 0.4rem;
+                                }
+                            }
+                        }
                         .bar{
                             background-color: var(--Primary-normal);
-                            padding: 1.2rem 0rem;
-                            text-align: center;
-                            font-size: 1.2rem;
-                            color: var(--White);
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
                             width: 100%;
-
                         }
                     }
                 }
@@ -429,7 +434,6 @@
             }
 
         }
-
     }
 }
 

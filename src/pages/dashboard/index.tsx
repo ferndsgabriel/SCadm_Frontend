@@ -126,9 +126,8 @@ export default function Dashboard() {
                             <div className={styles.card1item2}>
                                 {dashboardList.Collection.map((item) => (
                                     <span key={item.name} className={styles.barContainer}>
-                                        <span style={{ height: `${item.percentage}%` }}>
-                                            {item.name}s
-                                        </span>
+                                        <span className={styles.legend}>{item.name}s</span>
+                                        <span className={styles.progress} style={{ height: `${item.percentage}%` }}></span>
                                     </span>
                                 ))}
                             </div>
@@ -288,12 +287,13 @@ export default function Dashboard() {
                                 <div className={styles.card1item2}>
                                     {dashboardList.Reservations.map((item) => (
                                         <span key={item.name} className={styles.barArea}>
-                                            <span>{item.qtd}</span>
+                                            <span className={styles.legends}>
+                                                <span>{item.qtd}</span>
+                                                <span>{item.name}</span>
+                                            </span>
                                             <span
                                                 style={{ height: `${item.percentage}%` }}
-                                                className={styles.bar}
-                                            >
-                                                {item.name}
+                                                className={styles.bar}> 
                                             </span>
                                         </span>
                                     ))}
