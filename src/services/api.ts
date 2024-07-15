@@ -5,6 +5,7 @@ import { singOut } from "../contexts/AuthContexts";
 
 //export const baseURL = "http://192.168.15.63:3333";
 //export const baseURL = "https://api.salaocondo.site";
+//export const baseURL = 'https://scbackend.vercel.app';
 export const baseURL = 'https://scbackend.vercel.app';
 
 export const SetupApiClient = (ctx = undefined) =>{
