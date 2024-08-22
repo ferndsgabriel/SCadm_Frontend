@@ -11,7 +11,7 @@ const ThemeContext = createContext({} as ThemeContextType);
 export default function ThemeProvider({ children }) {
     const [dark, setDark] = useState(true);
 
-    const changeThemes = (boolean) => {
+    const changeThemes = (boolean:boolean) => {
         setDark(boolean);
         const localStorageTheme = JSON.stringify(boolean);
         localStorage.setItem('themeAdm', localStorageTheme);

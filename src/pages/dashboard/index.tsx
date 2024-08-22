@@ -2,86 +2,105 @@ import styles from "./styles.module.scss";
 import Header from "../../components/header";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { MdOutlineAttachMoney } from "react-icons/md";
+import { FaUsers } from "react-icons/fa";
+import { RiAdminFill } from "react-icons/ri";
+import { MdOutlineApartment } from "react-icons/md";
+import { GiWhiteTower } from "react-icons/gi";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+PieChart, Pie, Cell} from 'recharts';
+import { CiCalendarDate } from "react-icons/ci";
 import { Loading } from "../../components/loading";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { MdOutlineSentimentVeryDissatisfied, MdSentimentVeryDissatisfied, MdSentimentNeutral,  MdOutlineSentimentSatisfiedAlt, MdOutlineSentimentVerySatisfied } from "react-icons/md";
 
-
 type DashboardType = {
-    Collection: {
-        qtd: number;
-        name: string;
-        money: number;
-        percentage: string;
+    TotalCollection:number;
+    Users:number;
+    Adms:number;
+    Apartaments:number;
+    Towers:number;
+    TotalCollectionDetails:{
+        category: number; 
+        tax: number; 
+        confirmed: number; 
+        cleaning: number
     }[];
-    TotalCollection: number;
-    Users: {
-        qtd: number;
-        name: string;
+    AllReservationMade:number;
+    ReservationMadeDetails:{
+        name: string, 
+        value:number 
     }[];
-    Residences: {
-        qtd: number;
-        name: string;
+    OccupancyRate:{
+        name: string,
+        convidados: string, 
+        limite: number
     }[];
-    StatusApartment: {
-        name: string;
-        qtd: number;
-        Percentage: number;
+    Payers:{
+        name:string,
+        Inadimplentes:number,
+        Adimplentes:number
     }[];
-    OccupancyRate: string;
     Avaliation: {
         qtd: number;
         average: number;
     };
-    UsersRating: boolean;
-    Reservations: {
-        qtd: number;
-        percentage: string;
-        name: string;
-    }[];
-    TopApartments:{
-        id:string,
-        numberApt:string,
-        tower:{
-            numberTower:string
-        },
-        _count:{
-            Reservations:number
-        },
-        percentage:string
-    }[];
-    TotalReservation: number;
-    AverageStartReservation: string;
-    AverageFinishReservation: string;
-    AverageDurationReservation: string;
-    TotalCollectionTaxed: number;
-    TimeApproveReservation: string;
 };
+
 
 
 export default function Dashboard() {
     const setupApi = SetupApiClient();
 
+    const onDay = new Date();
+    const formattedDate = `${onDay.getFullYear()}-${String(onDay.getMonth() + 1).padStart(2, '0')}-${String(onDay.getDate()).padStart(2, '0')}`;
+    const dateMin = '2024-01-01';
+    const [dateFilter, setDateFilter] = useState(dateMin);
+    const COLORS = ['rgb(19, 95, 19)', 'var(--Sucess)', 'var(--Primary-normal)', 'var(--Error)'];
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
-    const [userIndex, setUserIndex] = useState(0);
-    const [residencesIndex, setResidencesIndex] = useState(0);
-    const [timeIndex, setTimeIndex] = useState(0);
-    const selectRef = useRef(null);
+    const COLORS2 = ['var(--Light)', 'var(--Primary-normal)'];
 
+    const data = [
+        { category: 'Total', Adimplentes: 120, Inadimplentes: 30 },
+    ];
+    const responsiveSection = {
+        mobile: {
+            breakpoint: { max:999999999999, min: 1 },
+            items: 1
+        }
+    };
 
-    const handleSelectTimes = (e: React.ChangeEvent<HTMLSelectElement>) =>{
-        const index = selectRef.current?.value;
-        setTimeIndex(index);
-        refreshData(index);
+    const responsive = {
+        tablet: {
+            breakpoint: { max: 99999999999, min: 768 },
+            items: 2
+        },
+        mobile: {
+            breakpoint: { max: 768, min: 1 },
+            items: 1
+        }
+    };
+
+    function daysBetween(date1:string, date2:string) {
+        const startDate = new Date(date1) as any;
+        const endDate = new Date(date2) as any;
+        const diffTime = Math.abs(endDate- startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        return diffDays;
     }
 
-    async function refreshData(value:number) {
+    const getDaysBetween = daysBetween(formattedDate, dateFilter)
+
+
+    async function refreshData(value:string) {
+        const dateToDate = new Date(value)
         setLoading(true);
         try {
             const response = await setupApi.post('/adm/dashboard',{
-                period:value || 0
+                period:dateToDate
             });
             setDashboardList(response.data);
             setLoading(false);
@@ -92,148 +111,180 @@ export default function Dashboard() {
     }
 
     useEffect(() => {
-        refreshData(timeIndex);
-    }, []);
+        refreshData(dateFilter);
+    }, [dateFilter]);
+
 
     if (loading) {
         return <Loading />;
     }
 
+    console.log(dashboardList)
     return (
         <>
             <Header />
             <div className={styles.bodyArea}>
                 <main className={styles.container}>
-                    <div className={styles.h1WithSelect}>
-                        <h1>DashBoard</h1>
-                        <select value={timeIndex} onChange={handleSelectTimes} ref={selectRef}>
-                            <option value={0}>Todo o período</option>
-                            <option value={1}>Últimos 6 meses</option>
-                            <option value={2}>Últimos 30 dias</option>
-                        </select>
-                    </div>
+                    <article className={styles.legends}>
+                        <h1>Dashboard</h1>
+                        <input type="date" value={dateFilter}
+                        onChange={(e)=>setDateFilter(e.target.value)}
+                        max={formattedDate}
+                        min={dateMin}
+                        />
+                    </article>
 
-                    <div className={styles.allSections}>
-                        <section className={styles.section1}>
-                            <div className={styles.card1item1}>
-                                <h2>R$ {dashboardList.TotalCollection},00</h2>
-                                <div className={styles.card1item1Infos}>
-                                    {dashboardList.Collection.map((item) => (
-                                        <span key={item.name}>R$ {item.money},00 - {item.name}</span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className={styles.card1item2}>
-                                {dashboardList.Collection.map((item) => (
-                                    <span key={item.name} className={styles.barContainer}>
-                                        <span className={styles.legend}>{item.name}s</span>
-                                        <span className={styles.progress} style={{ height: `${item.percentage}%` }}></span>
-                                    </span>
-                                ))}
-                            </div>
-                        </section>
+                    <Carousel responsive={responsiveSection}>
+                        <section className={styles.allCalendar1}>
+                            <article className={styles.totalValues}
+                            style={{border:'solid 2px var(--Sucess)'}}>
+                                <span>
+                                    <h3>Total arrecadado</h3>
+                                    <MdOutlineAttachMoney />
+                                </span>
+                                <h4>$ {dashboardList.TotalCollection.toFixed(0)}</h4>
+                                <p>Últimos {getDaysBetween} dias</p>
+                            </article>
+                        
+                            <article className={styles.barChart}>
+                                <h3>Valores arrecadados</h3>
+                                <ResponsiveContainer width={'100%'} height={'100%'}>
+                                    <BarChart data={dashboardList.TotalCollectionDetails}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="category" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="Confirmadas" stackId="a" fill="var(--Sucess)" />
+                                    <Bar dataKey="Taxadas" stackId="a" fill="var(--Error)" />
+                                    <Bar dataKey="Limpeza" stackId="a" fill="var(--Primary-normal)" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </article>
 
-                        <section className={styles.section2}>
-                                <div className={styles.card2item1}>
-                                    <span className={styles.text}>{dashboardList.Users[userIndex]?.name}</span>
-                                    <span className={styles.number}>{dashboardList.Users[userIndex]?.qtd}</span>
-                                    <div className={styles.controlCardContainer}>
-                                        {dashboardList.Users.map((item, index) => (
-                                            <span
-                                                key={item.name}
-                                                className={index === userIndex ? styles.chosen : ''}
-                                            ></span>
+                            <article className={styles.totalValues}
+                            style={{border:'solid 2px #f88b37'}}>
+                                <span>
+                                    <h3>Quantidade de reservas</h3>
+                                    <CiCalendarDate />
+                                </span>
+                                <h4>{dashboardList.AllReservationMade}</h4>
+                                <p>Últimos {getDaysBetween} dias</p>
+                            </article>
+
+                            <article className={styles.barChart}> 
+                                <h3>Quantidade de reservas</h3>
+                                <ResponsiveContainer width={'100%'} height={'100%'}>
+                                    <PieChart>
+                                    <Pie
+                                        data={dashboardList.ReservationMadeDetails}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        outerRadius={150}
+                                        fill="#8884d8"
+                                    >
+                                        {dashboardList.ReservationMadeDetails.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index]}/>
                                         ))}
-                                    </div>
-                                    {userIndex !== 0 ? (
-                                        <button
-                                            className={styles.left}
-                                            onClick={() => setUserIndex(userIndex - 1)}
-                                        >
-                                            <FaChevronLeft />
-                                        </button>
-                                    ) : null}
-                                    {userIndex < dashboardList.Users.length - 1 ? (
-                                        <button
-                                            className={styles.right}
-                                            onClick={() => setUserIndex(userIndex + 1)}
-                                        >
-                                            <FaChevronRight />
-                                        </button>
-                                    ) : null}
-                                </div>
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </article>
 
-                                <div className={styles.card2item2}>
-                                    <span className={styles.text}>{dashboardList.Residences[residencesIndex]?.name}</span>
-                                    <span className={styles.number}>{dashboardList.Residences[residencesIndex]?.qtd}</span>
-                                    <div className={styles.controlCardContainer}>
-                                        {dashboardList.Residences.map((item, index) => (
-                                            <span
-                                                key={item.name}
-                                                className={index === residencesIndex ? styles.chosen : ''}
-                                            ></span>
-                                        ))}
-                                    </div>
-                                    {residencesIndex !== 0 ? (
-                                        <button
-                                            className={styles.left}
-                                            onClick={() => setResidencesIndex(residencesIndex - 1)}
-                                        >
-                                            <FaChevronLeft />
-                                        </button>
-                                    ) : null}
-                                    {residencesIndex < dashboardList.Residences.length - 1 ? (
-                                        <button
-                                            className={styles.right}
-                                            onClick={() => setResidencesIndex(residencesIndex + 1)}
-                                        >
-                                            <FaChevronRight />
-                                        </button>
-                                    ) : null}
-                                </div>
+                            <div className={styles.carousel}>               
+                                <Carousel responsive={responsive}>
+                                    <article className={styles.totalValues}
+                                    style={{border:'solid 2px var(--Primary-normal)', width:'96%'}}>
+                                        <span>
+                                            <h3>Moradores cadastrados</h3>
+                                            <FaUsers />
+                                        </span>
+                                        <h4>{dashboardList.Users}</h4>
+                                        <p>Últimos {getDaysBetween} dias</p>
+                                    </article>
+
+                                    <article className={styles.totalValues}
+                                    style={{border:'solid 2px var(--Primary-normal)', width:'96%'}}>
+                                        <span>
+                                            <h3>Administradores cadastrados</h3>
+                                            <RiAdminFill />
+                                        </span>
+                                        <h4>{dashboardList.Adms}</h4>
+                                        <p>Últimos {getDaysBetween} dias</p>
+                                    </article>
+                                </Carousel>
+                            </div>
+                            
                         </section>
                         
-                        <section className={styles.section3}>
-                                <div className={styles.card1item1}>
-                                    <span>
-                                        {dashboardList.StatusApartment[0]?.qtd} - {dashboardList.StatusApartment[0]?.name}
-                                    </span>
-                                    <div className={styles.circuloContainer}>
-                                        <div
-                                            className={styles.circuloContainerRadius}
-                                            style={{ height: `${dashboardList.StatusApartment[0]?.Percentage ?? 0}%` }}
-                                        >
-                                            <div className={styles.percentage}>
-                                                <span>{dashboardList.StatusApartment[0]?.Percentage ?? 0}%</span>
-                                                <span>{dashboardList.StatusApartment[1]?.Percentage ?? 0}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span>
-                                        {dashboardList.StatusApartment[1]?.qtd} - {dashboardList.StatusApartment[1]?.name}
-                                    </span>
-                                </div>
-                                <div className={styles.card1item2}>
-                                    <span>Média de ocupação do salão</span>
-                                    <div
-                                        className={styles.imgArea}
-                                        style={{ height: `${dashboardList.OccupancyRate}%` }}>
-                                        <span>{dashboardList.OccupancyRate}%</span>
-                                    </div>
-                                </div>
-                        </section>
-                        
-                        <section className={styles.section4}>
-                                <div className={styles.card2item1}>
-                                    <span>Avaliações</span>
-                                    <div className={styles.avaliation}>
-                                        <div className={styles.info}>
-                                            <span className={styles.number}>
-                                                {dashboardList.Avaliation.average.toFixed(1)}
-                                            </span>
-                                            <span>Todas - {dashboardList.Avaliation.qtd}</span>
-                                        </div>
-                                        {dashboardList.Avaliation.average >= 1 &&
+                        <section className={styles.allCalendar2}>
+                            <article className={styles.carousel}>               
+                                <Carousel responsive={responsive}>
+                                    <article className={styles.totalValues}
+                                    style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
+                                        <span>
+                                            <h3>Apartamentos cadastrados</h3>
+                                            <MdOutlineApartment />
+                                        </span>
+                                        <h4>{dashboardList.Apartaments}</h4>
+                                        <p>Últimos {getDaysBetween} dias</p>
+                                    </article>
+
+                                    <article className={styles.totalValues}
+                                    style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
+                                        <span>
+                                            <h3>Torres cadastradas</h3>
+                                            <GiWhiteTower />
+                                        </span>
+                                        <h4>{dashboardList.Towers}</h4>
+                                        <p>Últimos {getDaysBetween} dias</p>
+                                    </article>
+                                </Carousel>
+                            </article>
+
+                            <article className={styles.barChart}>
+                                <h3>Adimplentes e Inadimplentes</h3>
+                                <ResponsiveContainer width="100%" height={'100%'}>
+                                    <BarChart data={dashboardList.Payers}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="category" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="Adimplentes" fill="var(--Sucess)" />
+                                        <Bar dataKey="Inadimplentes" fill="var(--Error)" />
+                                    </BarChart>
+                                </ResponsiveContainer> 
+                            </article>
+
+                            <article className={styles.barChart}>
+                                <h3>Média de ocupação do salão</h3>
+                                <ResponsiveContainer width={'100%'} height={'100%'}>
+                                <PieChart>
+                                    <Pie
+                                        data={dashboardList.OccupancyRate}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        outerRadius={150}
+                                        fill="#8884d8"
+                                    >
+                                        {dashboardList.OccupancyRate.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </article>
+
+                            <article className={styles.rating}>
+                                <h3>Avaliações de reservas</h3>
+                                <div>
+                                    <p>4.5</p>
+                                    {dashboardList.Avaliation.average >= 1 &&
                                         dashboardList.Avaliation.average < 2 ?
                                         (<MdOutlineSentimentVeryDissatisfied style={{color:'red'}}/>):null}
 
@@ -251,76 +302,12 @@ export default function Dashboard() {
 
                                         {dashboardList.Avaliation.average >= 5 ?
                                         (< MdOutlineSentimentVerySatisfied style={{color:'#2E8B57'}}/>):null}
-                                    </div>
                                 </div>
-                                
-                                <div className={styles.card2item2}>
-                                    <span>Apartamentos com mais reservas</span>
-                                    <div className={styles.containerList}>
-                                        {dashboardList.TopApartments.map((item)=>{
-                                            return(
-                                                <>
-                                                    {item._count.Reservations > 0 ?(
-                                                        <span key={item.id} className={styles.list}>
-                                                            <span className={styles.text}>Torre - {item.tower.numberTower} Apt - {item.numberApt}</span>
-                                                            <div className={styles.containerBar}>
-                                                                <span className={styles.bar}>
-                                                                    <span className={styles.progress} 
-                                                                    style={{width:`${item.percentage}%`}}></span>
-                                                                </span>
-                                                                <span>
-                                                                    {item._count.Reservations}
-                                                                </span>
-                                                            </div>
-                                                        </span>
-                                                    ):null}
-                                                </>
-
-                                            )
-                                        })}
-                                    </div>
-                                </div>
+                            </article>
                         </section>
+                    </Carousel>
+                    
 
-                        <section className={styles.section5}>
-                                <span className={styles.text}>Reservas</span>
-                                <div className={styles.card1item2}>
-                                    {dashboardList.Reservations.map((item) => (
-                                        <span key={item.name} className={styles.barArea}>
-                                            <span className={styles.legends}>
-                                                <span>{item.qtd}</span>
-                                                <span>{item.name}</span>
-                                            </span>
-                                            <span
-                                                style={{ height: `${item.percentage}%` }}
-                                                className={styles.bar}> 
-                                            </span>
-                                        </span>
-                                    ))}
-                                </div>
-                        </section>
-
-                        <section className={styles.section6}>
-                                <div className={styles.card2item1}>
-                                    <span className={styles.legend}>Média de Início das Reservas</span>
-                                    <span>{dashboardList.AverageStartReservation}</span>
-                                </div>
-                                <div className={styles.card2item2}>
-                                    <span className={styles.legend}>Média de término das Reservas</span>
-                                    <span>{dashboardList.AverageFinishReservation}</span>
-                                </div>
-                                <div className={styles.card2item2}>
-                                    <span className={styles.legend}>Média de duração</span>
-                                    <span>{dashboardList.AverageDurationReservation}</span>
-                                </div>
-                                <div className={styles.card2item2}>
-                                    <span className={styles.legend}>
-                                        Média para aprovação das reservas
-                                    </span>
-                                    <span>{dashboardList.TimeApproveReservation}</span>
-                                </div>
-                        </section>
-                    </div>
                 </main>
             </div>
         </>
