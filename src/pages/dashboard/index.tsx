@@ -9,7 +9,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { MdOutlineApartment } from "react-icons/md";
 import { GiWhiteTower } from "react-icons/gi";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-PieChart, Pie, Cell} from 'recharts';
+PieChart, Pie, Cell, LabelList} from 'recharts';
 import { CiCalendarDate } from "react-icons/ci";
 import { Loading } from "../../components/loading";
 import Carousel from "react-multi-carousel";
@@ -62,10 +62,24 @@ export default function Dashboard() {
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
     const COLORS2 = ['var(--Light)', 'var(--Primary-normal)'];
+    const COLORS3 = ['rgb(19, 95, 19)', 'var(--Sucess)', 'var(--Primary-normal)'];
 
-    const data = [
-        { category: 'Total', Adimplentes: 120, Inadimplentes: 30 },
-    ];
+    
+    const rawData = [
+        { name: 'Morador 1', reservas: 30 },
+        { name: 'Morador 2', reservas: 50 },
+        { name: 'Morador 3', reservas: 40 },
+      ];
+      
+      const data = rawData.sort((a, b) => b.reservas - a.reservas);
+
+      const customGraphics = ({ x, y, payload }) => (
+        <text x={x} y={y} dy={16} textAnchor="end" fill="#666" fontSize={12}>
+          {payload.value}
+        </text>
+      );
+
+
     const responsiveSection = {
         mobile: {
             breakpoint: { max:999999999999, min: 1 },
@@ -148,16 +162,22 @@ export default function Dashboard() {
                         
                             <article className={styles.barChart}>
                                 <h3>Valores arrecadados</h3>
-                                <ResponsiveContainer width={'100%'} height={'100%'}>
+                                <ResponsiveContainer width={'100%'}>
                                     <BarChart data={dashboardList.TotalCollectionDetails}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="category" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="Confirmadas" stackId="a" fill="var(--Sucess)" />
-                                    <Bar dataKey="Taxadas" stackId="a" fill="var(--Error)" />
-                                    <Bar dataKey="Limpeza" stackId="a" fill="var(--Primary-normal)" />
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="category" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="Confirmadas" stackId="a" fill="var(--Sucess)">
+                                            <LabelList dataKey="Confirmadas" position="inside" fill="white" />
+                                        </Bar>
+                                        <Bar dataKey="Taxadas" stackId="a" fill="var(--Error)">
+                                            <LabelList dataKey="Taxadas" position="inside" fill="white"/>
+                                        </Bar>
+                                        <Bar dataKey="Limpeza" stackId="a" fill="var(--Primary-normal)">
+                                            <LabelList dataKey="Limpeza" position="inside" fill="white"/>
+                                        </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
                             </article>
@@ -176,19 +196,31 @@ export default function Dashboard() {
                                 <h3>Quantidade de reservas</h3>
                                 <ResponsiveContainer width={'100%'} height={'100%'}>
                                     <PieChart>
-                                    <Pie
-                                        data={dashboardList.ReservationMadeDetails}
-                                        dataKey="value"
-                                        nameKey="name"
-                                        outerRadius={150}
-                                        fill="#8884d8"
-                                    >
-                                        {dashboardList.ReservationMadeDetails.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index]}/>
-                                        ))}
-                                    </Pie>
-                                    <Tooltip />
-                                    <Legend />
+                                        <Pie
+                                            data={dashboardList.ReservationMadeDetails}
+                                            dataKey="value"
+                                            nameKey="name"
+                                            outerRadius={150}
+                                            fill="#8884d8"
+                                            labelLine={false}
+                                            label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                                const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                                                const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                                const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+
+                                                return (
+                                                    <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central">
+                                                        {value}
+                                                    </text>
+                                                );
+                                            }}
+                                        >
+                                            {dashboardList.ReservationMadeDetails.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </article>
@@ -246,63 +278,97 @@ export default function Dashboard() {
 
                             <article className={styles.barChart}>
                                 <h3>Adimplentes e Inadimplentes</h3>
-                                <ResponsiveContainer width="100%" height={'100%'}>
+
+                                <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={dashboardList.Payers}>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis dataKey="category" />
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Bar dataKey="Adimplentes" fill="var(--Sucess)" />
-                                        <Bar dataKey="Inadimplentes" fill="var(--Error)" />
+                                        <Bar dataKey="Adimplentes" fill="var(--Sucess)">
+                                            <LabelList dataKey="Adimplentes" position="insideTop" fill={'white'} />
+                                        </Bar>
+                                        <Bar dataKey="Inadimplentes" fill="var(--Error)">
+                                            <LabelList dataKey="Inadimplentes" position="insideTop" fill={'white'} />
+                                        </Bar>
                                     </BarChart>
-                                </ResponsiveContainer> 
+                                </ResponsiveContainer>
+
                             </article>
 
                             <article className={styles.barChart}>
                                 <h3>Média de ocupação do salão</h3>
-                                <ResponsiveContainer width={'100%'} height={'100%'}>
-                                <PieChart>
-                                    <Pie
-                                        data={dashboardList.OccupancyRate}
-                                        dataKey="value"
-                                        nameKey="name"
-                                        outerRadius={150}
-                                        fill="#8884d8"
-                                    >
-                                        {dashboardList.OccupancyRate.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip />
-                                    <Legend />
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={dashboardList.OccupancyRate}
+                                            dataKey="value"
+                                            nameKey="name"
+                                            outerRadius={150}
+                                            fill="#8884d8"
+                                            labelLine={false} 
+                                            label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                                const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                                                const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                                const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+
+                                                return (
+                                                    <text x={x} y={y} fill={'white'} textAnchor="middle" dominantBaseline="central">
+                                                        {value}
+                                                    </text>
+                                                );
+                                            }}
+                                        >
+                                            {dashboardList.OccupancyRate.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </article>
 
                             <article className={styles.rating}>
                                 <h3>Avaliações de reservas</h3>
-                                <div>
-                                    <p>4.5</p>
+                                <div className={styles.rateAndEmoji}>
+                                    <h3>4.5</h3>
                                     {dashboardList.Avaliation.average >= 1 &&
-                                        dashboardList.Avaliation.average < 2 ?
-                                        (<MdOutlineSentimentVeryDissatisfied style={{color:'red'}}/>):null}
+                                    dashboardList.Avaliation.average < 2 ?
+                                    (<MdOutlineSentimentVeryDissatisfied style={{color:'red'}}/>):null}
 
-                                        {dashboardList.Avaliation.average >= 2 &&
-                                        dashboardList.Avaliation.average < 3 ?
-                                        (<MdSentimentVeryDissatisfied style={{color:'orange'}}/>):null}
+                                    {dashboardList.Avaliation.average >= 2 &&
+                                    dashboardList.Avaliation.average < 3 ?
+                                    (<MdSentimentVeryDissatisfied style={{color:'orange'}}/>):null}
 
-                                        {dashboardList.Avaliation.average >= 3 &&
-                                        dashboardList.Avaliation.average < 4 ?
-                                        (< MdSentimentNeutral style={{color:'#FFD700'}}/>):null}
-                                        
-                                        {dashboardList.Avaliation.average >= 4 &&
-                                        dashboardList.Avaliation.average < 5 ?
-                                        (< MdOutlineSentimentSatisfiedAlt style={{color:'#32CD32'}}/>):null}
+                                    {dashboardList.Avaliation.average >= 3 &&
+                                    dashboardList.Avaliation.average < 4 ?
+                                    (< MdSentimentNeutral style={{color:'#FFD700'}}/>):null}
+                                    
+                                    {dashboardList.Avaliation.average >= 4 &&
+                                    dashboardList.Avaliation.average < 5 ?
+                                    (< MdOutlineSentimentSatisfiedAlt style={{color:'#32CD32'}}/>):null}
 
-                                        {dashboardList.Avaliation.average >= 5 ?
-                                        (< MdOutlineSentimentVerySatisfied style={{color:'#2E8B57'}}/>):null}
+                                    {dashboardList.Avaliation.average >= 5 ?
+                                    (< MdOutlineSentimentVerySatisfied style={{color:'#2E8B57'}}/>):null}
                                 </div>
+                                <p>Total - {dashboardList.Avaliation.qtd}</p>
+                            </article>
+
+                            <article>
+                            <BarChart width={600} height={300} data={data} layout="vertical">
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis type="number" />
+                                <YAxis type="category" dataKey="name" tick={customGraphics} />
+                                <Tooltip />
+                                <Bar dataKey="reservas">
+                                {data.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
+                                ))}
+                                <LabelList dataKey="reservas" position="insideRight" />
+                                </Bar>
+                            </BarChart>
                             </article>
                         </section>
                     </Carousel>
