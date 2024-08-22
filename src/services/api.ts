@@ -3,8 +3,8 @@ import { parseCookies } from "nookies";
 import { singOut } from "../contexts/AuthContexts";
 
 
-export const baseURL = "http://localhost:3333";
-//export const baseURL = process.env.NEXT_PUBLIC_BASE_URL ;
+//export const baseURL = "http://localhost:3333";
+export const baseURL = process.env.NEXT_PUBLIC_BASE_URL ;
 
 
 export const SetupApiClient = (ctx = undefined) =>{
