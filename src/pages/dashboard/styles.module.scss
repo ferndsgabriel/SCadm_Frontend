@@ -1,7 +1,6 @@
 .bodyArea{
     width: 100%;
     min-height: 100vh;
-    background-color: var(--Transparente);
     .container{
         padding: 4.2rem 2.4rem;
         display: flex;
@@ -11,12 +10,48 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            input{
-                padding: 1.2rem 2.4rem;
-                border-radius: 10px;
-                color: var(--Black);
-                color: var(--Black);
-                background-color: rgb(231, 231, 231);
+            .labelDate{
+                border: solid 1px var(--Text);
+                display: flex;
+                position: relative;
+                padding: 0.4rem 3.6rem;
+                border-radius: 5px;
+                &:hover{
+                    background-color: var(--Transparente);
+                }
+                cursor: pointer;
+                .inputContainer{
+                    visibility: hidden;
+                }
+                .newStyle{
+                    display: flex;
+                    align-items: center;
+                    gap: 1.2rem;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    svg{
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+
+        }
+        .dashboardOptions{
+            background-color: var(--Transparente);
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1.6rem;
+            border-radius: 10px;
+            width: fit-content;
+            button{
+                padding: 0.4rem 1.2rem;
+                border-radius: 4px;
+            }
+            .buttonStyle{
+                background-color: var(--Background);
             }
         }
         .allCalendar1, .allCalendar2{
@@ -59,6 +94,7 @@
                 align-items: center;
                 gap: 1.2rem;
                 height: 400px;
+                align-items: center;
                 h3{
                     font-weight: 300;
                     font-size: 1.8rem;
@@ -68,39 +104,15 @@
                 grid-column-start: 1;
                 grid-column-end: 3;
             }
-            .rating{
-                padding: 3.2rem 2.4rem;
-                border-radius: 4px;
-                border:2px solid var(--Primary-normal);
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                gap: 4.6rem;
-                h3{
-                    font-weight: 300;
-                }
-                .rateAndEmoji{
-                    display: flex;
-                    align-items: center;
-                    gap: 1.6rem;
-                    h3{
-                        font-size: 3.6rem;
-                        font-weight: 300;
-                    }
-                    svg{
-                        font-size: 4.6rem;
-                    }
-                }
-            }
         }
 
     }
 }
 
-@media (min-width:768px){
+@media (min-width:1000px){
     .bodyArea{
         .container{
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             .allCalendar1{
                 width: 100%;
@@ -133,68 +145,12 @@
                 display: grid;
                 gap: 4.2rem 1.6rem;   
                 grid-template-columns: repeat(2, 1fr);
-                article{
-                    &:nth-child(1){
-                        grid-column-start: 1;
-                        grid-column-end: 3;
-                        grid-row-start: 1;
-                        grid-row-end: 2;
-                    }
-
-                }
             }
         }
         
     }
 }
 
-@media (min-width:900px){
-    .bodyArea{
-        .container{
-            max-width: 900px;
-            margin: auto;
-            .allSections{
-                grid-template-rows: repeat(3,1fr);
-                .section1{
-                    grid-column-start: 1;
-                    grid-column-end: 2;
-                    grid-row-start: 1;
-                    grid-row-end: 2;
-                }
-                .section2{
-                    grid-column-start: 2;
-                    grid-column-end: 3;
-                    grid-row-start: 1;
-                    grid-row-end: 2;
-                }
-                .section3{
-                    grid-column-start: 1;
-                    grid-column-end: 2;
-                    grid-row-start: 2;
-                    grid-row-end: 3;
-                }
-                .section4{
-                    grid-column-start: 2;
-                    grid-column-end: 3;
-                    grid-row-start: 2;
-                    grid-row-end: 3;
-                }
-                .section5{
-                    grid-column-start: 1;
-                    grid-column-end: 2;
-                    grid-row-start: 3;
-                    grid-row-end: 4;
-                }
-                .section6{
-                    grid-column-start: 2;
-                    grid-column-end: 3;
-                    grid-row-start: 3;
-                    grid-row-end: 4;
-                }
-            }
-        }
-    }
-}
 
 @media (min-width:1280px){
     .bodyArea{
@@ -207,22 +163,3 @@
     }
 }
 
-
-
-@keyframes bar{
-    0%{
-        height: 0;
-    }
-    90%{
-        height: 100%;
-    }
-}
-
-@keyframes barHorizon{
-    0%{
-        width: 0%;
-    }
-    90%{
-        width: 100%;
-    }
-}

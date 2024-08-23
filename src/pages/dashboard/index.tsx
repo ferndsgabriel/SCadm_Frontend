@@ -2,19 +2,19 @@ import styles from "./styles.module.scss";
 import Header from "../../components/header";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { RiAdminFill } from "react-icons/ri";
 import { MdOutlineApartment } from "react-icons/md";
 import { GiWhiteTower } from "react-icons/gi";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-PieChart, Pie, Cell, LabelList} from 'recharts';
+PieChart, Pie, Cell, LabelList, Label, RadialBar, RadialBarChart} from 'recharts';
 import { CiCalendarDate } from "react-icons/ci";
+import { FaCalendarDays } from "react-icons/fa6";
 import { Loading } from "../../components/loading";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { MdOutlineSentimentVeryDissatisfied, MdSentimentVeryDissatisfied, MdSentimentNeutral,  MdOutlineSentimentSatisfiedAlt, MdOutlineSentimentVerySatisfied } from "react-icons/md";
 
 type DashboardType = {
     TotalCollection:number;
@@ -44,74 +44,60 @@ type DashboardType = {
         Adimplentes:number
     }[];
     Avaliation: {
-        qtd: number;
-        average: number;
-    };
-    TopApartments:{
-        id:string,
-        numberApt:string,
-        tower:{
-            numberTower:string
-        },
-        _count:{
-            Reservations:number
-        },
-        percentage:string
-    }[];
-};
+        data:{
+            name:string,
+            valie: number;
+        }[];
+        totalVotes:number,
+        averageRating:number
+    }
+    WithMoreReservation:{
+        name:string,
+        reservas:number
+    }[]
 
+};
 
 
 export default function Dashboard() {
     const setupApi = SetupApiClient();
-
+    const dateInputRef = useRef(null);
     const onDay = new Date();
     const formattedDate = `${onDay.getFullYear()}-${String(onDay.getMonth() + 1).padStart(2, '0')}-${String(onDay.getDate()).padStart(2, '0')}`;
     const dateMin = '2024-01-01';
     const [dateFilter, setDateFilter] = useState(dateMin);
-    const COLORS = ['rgb(19, 95, 19)', 'var(--Sucess)', 'var(--Primary-normal)', 'var(--Error)'];
+
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
+    const COLORS = ['rgb(19, 95, 19)', 'var(--Sucess)', 'var(--Primary-normal)', 'var(--Error)'];
     const COLORS2 = ['var(--Light)', 'var(--Primary-normal)'];
     const COLORS3 = ['rgb(19, 95, 19)', 'var(--Sucess)', 'var(--Primary-normal)'];
+    const [calendarSection, setCalendarSection] = useState(0);
 
-    
-    const rawData = 
-        dashboardList.TopApartments && dashboardList.TopApartments.length > 0 ?
-        [
-        { name: `Apt - ${dashboardList.TopApartments[0].numberApt} T - ${dashboardList.TopApartments[0].tower.numberTower}`,
-        reservas: dashboardList.TopApartments[0]._count.Reservations},
-
-        { name: `Apt - ${dashboardList.TopApartments[1].numberApt} T - ${dashboardList.TopApartments[1].tower.numberTower}`,
-        reservas: dashboardList.TopApartments[1]._count.Reservations},
-
-        { name: `Apt - ${dashboardList.TopApartments[2].numberApt} T - ${dashboardList.TopApartments[2].tower.numberTower}`,
-        reservas: dashboardList.TopApartments[2]._count.Reservations}
-        ] : [];
-      
-    const data = rawData.sort((a, b) => b.reservas - a.reservas);
-
-    const customGraphics = ({ x, y, payload }) => (
-    <text x={x} y={y} dy={16} textAnchor="end" fill="#666" fontSize={12}>
-        {payload.value}
-    </text>
-    );
-
-    const CustomLabel = ({ x, y, value }) => {
-        return (
-            <text x={x} y={y} dy={-4} fill="#fff" textAnchor="middle" fontSize={14}>
-                {value}
-            </text>
-        );
+    const getColor = () => {
+        const roundedValue = Math.floor(dashboardList.Avaliation.averageRating);
+        
+        if (roundedValue === 1) return 'var(--Error)';      
+        if (roundedValue === 2) return '#ffa31d';   
+        if (roundedValue === 3) return '#cdca79'; 
+        if (roundedValue === 4) return 'var(--Sucess)';
+        if (roundedValue === 5) return 'rgb(19, 95, 19)'; 
+        
+        return 'var(--Primary-normal)';
     };
 
-
-    const responsiveSection = {
-        mobile: {
-            breakpoint: { max:999999999999, min: 1 },
-            items: 1
+    function openDate() {
+        if (dateInputRef.current) {
+            dateInputRef.current.showPicker();
         }
     };
+
+    function formatDateToBr(date:string){
+        const year = date.substring(0, 4);
+        const month = date.substring(5,7);
+        const day = date.substring(8, 10);
+        return `${day}/${month}/${year}`
+    }
 
     const responsive = {
         tablet: {
@@ -134,9 +120,8 @@ export default function Dashboard() {
 
     const getDaysBetween = daysBetween(formattedDate, dateFilter)
 
-
     async function refreshData(value:string) {
-        const dateToDate = new Date(value)
+        const dateToDate = value !== '' ? new Date(value) : new Date('2024-01-01')
         setLoading(true);
         try {
             const response = await setupApi.post('/adm/dashboard',{
@@ -155,10 +140,25 @@ export default function Dashboard() {
     }, [dateFilter]);
 
 
+    const CustomLabel = ({ x, y, value, width }) => {
+        if (value === 0) return null;
+        return (
+            <text
+                x={x + width / 2} // Centraliza horizontalmente
+                y={y + 10} // Ajuste vertical para ficar dentro da barra
+                fill="white"
+                textAnchor="middle"
+                dominantBaseline="middle" // Centraliza verticalmente
+                style={{ fontSize: '12px' }}
+            >
+                {value}
+            </text>
+        );
+    };
+
     if (loading) {
         return <Loading />;
     }
-
     return (
         <>
             <Header />
@@ -166,15 +166,34 @@ export default function Dashboard() {
                 <main className={styles.container}>
                     <article className={styles.legends}>
                         <h1>Dashboard</h1>
-                        <input type="date" value={dateFilter}
-                        onChange={(e)=>setDateFilter(e.target.value)}
-                        max={formattedDate}
-                        min={dateMin}
-                        />
+                        <label className={styles.labelDate}>
+                            <input
+                                type="date"
+                                value={dateFilter}
+                                onChange={(e) => setDateFilter(e.target.value)}
+                                max={formattedDate}
+                                min={dateMin}
+                                ref={dateInputRef}
+                                className={styles.inputContainer}
+
+                            />
+                            <div onClick={openDate} className={styles.newStyle}>
+                                <p>{formatDateToBr(dateFilter)}</p>
+                                < FaCalendarDays  />
+                            </div>
+                        </label>
                     </article>
 
-                    <Carousel responsive={responsiveSection}>
+                    <article className={styles.dashboardOptions}>
+                        <button onClick={()=>setCalendarSection(0)}
+                        className={calendarSection === 0 ? styles.buttonStyle : ''}>Seção 1</button>
+                        <button onClick={()=>setCalendarSection(1)}
+                        className={calendarSection === 1 ? styles.buttonStyle : ''}>Seção 2</button>
+                    </article>
+
+                    {calendarSection === 0 ? (
                         <section className={styles.allCalendar1}>
+
                             <article className={styles.totalValues}
                             style={{border:'solid 2px var(--Sucess)'}}>
                                 <span>
@@ -184,7 +203,7 @@ export default function Dashboard() {
                                 <h4>$ {dashboardList.TotalCollection.toFixed(0)}</h4>
                                 <p>Últimos {getDaysBetween} dias</p>
                             </article>
-                        
+
                             <article className={styles.barChart}>
                                 <h3>Valores arrecadados</h3>
                                 <ResponsiveContainer width={'100%'}>
@@ -195,13 +214,13 @@ export default function Dashboard() {
                                         <Tooltip />
                                         <Legend />
                                         <Bar dataKey="Confirmadas" stackId="a" fill="var(--Sucess)">
-                                            <LabelList dataKey="Confirmadas" position="inside" fill="white" />
+                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
                                         </Bar>
                                         <Bar dataKey="Taxadas" stackId="a" fill="var(--Error)">
-                                            <LabelList dataKey="Taxadas" position="inside" fill="white"/>
+                                        <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
                                         </Bar>
                                         <Bar dataKey="Limpeza" stackId="a" fill="var(--Primary-normal)">
-                                            <LabelList dataKey="Limpeza" position="inside" fill="white"/>
+                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -235,7 +254,7 @@ export default function Dashboard() {
 
                                                 return (
                                                     <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central">
-                                                        {value}
+                                                        {value !== 0 ? value : null}
                                                     </text>
                                                 );
                                             }}
@@ -271,14 +290,6 @@ export default function Dashboard() {
                                         <h4>{dashboardList.Adms}</h4>
                                         <p>Últimos {getDaysBetween} dias</p>
                                     </article>
-                                </Carousel>
-                            </div>
-                            
-                        </section>
-                        
-                        <section className={styles.allCalendar2}>
-                            <article className={styles.carousel}>               
-                                <Carousel responsive={responsive}>
                                     <article className={styles.totalValues}
                                     style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
                                         <span>
@@ -299,11 +310,15 @@ export default function Dashboard() {
                                         <p>Últimos {getDaysBetween} dias</p>
                                     </article>
                                 </Carousel>
-                            </article>
+                            </div>
+                        </section>
+
+                        ):(
+
+                        <section className={styles.allCalendar2}>
 
                             <article className={styles.barChart}>
                                 <h3>Adimplentes e Inadimplentes</h3>
-
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={dashboardList.Payers}>
                                         <CartesianGrid strokeDasharray="3 3" />
@@ -312,14 +327,13 @@ export default function Dashboard() {
                                         <Tooltip />
                                         <Legend />
                                         <Bar dataKey="Adimplentes" fill="var(--Sucess)">
-                                            <LabelList dataKey="Adimplentes" position="insideTop" fill={'white'} />
+                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
                                         </Bar>
                                         <Bar dataKey="Inadimplentes" fill="var(--Error)">
-                                            <LabelList dataKey="Inadimplentes" position="insideTop" fill={'white'} />
+                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
-
                             </article>
 
                             <article className={styles.barChart}>
@@ -354,59 +368,63 @@ export default function Dashboard() {
                                     </PieChart>
                                 </ResponsiveContainer>
                             </article>
-
-                            <article className={styles.rating}>
-                                <h3>Avaliações de reservas</h3>
-                                <div className={styles.rateAndEmoji}>
-                                    <h3>4.5</h3>
-                                    {dashboardList.Avaliation.average >= 1 &&
-                                    dashboardList.Avaliation.average < 2 ?
-                                    (<MdOutlineSentimentVeryDissatisfied style={{color:'red'}}/>):null}
-
-                                    {dashboardList.Avaliation.average >= 2 &&
-                                    dashboardList.Avaliation.average < 3 ?
-                                    (<MdSentimentVeryDissatisfied style={{color:'orange'}}/>):null}
-
-                                    {dashboardList.Avaliation.average >= 3 &&
-                                    dashboardList.Avaliation.average < 4 ?
-                                    (< MdSentimentNeutral style={{color:'#FFD700'}}/>):null}
-                                    
-                                    {dashboardList.Avaliation.average >= 4 &&
-                                    dashboardList.Avaliation.average < 5 ?
-                                    (< MdOutlineSentimentSatisfiedAlt style={{color:'#32CD32'}}/>):null}
-
-                                    {dashboardList.Avaliation.average >= 5 ?
-                                    (< MdOutlineSentimentVerySatisfied style={{color:'#2E8B57'}}/>):null}
-                                </div>
-                                <p>Total - {dashboardList.Avaliation.qtd}</p>
+                            
+                            <article className={styles.barChart}>
+                            <h3>Avaliação de reservas</h3>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={dashboardList.Avaliation.data}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={100}
+                                            outerRadius={150}
+                                            dataKey="value"
+                                            startAngle={90}
+                                            endAngle={-270}
+                                            stroke="none"
+                                        >
+                                            {dashboardList.Avaliation.data.map((entry, index) => (
+                                                <Cell
+                                                    key={`cell-${index}`}
+                                                    fill={entry.name === "Média" ? getColor() : 'var(--Primary-normal)'}
+                                                />
+                                            ))}
+                                            <Label
+                                                value={`Média\n${dashboardList.Avaliation.averageRating}`}
+                                                position="center"
+                                                style={{ fontSize: '24px', color: 'var(--Text)' }}
+                                            />
+                                        </Pie>
+                                        <Tooltip
+                                            formatter={(value, name) => [`${value}`, `${name}`]}
+                                            labelFormatter={(label) => `Total de Avaliações: ${dashboardList.Avaliation.totalVotes}`}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <h3>Total de avaliações - {dashboardList.Avaliation.totalVotes}</h3>
                             </article>
 
-                            <article>
-                            <BarChart width={600} height={300} data={data} layout="vertical">
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis type="number" />
-        <YAxis type="category" dataKey="name" tick={false} />
-        <Tooltip />
-        <Bar dataKey="reservas">
-            {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
-            ))}
-            <LabelList dataKey="reservas" position="insideRight" />
-            {data.map((entry, index) => (
-                <CustomLabel
-                    key={`label-${index}`}
-                    x={entry.reservas}
-                    y={index * 40 + 20} // Ajuste para alinhar com a barra
-                    value={entry.name}
-                />
-            ))}
-        </Bar>
-    </BarChart>
+                            <article className={styles.barChart}>
+                                <h3>Apartamentos com mais reservas</h3>
+                                <ResponsiveContainer width="100%" height="100%"style={{marginRight:'24px'}}>
+                                    <BarChart 
+                                    data={dashboardList.WithMoreReservation} layout="vertical">
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis type="number" />
+                                        <YAxis type="category" tick={false} />
+                                        <Tooltip />
+                                        <Bar dataKey="reservas" fill="#8884d8">
+                                            {dashboardList.WithMoreReservation.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
+                                            ))}
+                                            <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px' }} />
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </article>
                         </section>
-                    </Carousel>
-                    
-
+                        )}    
                 </main>
             </div>
         </>
