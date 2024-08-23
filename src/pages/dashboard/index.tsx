@@ -47,6 +47,17 @@ type DashboardType = {
         qtd: number;
         average: number;
     };
+    TopApartments:{
+        id:string,
+        numberApt:string,
+        tower:{
+            numberTower:string
+        },
+        _count:{
+            Reservations:number
+        },
+        percentage:string
+    }[];
 };
 
 
@@ -65,19 +76,34 @@ export default function Dashboard() {
     const COLORS3 = ['rgb(19, 95, 19)', 'var(--Sucess)', 'var(--Primary-normal)'];
 
     
-    const rawData = [
-        { name: 'Morador 1', reservas: 30 },
-        { name: 'Morador 2', reservas: 50 },
-        { name: 'Morador 3', reservas: 40 },
-      ];
-      
-      const data = rawData.sort((a, b) => b.reservas - a.reservas);
+    const rawData = 
+        dashboardList.TopApartments && dashboardList.TopApartments.length > 0 ?
+        [
+        { name: `Apt - ${dashboardList.TopApartments[0].numberApt} T - ${dashboardList.TopApartments[0].tower.numberTower}`,
+        reservas: dashboardList.TopApartments[0]._count.Reservations},
 
-      const customGraphics = ({ x, y, payload }) => (
-        <text x={x} y={y} dy={16} textAnchor="end" fill="#666" fontSize={12}>
-          {payload.value}
-        </text>
-      );
+        { name: `Apt - ${dashboardList.TopApartments[1].numberApt} T - ${dashboardList.TopApartments[1].tower.numberTower}`,
+        reservas: dashboardList.TopApartments[1]._count.Reservations},
+
+        { name: `Apt - ${dashboardList.TopApartments[2].numberApt} T - ${dashboardList.TopApartments[2].tower.numberTower}`,
+        reservas: dashboardList.TopApartments[2]._count.Reservations}
+        ] : [];
+      
+    const data = rawData.sort((a, b) => b.reservas - a.reservas);
+
+    const customGraphics = ({ x, y, payload }) => (
+    <text x={x} y={y} dy={16} textAnchor="end" fill="#666" fontSize={12}>
+        {payload.value}
+    </text>
+    );
+
+    const CustomLabel = ({ x, y, value }) => {
+        return (
+            <text x={x} y={y} dy={-4} fill="#fff" textAnchor="middle" fontSize={14}>
+                {value}
+            </text>
+        );
+    };
 
 
     const responsiveSection = {
@@ -133,7 +159,6 @@ export default function Dashboard() {
         return <Loading />;
     }
 
-    console.log(dashboardList)
     return (
         <>
             <Header />
@@ -358,17 +383,25 @@ export default function Dashboard() {
 
                             <article>
                             <BarChart width={600} height={300} data={data} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" />
-                                <YAxis type="category" dataKey="name" tick={customGraphics} />
-                                <Tooltip />
-                                <Bar dataKey="reservas">
-                                {data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
-                                ))}
-                                <LabelList dataKey="reservas" position="insideRight" />
-                                </Bar>
-                            </BarChart>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis type="number" />
+        <YAxis type="category" dataKey="name" tick={false} />
+        <Tooltip />
+        <Bar dataKey="reservas">
+            {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
+            ))}
+            <LabelList dataKey="reservas" position="insideRight" />
+            {data.map((entry, index) => (
+                <CustomLabel
+                    key={`label-${index}`}
+                    x={entry.reservas}
+                    y={index * 40 + 20} // Ajuste para alinhar com a barra
+                    value={entry.name}
+                />
+            ))}
+        </Bar>
+    </BarChart>
                             </article>
                         </section>
                     </Carousel>
