@@ -8,8 +8,9 @@
         gap: 2.4rem;
         .legends{
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: start;
+            gap: 1.6rem;
             .labelDate{
                 border: solid 1px var(--Text);
                 display: flex;
@@ -58,53 +59,58 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 2.4rem 1.6rem;    
-            .totalValues{
-                display: flex;
-                flex-direction: column;
-                max-width: 100%;
-                padding: 1.8rem 1.2rem;
-                border-radius: 4px;
-                justify-content: space-between;
-                height: 100%;
-                span{
+            gap: 1.6rem;    
+            .carousel{
+                padding: 0.4rem;
+                .totalValues{
                     display: flex;
-                    align-items: center;
+                    flex-direction: column;
+                    max-width: 100%;
+                    padding: 1.8rem 1.2rem;
+                    border-radius: 4px;
                     justify-content: space-between;
-                    h3{
-                        font-size: 1.4rem;
-                        font-weight: 400;
+                    height: 100%;
+                    background-color: var(--Transparente);
+                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+                    margin-right: 1.6rem;
+                    span{
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        h3{
+                            font-size: 1.4rem;
+                            font-weight: 400;
+                        }
+                        svg{
+                            opacity: 0.8;
+                            font-size: 2.4rem;
+                        }
                     }
-                    svg{
-                        opacity: 0.8;
+                    h4{
+                        margin-top: 2.4rem;
                         font-size: 2.4rem;
                     }
-                }
-                h4{
-                    margin-top: 2.4rem;
-                    font-size: 2.4rem;
-                }
-                p{
-                    font-size: 1.2rem;
-                    margin-top: 0.8rem;
-                    opacity: 0.8;
+                    p{
+                        font-size: 1.2rem;
+                        margin-top: 0.8rem;
+                        opacity: 0.8;
+                    }
                 }
             }
             .barChart{
                 display: flex;
                 flex-direction: column;
-                align-items: start;
-                gap: 1.2rem;
+                gap: 2rem;
                 height: 400px;
+                background-color: var(--Transparente);
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+                padding: 1.6rem;
                 h3{
-                    font-weight: 300;
-                    font-size: 1.4rem;
-                    text-align: start;
+                    font-weight: 400;
+                    font-size: 1.6rem;
+                    text-align: center;
                 }
-            }
-            .carousel{
-                grid-column-start: 1;
-                grid-column-end: 3;
+
             }
         }
 
@@ -116,29 +122,46 @@
         .container{
             max-width: 100%;
             margin: auto;
-            .allCalendar1{
+            .legends{
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .allCalendar{
                 width: 100%;
                 display: grid;
-                gap: 4.2rem 1.6rem;   
+                gap: 1.6rem;   
                 grid-template-columns: repeat(2, 1fr);
                 article{
                     &:nth-child(1){
                         grid-column-start: 1;
-                        grid-column-end: 2;
+                        grid-column-end: 3;
                         grid-row-start: 1;
                         grid-row-end: 2;
                     }
                     &:nth-child(2){
                         grid-column-start: 1;
                         grid-column-end: 2;
-                        grid-row-start: 2;
-                        grid-row-end: 3;
                     }
                     &:nth-child(3){
                         grid-column-start: 2;
                         grid-column-end: 3;
-                        grid-row-start: 1;
-                        grid-row-end: 2;
+                    }
+                    &:nth-child(4){
+                        grid-column-start: 1;
+                        grid-column-end: 2;
+                    }
+                    &:nth-child(5){
+                        grid-column-start: 2;
+                        grid-column-end: 3;
+                    }
+                    &:nth-child(6){
+                        grid-column-start: 1;
+                        grid-column-end: 2;
+                    }
+                    &:nth-child(7){
+                        grid-column-start: 2;
+                        grid-column-end: 3;
                     }
                 }
             }
@@ -156,45 +179,11 @@
 @media (min-width:1000px){
     .bodyArea{
         .container{
-            max-width: 900px;
-            margin: auto;
-            .allCalendar1{
-                width: 100%;
-                display: grid;
-                gap: 4.2rem 1.6rem;   
-                grid-template-columns: repeat(2, 1fr);
-                article{
-                    &:nth-child(1){
-                        grid-column-start: 1;
-                        grid-column-end: 2;
-                        grid-row-start: 1;
-                        grid-row-end: 2;
-                    }
-                    &:nth-child(2){
-                        grid-column-start: 1;
-                        grid-column-end: 2;
-                        grid-row-start: 2;
-                        grid-row-end: 3;
-                    }
-                    &:nth-child(3){
-                        grid-column-start: 2;
-                        grid-column-end: 3;
-                        grid-row-start: 1;
-                        grid-row-end: 2;
-                    }
-                }
-            }
-            .allCalendar2{
-                width: 100%;
-                display: grid;
-                gap: 4.2rem 1.6rem;   
-                grid-template-columns: repeat(2, 1fr);
-            }
+            max-width: 100%;
         }
         
     }
 }
-
 
 @media (min-width:1280px){
     .bodyArea{
@@ -211,41 +200,46 @@
                 article{
                     &:nth-child(1){
                         grid-column-start: 1;
-                        grid-column-end: 2;
+                        grid-column-end: 5;
                         grid-row-start: 1;
                         grid-row-end: 2;
                     }
-                    &:nth-child(4){
-                        grid-column-start: 2;
-                        grid-column-end: 4;
+                    &:nth-child(2){
+                        grid-column-start: 1;
+                        grid-column-end: 2;
                         grid-row-start: 2;
                         grid-row-end: 3;
                     }
                     &:nth-child(3){
                         grid-column-start: 2;
-                        grid-column-end: 3;
-                        grid-row-start: 1;
-                        grid-row-end: 2;
+                        grid-column-end: 4;
+                        grid-row-start: 2;
+                        grid-row-end: 3;
                     }
-                    &:nth-child(2){
-                        grid-column-start:1 ;
-                        grid-column-end: 2;
+                    &:nth-child(4){
+                        grid-column-start: 4;
+                        grid-column-end: 5;
                         grid-row-start: 2;
                         grid-row-end: 3;
                     }
                     &:nth-child(5){
-                        grid-column-start:3 ;
-                        grid-column-end: 5;
-                        grid-row-start: 1;
-                        grid-row-end: 2;
+                        grid-column-start: 1;
+                        grid-column-end: 2;
+                        grid-row-start: 3;
+                        grid-row-end: 4;
                     }
                     &:nth-child(6){
-                        grid-row-start: 2;
-                        grid-row-end: 2;
-                        grid-column-start:4;
-                        grid-column-end: 5;
+                        grid-column-start: 2;
+                        grid-column-end: 3;
+                        grid-row-start: 3;
+                        grid-row-end: 4;
                     }
-                    
+                    &:nth-child(7){
+                        grid-column-start: 3;
+                        grid-column-end: 5;
+                        grid-row-start: 3;
+                        grid-row-end: 4;
+                    }
                 }
             }            
         }

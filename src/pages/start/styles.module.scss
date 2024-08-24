@@ -214,23 +214,24 @@
 
 @media (min-width:1280px){
   .bodyArea{
-    max-width: calc(100% - 360px);
-    margin-left: 360px;
+    max-width: calc(100% - 26rem);
+    margin-left: 26rem;
     .container{
-      max-width: 960px;
-      margin: auto;
+      max-width: 100%;
+        .section1{
+          .cards{
+            grid-template-columns: repeat(3,1fr);
+          }
+        }
+        .section2{
+          .allcards{
+            grid-template-columns: repeat(3,1fr);
+          }
+        }
     }
   }
 }
 
-@media (min-width:1536px){
-  .bodyArea{
-      .container{
-        max-width: 1024px;
-        margin: auto;
-    }
-  }
-}
 
 
 @keyframes buttonSet{
