@@ -130,7 +130,6 @@
             .allCalendar{
                 width: 100%;
                 display: grid;
-                gap: 1.6rem;   
                 grid-template-columns: repeat(2, 1fr);
                 article{
                     &:nth-child(1){
@@ -195,7 +194,7 @@
             .allCalendar{
                 width: 100%;
                 display: grid;
-                gap: 4.2rem 1.6rem;   
+                gap: 1.6rem;   
                 grid-template-columns: repeat(4, 1fr);
                 article{
                     &:nth-child(1){

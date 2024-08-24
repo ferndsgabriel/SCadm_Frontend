@@ -8,8 +8,8 @@ import { FaUsers } from "react-icons/fa";
 import { RiAdminFill } from "react-icons/ri";
 import { MdOutlineApartment } from "react-icons/md";
 import { GiWhiteTower } from "react-icons/gi";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-PieChart, Pie, Cell, LabelList, Label, RadialBar, RadialBarChart} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
+PieChart, Pie, Cell, LabelList, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis} from 'recharts';
 import { CiCalendarDate } from "react-icons/ci";
 import { FaCalendarDays } from "react-icons/fa6";
 import { Loading } from "../../components/loading";
@@ -46,16 +46,15 @@ type DashboardType = {
     Avaliation: {
         data:{
             name:string,
-            valie: number;
+            media: number;
         }[];
-        totalVotes:number,
+        qtd:number
         averageRating:number
     }
     WithMoreReservation:{
         name:string,
         reservas:number
     }[]
-
 };
 
 
@@ -66,24 +65,15 @@ export default function Dashboard() {
     const formattedDate = `${onDay.getFullYear()}-${String(onDay.getMonth() + 1).padStart(2, '0')}-${String(onDay.getDate()).padStart(2, '0')}`;
     const dateMin = '2024-01-01';
     const [dateFilter, setDateFilter] = useState(dateMin);
-
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
-    const COLORS = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)', 'var(--Error)'];
-    const COLORS3 = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)'];
     const [calendarSection, setCalendarSection] = useState(0);
 
-    const getColor = () => {
-        const roundedValue = Math.floor(dashboardList.Avaliation.averageRating);
-        
-        if (roundedValue === 1) return 'var(--Error)';      
-        if (roundedValue === 2) return '#ffa31d';   
-        if (roundedValue === 3) return '#cdca79'; 
-        if (roundedValue === 4) return 'var(--Sucess)';
-        if (roundedValue === 5) return 'rgb(19, 95, 19)'; 
-        
-        return 'var(--Primary-normal)';
-    };
+    const COLORS = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)', 'var(--Error)'];
+    const COLORS3 = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)'];
+
+    
+    console.log(dashboardList)
 
     function openDate() {
         if (dateInputRef.current) {
@@ -161,6 +151,18 @@ export default function Dashboard() {
                 {value}
             </text>
         );
+    };
+
+    const getColorForRating = (rating:number) => {
+        const roundedRating = Math.floor(rating);
+        const colors = {
+            5: 'var(--Sucess)',    
+            4: 'var(--Blue)',      
+            3: '#9C975E',            
+            2: '#7B593B',           
+            1: 'var(--Error)'        
+        };
+        return colors[roundedRating] || 'rgba(0, 0, 0, 0.1)';
     };
 
     if (loading) {
@@ -287,7 +289,7 @@ export default function Dashboard() {
                                         <Cell key="Taxadas" fill="var(--Error)" />
                                         <Cell key="Limpeza" fill="var(--Primary-normal)" />
                                     </Pie>
-                                    <Tooltip />
+                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                     <Legend 
                                         layout="horizontal" 
                                         verticalAlign="top" 
@@ -319,7 +321,7 @@ export default function Dashboard() {
                                         tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
                                         width={12}
                                     />
-                                    <Tooltip/>
+                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                     <Bar dataKey="value" fill="#8884d8" style={{backgroundColor:'red'}}>
                                         {dashboardList.ReservationMadeDetails.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -361,7 +363,7 @@ export default function Dashboard() {
                                         <Cell key="Disponível" fill="var(--Blue)" />
                                         <Cell key="Ocupado" fill="var(--Primary-normal)" />
                                     </Pie>
-                                    <Tooltip />
+                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                     <Legend 
                                         layout="horizontal" 
                                         verticalAlign="top" 
@@ -386,7 +388,7 @@ export default function Dashboard() {
                                         tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
                                         width={12}
                                     />
-                                    <Tooltip />
+                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                     <Legend 
                                         layout="horizontal" 
                                         verticalAlign="top" 
@@ -412,37 +414,45 @@ export default function Dashboard() {
                         <article className={styles.barChart}>
                         <h3>Avaliação de reservas</h3>
                             <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={dashboardList.Avaliation.data}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={100}
-                                        outerRadius={150}
-                                        dataKey="value"
-                                        startAngle={90}
-                                        endAngle={-270}
-                                        stroke="none"
+                                <BarChart
+                                    layout="vertical"
+                                    data={dashboardList.Avaliation.data}
+                                    margin={{
+                                        top: 20, right: 20, left: 20, bottom: 20,
+                                    }}
+                                    barSize={20}
                                     >
-                                        {dashboardList.Avaliation.data.map((entry, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                fill={entry.name === "Média" ? getColor() : 'var(--Primary-normal)'}
-                                            />
-                                        ))}
-                                        <Label
-                                            value={`Média\n${dashboardList.Avaliation.averageRating}`}
-                                            position="center"
-                                            style={{ fontSize: '24px', color: 'var(--Text)' }}
-                                        />
-                                    </Pie>
-                                    <Tooltip
-                                        formatter={(value, name) => [`${value}`, `${name}`]}
-                                        labelFormatter={(label) => `Total de Avaliações: ${dashboardList.Avaliation.totalVotes}`}
+                                    <XAxis
+                                        type="number"
+                                        domain={[0, 5]}
+                                        ticks={[0, 1, 2, 3, 4, 5]}
+                                        tick={{ fontSize: 12, fill: 'var(--Text)' }}
                                     />
-                                </PieChart>
+                                    <YAxis
+                                        type="category"
+                                        dataKey="name"
+                                        tick={{ fontSize: 12, fill: 'var(--Text)' }}
+                                        width={40}
+                                    />
+                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
+                                    <Bar dataKey="media">
+                                        {dashboardList.Avaliation.data.map((entry, index) => (
+                                        <Cell
+                                            key={`cell-${index}`}
+                                            fill={getColorForRating(entry.media)}
+                                        />
+                                        ))}
+                                        <LabelList
+                                            dataKey="media"
+                                            position="insideRight"
+                                            fill="#fff"
+                                            fontWeight='bold'
+                                            fontSize={12}
+                                            />
+                                    </Bar>
+                                </BarChart>
                             </ResponsiveContainer>
-                            <h3>Total de avaliações - {dashboardList.Avaliation.totalVotes}</h3>
+                            <h3>Total de avaliações - {dashboardList.Avaliation.qtd}</h3>
                         </article>
 
                         <article className={styles.barChart}>
@@ -456,7 +466,7 @@ export default function Dashboard() {
                                         tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
                                         width={12} type="category"
                                     />
-                                    <Tooltip />
+                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                     <Bar dataKey="reservas" fill="#8884d8">
                                         {dashboardList.WithMoreReservation.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
