@@ -191,240 +191,236 @@ export default function Dashboard() {
                         className={calendarSection === 1 ? styles.buttonStyle : ''}>Seção 2</button>
                     </article>
 
-                    {calendarSection === 0 ? (
-                        <section className={styles.allCalendar1}>
+                    
+                    <section className={styles.allCalendar}>
 
-                            <article className={styles.totalValues}
-                            style={{border:'solid 2px var(--Sucess)'}}>
-                                <span>
-                                    <h3>Total arrecadado</h3>
-                                    <MdOutlineAttachMoney />
-                                </span>
-                                <h4>$ {dashboardList.TotalCollection.toFixed(0)}</h4>
-                                <p>Últimos {getDaysBetween} dias</p>
-                            </article>
+                        <article className={styles.totalValues}
+                        style={{border:'solid 2px var(--Sucess)'}}>
+                            <span>
+                                <h3>Total arrecadado</h3>
+                                <MdOutlineAttachMoney />
+                            </span>
+                            <h4>$ {dashboardList.TotalCollection.toFixed(0)}</h4>
+                            <p>Últimos {getDaysBetween} dias</p>
+                        </article>
 
-                            <article className={styles.barChart}>
-                                <h3>Valores arrecadados</h3>
-                                <ResponsiveContainer width={'100%'}>
-                                    <BarChart data={dashboardList.TotalCollectionDetails}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="category" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Bar dataKey="Confirmadas" stackId="a" fill="var(--Sucess)">
-                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                        </Bar>
-                                        <Bar dataKey="Taxadas" stackId="a" fill="var(--Error)">
+                        <article className={styles.barChart}>
+                            <h3>Valores arrecadados</h3>
+                            <ResponsiveContainer width={'100%'}>
+                                <BarChart data={dashboardList.TotalCollectionDetails}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="category" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="Confirmadas" stackId="a" fill="var(--Sucess)">
                                         <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                        </Bar>
-                                        <Bar dataKey="Limpeza" stackId="a" fill="var(--Primary-normal)">
-                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </article>
+                                    </Bar>
+                                    <Bar dataKey="Taxadas" stackId="a" fill="var(--Error)">
+                                    <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
+                                    </Bar>
+                                    <Bar dataKey="Limpeza" stackId="a" fill="var(--Primary-normal)">
+                                        <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </article>
 
-                            <article className={styles.totalValues}
-                            style={{border:'solid 2px #f88b37'}}>
-                                <span>
-                                    <h3>Quantidade de reservas</h3>
-                                    <CiCalendarDate />
-                                </span>
-                                <h4>{dashboardList.AllReservationMade}</h4>
-                                <p>Últimos {getDaysBetween} dias</p>
-                            </article>
-
-                            <article className={styles.barChart}> 
+                        <article className={styles.totalValues}
+                        style={{border:'solid 2px #f88b37'}}>
+                            <span>
                                 <h3>Quantidade de reservas</h3>
-                                <ResponsiveContainer width={'100%'} height={'100%'}>
-                                    <PieChart>
-                                        <Pie
-                                            data={dashboardList.ReservationMadeDetails}
-                                            dataKey="value"
-                                            nameKey="name"
-                                            outerRadius={150}
-                                            fill="#8884d8"
-                                            labelLine={false}
-                                            label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
-                                                const radius = innerRadius + (outerRadius - innerRadius) / 2;
-                                                const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                                                const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                                <CiCalendarDate />
+                            </span>
+                            <h4>{dashboardList.AllReservationMade}</h4>
+                            <p>Últimos {getDaysBetween} dias</p>
+                        </article>
 
-                                                return (
-                                                    <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central">
-                                                        {value !== 0 ? value : null}
-                                                    </text>
-                                                );
-                                            }}
-                                        >
-                                            {dashboardList.ReservationMadeDetails.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </article>
+                        <article className={styles.barChart}> 
+                            <h3>Quantidade de reservas</h3>
+                            <ResponsiveContainer width={'100%'} height={'100%'}>
+                                <PieChart>
+                                    <Pie
+                                        data={dashboardList.ReservationMadeDetails}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        outerRadius={150}
+                                        fill="#8884d8"
+                                        labelLine={false}
+                                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                            const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                                            const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                            const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
 
-                            <div className={styles.carousel}>               
-                                <Carousel responsive={responsive}>
-                                    <article className={styles.totalValues}
-                                    style={{border:'solid 2px var(--Primary-normal)', width:'96%'}}>
-                                        <span>
-                                            <h3>Moradores cadastrados</h3>
-                                            <FaUsers />
-                                        </span>
-                                        <h4>{dashboardList.Users}</h4>
-                                        <p>Últimos {getDaysBetween} dias</p>
-                                    </article>
+                                            return (
+                                                <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central">
+                                                    {value !== 0 ? value : null}
+                                                </text>
+                                            );
+                                        }}
+                                    >
+                                        {dashboardList.ReservationMadeDetails.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </article>
 
-                                    <article className={styles.totalValues}
-                                    style={{border:'solid 2px var(--Primary-normal)', width:'96%'}}>
-                                        <span>
-                                            <h3>Administradores cadastrados</h3>
-                                            <RiAdminFill />
-                                        </span>
-                                        <h4>{dashboardList.Adms}</h4>
-                                        <p>Últimos {getDaysBetween} dias</p>
-                                    </article>
-                                    <article className={styles.totalValues}
-                                    style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
-                                        <span>
-                                            <h3>Apartamentos cadastrados</h3>
-                                            <MdOutlineApartment />
-                                        </span>
-                                        <h4>{dashboardList.Apartaments}</h4>
-                                        <p>Últimos {getDaysBetween} dias</p>
-                                    </article>
+                        <article className={styles.carousel}>               
+                            <Carousel responsive={responsive}>
+                                <article className={styles.totalValues}
+                                style={{border:'solid 2px var(--Primary-normal)', width:'96%'}}>
+                                    <span>
+                                        <h3>Moradores cadastrados</h3>
+                                        <FaUsers />
+                                    </span>
+                                    <h4>{dashboardList.Users}</h4>
+                                    <p>Últimos {getDaysBetween} dias</p>
+                                </article>
 
-                                    <article className={styles.totalValues}
-                                    style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
-                                        <span>
-                                            <h3>Torres cadastradas</h3>
-                                            <GiWhiteTower />
-                                        </span>
-                                        <h4>{dashboardList.Towers}</h4>
-                                        <p>Últimos {getDaysBetween} dias</p>
-                                    </article>
-                                </Carousel>
-                            </div>
-                        </section>
+                                <article className={styles.totalValues}
+                                style={{border:'solid 2px var(--Primary-normal)', width:'96%'}}>
+                                    <span>
+                                        <h3>Administradores cadastrados</h3>
+                                        <RiAdminFill />
+                                    </span>
+                                    <h4>{dashboardList.Adms}</h4>
+                                    <p>Últimos {getDaysBetween} dias</p>
+                                </article>
+                                <article className={styles.totalValues}
+                                style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
+                                    <span>
+                                        <h3>Apartamentos cadastrados</h3>
+                                        <MdOutlineApartment />
+                                    </span>
+                                    <h4>{dashboardList.Apartaments}</h4>
+                                    <p>Últimos {getDaysBetween} dias</p>
+                                </article>
 
-                        ):(
+                                <article className={styles.totalValues}
+                                style={{border:'solid 2px var(--Primary-normal)',width:'96%'}}>
+                                    <span>
+                                        <h3>Torres cadastradas</h3>
+                                        <GiWhiteTower />
+                                    </span>
+                                    <h4>{dashboardList.Towers}</h4>
+                                    <p>Últimos {getDaysBetween} dias</p>
+                                </article>
+                            </Carousel>
+                        </article>
+                    
+                        <article className={styles.barChart}>
+                            <h3>Média de ocupação do salão</h3>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={dashboardList.OccupancyRate}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        outerRadius={150}
+                                        fill="#8884d8"
+                                        labelLine={false} 
+                                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                            const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                                            const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                            const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
 
-                        <section className={styles.allCalendar2}>
+                                            return (
+                                                <text x={x} y={y} fill={'white'} textAnchor="middle" dominantBaseline="central">
+                                                    {value}
+                                                </text>
+                                            );
+                                        }}
+                                    >
+                                        {dashboardList.OccupancyRate.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </article>
 
-                            <article className={styles.barChart}>
-                                <h3>Adimplentes e Inadimplentes</h3>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={dashboardList.Payers}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="category" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Bar dataKey="Adimplentes" fill="var(--Sucess)">
-                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                        </Bar>
-                                        <Bar dataKey="Inadimplentes" fill="var(--Error)">
-                                            <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </article>
-
-                            <article className={styles.barChart}>
-                                <h3>Média de ocupação do salão</h3>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={dashboardList.OccupancyRate}
-                                            dataKey="value"
-                                            nameKey="name"
-                                            outerRadius={150}
-                                            fill="#8884d8"
-                                            labelLine={false} 
-                                            label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
-                                                const radius = innerRadius + (outerRadius - innerRadius) / 2;
-                                                const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                                                const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-
-                                                return (
-                                                    <text x={x} y={y} fill={'white'} textAnchor="middle" dominantBaseline="central">
-                                                        {value}
-                                                    </text>
-                                                );
-                                            }}
-                                        >
-                                            {dashboardList.OccupancyRate.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </article>
-                            
-                            <article className={styles.barChart}>
-                            <h3>Avaliação de reservas</h3>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={dashboardList.Avaliation.data}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={100}
-                                            outerRadius={150}
-                                            dataKey="value"
-                                            startAngle={90}
-                                            endAngle={-270}
-                                            stroke="none"
-                                        >
-                                            {dashboardList.Avaliation.data.map((entry, index) => (
-                                                <Cell
-                                                    key={`cell-${index}`}
-                                                    fill={entry.name === "Média" ? getColor() : 'var(--Primary-normal)'}
-                                                />
-                                            ))}
-                                            <Label
-                                                value={`Média\n${dashboardList.Avaliation.averageRating}`}
-                                                position="center"
-                                                style={{ fontSize: '24px', color: 'var(--Text)' }}
+                        <article className={styles.barChart}>
+                            <h3>Adimplentes e Inadimplentes</h3>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={dashboardList.Payers}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="category" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="Adimplentes" fill="var(--Sucess)">
+                                        <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
+                                    </Bar>
+                                    <Bar dataKey="Inadimplentes" fill="var(--Error)">
+                                        <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </article>
+               
+                        <article className={styles.barChart}>
+                        <h3>Avaliação de reservas</h3>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={dashboardList.Avaliation.data}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={100}
+                                        outerRadius={150}
+                                        dataKey="value"
+                                        startAngle={90}
+                                        endAngle={-270}
+                                        stroke="none"
+                                    >
+                                        {dashboardList.Avaliation.data.map((entry, index) => (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={entry.name === "Média" ? getColor() : 'var(--Primary-normal)'}
                                             />
-                                        </Pie>
-                                        <Tooltip
-                                            formatter={(value, name) => [`${value}`, `${name}`]}
-                                            labelFormatter={(label) => `Total de Avaliações: ${dashboardList.Avaliation.totalVotes}`}
+                                        ))}
+                                        <Label
+                                            value={`Média\n${dashboardList.Avaliation.averageRating}`}
+                                            position="center"
+                                            style={{ fontSize: '24px', color: 'var(--Text)' }}
                                         />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                                <h3>Total de avaliações - {dashboardList.Avaliation.totalVotes}</h3>
-                            </article>
+                                    </Pie>
+                                    <Tooltip
+                                        formatter={(value, name) => [`${value}`, `${name}`]}
+                                        labelFormatter={(label) => `Total de Avaliações: ${dashboardList.Avaliation.totalVotes}`}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <h3>Total de avaliações - {dashboardList.Avaliation.totalVotes}</h3>
+                        </article>
 
-                            <article className={styles.barChart}>
-                                <h3>Apartamentos com mais reservas</h3>
-                                <ResponsiveContainer width="100%" height="100%"style={{marginRight:'24px'}}>
-                                    <BarChart 
-                                    data={dashboardList.WithMoreReservation} layout="vertical">
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis type="number" />
-                                        <YAxis type="category" tick={false} />
-                                        <Tooltip />
-                                        <Bar dataKey="reservas" fill="#8884d8">
-                                            {dashboardList.WithMoreReservation.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
-                                            ))}
-                                            <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px' }} />
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </article>
-                        </section>
-                        )}    
+                        <article className={styles.barChart}>
+                            <h3>Apartamentos com mais reservas</h3>
+                            <ResponsiveContainer width="100%" height="100%"style={{marginRight:'24px'}}>
+                                <BarChart 
+                                data={dashboardList.WithMoreReservation} layout="vertical">
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis type="number" />
+                                    <YAxis type="category" tick={false} />
+                                    <Tooltip />
+                                    <Bar dataKey="reservas" fill="#8884d8">
+                                        {dashboardList.WithMoreReservation.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
+                                        ))}
+                                        <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px' }} />
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </article>
+
+                    </section>
+                           
                 </main>
             </div>
         </>

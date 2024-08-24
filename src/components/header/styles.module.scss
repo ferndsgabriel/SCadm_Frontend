@@ -43,7 +43,7 @@
   
   .navBar{
     background-color: var(--Primary-normal);
-    width: 36rem;
+    width: 26rem;
     position: fixed;
     z-index: 99;
     height: 100vh;
@@ -114,10 +114,11 @@
           justify-content: end;
           padding: 1.2rem;
           border-radius: 5px;
+          font-size: 1.2rem;
         }
         .activeNav{
           font-weight: bold;
-          font-size: 2rem;
+          font-size: 1.4rem;
         }
       }
     }
@@ -131,6 +132,7 @@
       width: 100%;
       padding: 1.2rem;
       border-radius: 5px;
+      font-size: 1.2rem;
     }
   }
   .openNavBar{
@@ -174,7 +176,7 @@
         justify-content: start;
         img{
           display: block;
-          width: 26rem;
+          width: 12.0rem;
         }
         button{
           display: none;
