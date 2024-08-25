@@ -6,20 +6,27 @@ import style from "../../../styles/Home.module.scss";
 import { canSSRGuest } from "../../utils/canSSRGuest";
 import { useState, FormEvent, useContext } from "react";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import { SetupApiClient } from "../../services/api";
-import { toast } from "react-toastify";
-import {AiFillCloseCircle} from 'react-icons/ai';
-import zxcvbn from 'zxcvbn';
-import Router from "next/router";
 import {isEmail} from 'validator';
-import { Gmodal } from "../../components/myModal";
+import { toast } from "react-toastify";
+import { SetupApiClient } from "../../services/api";
+import RecoveryModal from "../../components/modalRecovery";
 
 export default function Recovery(){
 const [email, setEmail] = useState ('');
 const [isOpen, setIsOpen] = useState (false);
-const [cod, setCod] = useState ('');
-const [pass, setPass] = useState ('');
 const {dark} = useContext(ThemeContext);
+const setupApi = SetupApiClient();
+const [loadingButton, setLoadingButton] = useState(false);
+
+
+function openModal(){
+    setIsOpen(true)
+}
+
+function closeModal(){
+    setEmail('');
+    setIsOpen (false)
+}
 
 async function handleCodigo (e:FormEvent){
     e.preventDefault();
@@ -33,56 +40,18 @@ async function handleCodigo (e:FormEvent){
         return
     }
 
-    const AptClient = SetupApiClient();
+    setLoadingButton(true);
     try{
-        await AptClient.post('adm/cod',{
+        await setupApi.post('adm/cod',{
             email:email
         })
         toast.success('Código de recuperação enviado com sucesso para seu e-mail.');
-        openModal();
+        openModal()
     }catch(error){{
         toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
         console.log(error)
-    }}
-}
-
-function openModal(){
-    setIsOpen(true)
-}
-
-function closeModal(){
-    setIsOpen (false)
-    setEmail('');
-    setCod('');
-    setPass('');
-}
-
-async function handleRecovery(e:FormEvent){
-    e.preventDefault();{
-        const setupApi = SetupApiClient();
-        if (email === '' || cod === "" || pass === ""){
-            toast.warning('Por favor, insira todos os dados necessários.');
-            return;
-        }
-        if (zxcvbn(pass).score < 3) {
-            toast.warning('A senha deve conter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.');
-            return;
-        }
-        try{
-            await setupApi.put('adm/recovery',{
-                pass: pass,
-                cod:cod,
-                email:email
-            })
-            toast.success('Senha recuperada com êxito.');
-            setTimeout(()=>{
-                Router.push('/');
-            },1500)
-        }catch(error){
-            console.log(error);
-            toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-        }
-
+    }}finally{
+        setLoadingButton(false)
     }
 }
 
@@ -103,38 +72,22 @@ async function handleRecovery(e:FormEvent){
                 <Input type="email" placeholder="Digite seu email:"
                 value={email}
                 onChange={(e)=>setEmail(e.target.value)}/>
-                <Button type="submit">Enviar código</Button>
+                <Button disabled={loadingButton} type="submit">Enviar código</Button>
             </form>
-            <div className={style.othersOptions}>
-                <Link href={'/'} className={style.link}>
-                    Fazer login
-                </Link>
-            </div>
-        </main>
 
-        <Gmodal isOpen={isOpen}
-        onClose={closeModal}
-        className={style.modalRecovery}>
-            <div className={style.container}>
-                {dark?(
-                    <img src="./iconDark.svg" alt="SalãoCondo Logo" />
-                ):(
-                    <img src="./iconLight.svg" alt="SalãoCondo Logo" />
-                )}
-
-                <form className={style.form} onSubmit={handleRecovery}>
-                    <Input type="tel" placeholder="Digite o seu código:" value={cod} onChange={(e)=>setCod(e.target.value)}/>
-                    <Input type="password" placeholder="Sua nova senha:" value={pass} onChange={(e)=>setPass(e.target.value)}/>
-                    <Button type="submit">Alterar senha</Button>
-                </form>
-
+            {!loadingButton && (
                 <div className={style.othersOptions}>
-                    <button onClick={handleCodigo} className={style.link}>Reenviar código</button>
-                    <button className={style.link} onClick={closeModal}>Cancelar</button>
+                    <Link href={'/'} className={style.link}>
+                        Fazer login
+                    </Link>
                 </div>
-                
-            </div>
-        </Gmodal>
+            )}
+
+        </main>
+        < RecoveryModal
+        email={email}
+        isOpen={isOpen}
+        onClose={closeModal}/>
         </>
     )
 }

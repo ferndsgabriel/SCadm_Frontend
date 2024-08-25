@@ -10,10 +10,8 @@ import { toast } from "react-toastify";
 import {isMobilePhone, isEmail} from 'validator'
 import zxcvbn from 'zxcvbn';
 import { canSSRGuest } from "../../utils/canSSRGuest";
-import Termos from "../../components/modals/termos";
 import { onlyString } from "../../utils/formatted";
-import { Gmodal } from "../../components/myModal";
-
+import TermsModal from "../../components/modalTerms";
 
 export default function Home() {
   const { singUp } = useContext(AuthContext);
@@ -27,6 +25,7 @@ export default function Home() {
   const [phone_number, setPhone_number] = useState('');
   const [checkbox, setCheckbox] = useState(false);
   const [isOpen, setIsOpen] = useState (false);
+
 
 
   async function handleRegister(e: FormEvent) {
@@ -114,25 +113,31 @@ export default function Home() {
           <Input value={phone_number} onChange={(e) => setPhone_number(e.target.value)} placeholder="Número de telefone:" type="tel" mask="(99)99999-9999" />
           <Input value={cod} onChange={(e) => setCod(e.target.value)} placeholder="Código de administrador:" type="password" />
           <Input value={pass} onChange={(e) => setPass(e.target.value)} placeholder="Sua senha:" type="password"/>
-          <div className={styles.checkboxArea} tabIndex={0}>
-          <input type="checkbox" onChange={(e)=>setCheckbox(e.target.checked)}/> 
-                <a onClick={openModal} tabIndex={1} className={styles.link}> Li e aceito os termos de contratos.</a>
-          </div> 
+
+          {!loading &&(
+            <div className={styles.checkboxArea} tabIndex={0}>
+              <input type="checkbox" onChange={(e)=>setCheckbox(e.target.checked)}/> 
+                  <a onClick={openModal} tabIndex={1} className={styles.link}> Li e aceito os termos de contratos.</a>
+            </div> 
+          )}
+
           <Button loading={loading} type="submit" disabled={!checkbox}>
             Cadastrar
           </Button>
+          {!loading && (
+            <div className={styles.othersOptions}>
+              <Link href={"/"} className={styles.link}>
+                Fazer login
+              </Link>
+            </div>
+          )}
         </form>
-        <div className={styles.othersOptions}>
-          <Link href={"/"} className={styles.link}>
-            Fazer login
-          </Link>
-        </div>
+
       </main>
-      <Gmodal onClose={closedModal}
+      <TermsModal
       isOpen={isOpen}
-      className={styles.termos}>
-        <Termos buttonAction={closedModal}/>
-      </Gmodal>
+      onClose={closedModal}
+      />
     </>
   );
 }

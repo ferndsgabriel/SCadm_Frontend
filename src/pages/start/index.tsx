@@ -11,8 +11,10 @@ import {BiEdit} from "react-icons/bi";
 import {FaXmark,FaCheck } from "react-icons/fa6";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { Loading } from "../../components/loading";
-import { Gmodal } from "../../components/myModal";
+import Gmodal  from "../../components/myModal";
 
+import NewUsersModal from "../../components/modalsUsers/newUsers";
+import ChangeStatesModal from "../../components/modalsUsers/changeStates";
 
 type UserProps = {
   cpf: string,
@@ -72,7 +74,7 @@ const [indexFilter, setIndexFilter] = useState(0);
 const [isOpenFilterByTower, setIsOpenFilterByTower] = useState(false);
 const [towerFilter, setTowerFilter] = useState(0);
 const [loadingExcel, setLoadingExcel] = useState(false);
-
+const [loadingModal, setLoadingModal] = useState(false);
 
 const SetupApi = SetupApiClient();
 
@@ -91,7 +93,7 @@ async function refreshDate(){
 
 useEffect(()=>{
   refreshDate();
-},[]);
+},[closeModalNewUsers, closeModalPayment]);
 
 
 //------------------- -Aprovar ou recusar novos moradores ------------------------//
@@ -106,25 +108,6 @@ function closeModalNewUsers() {
   setAccountStatus(null);
   setIdNewUsers('');
 }
-
-async function handleNewUser(){
-  console.log(accountStatus)
-  try{
-    await SetupApi.put("/adm/useron",{
-        id:idNewUsers,
-        accountStatus:accountStatus
-    });  
-    accountStatus?(
-      toast.success('Usuário aprovado com sucesso.')
-    ):(
-      toast.success('Usuário reprovado com sucesso.')
-    );
-    refreshDate();
-    closeModalNewUsers();
-  }catch(error){
-    toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-  }
-}
 //--------------------Alterar pagamento -------------------------//
 
 function openModalPayment(id:string){
@@ -137,20 +120,7 @@ function closeModalPayment(){
   setIsOpenPayment(false);
 }
 
-async function handlePayment(){
-    try{
-      await SetupApi.put("/adm/setpayment",{
-          apartment_id:apartament_id
-      })
-      toast.success("Pagamento alterado com êxito.");
-      refreshDate();
 
-      closeModalPayment();
-    }catch(error){
-      console.log(error)
-      toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-    }  
-}
 
 //-------------------- Pagamento automatico excel -------------------------//
 async function HandleExcel(excel){
@@ -200,6 +170,7 @@ async function handleEditApt(e:FormEvent){
   );
 
   const idApt = allAptInTower[aptEditIndex].id;
+  setLoadingModal(true);
   try{
     await SetupApi.put('/adm/aptuser',{
       apartment_id:idApt ,
@@ -211,6 +182,8 @@ async function handleEditApt(e:FormEvent){
   }catch(error){
     console.log(error)
     toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
+  }finally{
+    setLoadingModal(false);
   }
 }
 
@@ -381,84 +354,66 @@ if (loadingPage){
       </div>
       
 
-
+    <NewUsersModal
+    isOpen={isOpenNewUsers}
+    onClose={closeModalNewUsers}
+    accountStatus={accountStatus}
+    idNewUsers={idNewUsers}
+    />
     {/*------------------------------------Modal novos usuarios*/}
-    <Gmodal isOpen={isOpenNewUsers}
-        onClose={closeModalNewUsers}
-        className='modal'>   
-        <div className='modalContainer'>     
+    <ChangeStatesModal
+      isOpen={isOpenPayment}
+      onClose={closeModalPayment}
+      apartament_id={apartament_id}
+    />
+    {/*------------------------------------Modal pagamento apt */}
+
+    <Gmodal isOpen={isOpenEditApt}
+    onClose={closeModalEditApt}
+    className='modal'>
+        <form className='modalContainer' onSubmit={handleEditApt}>
           <div className='beforeButtons'>
-            <h3>Validação</h3>
-            {accountStatus?(
-              <p>Você tem certeza de que deseja aprovar este usuário?</p>
-            ):(
-              <p>Você tem certeza de que deseja recusar este usuário? </p>
+            <h3>Editar apartamento</h3>
+            <p>Tem certeza de que deseja alterar o apartamento do usuário?
+            </p>
+
+            <div className="modalOptions">
+              <select value={towerAptEditIndex} onChange={changeOptionTower}
+              style={{marginRight:'16px'}}>
+                {allTowersList.filter((item)=>item.apartment.length >0
+                ).map((item, index)=>{
+                  return(
+                    <option key={item.id} value={index}>
+                      Torre - {item.numberTower}
+                    </option>
+                  )
+                })}
+              </select>
+
+              <select value={aptEditIndex} onChange={changeOptionApt}>
+                {allAptList.filter((item)=>item.tower_id === allTowersList[towerAptEditIndex].id
+                ).map((item, index)=>{
+                  return(
+                    <option key={item.id} value={index}>
+                      Apartamento - {item.numberApt}
+                    </option>
+                  )
+                })}
+              </select>
+            </div>
+          </div>
+          <div className='buttonsModal'>
+            <button className='buttonSlide'
+            autoFocus={true} disabled={loadingModal}>Confirmar</button>
+            {!loadingModal && (
+            <button onClick={closeModalEditApt} className='buttonSlide'>Cancelar</button>
             )}
-          </div>
-          <div className='buttonsModal'>
-              <button onClick={handleNewUser} className='buttonSlide' autoFocus={true}>Confirmar</button>
-              <button onClick={closeModalNewUsers} className='buttonSlide'>Cancelar</button> 
-          </div>
         </div>
-      </Gmodal>
-      {/*------------------------------------Modal pagamento apt */}
-      <Gmodal isOpen={isOpenPayment}
-        onClose={closeModalPayment}
-        className='modal'>
-        <div className='modalContainer'> 
-          <div className='beforeButtons'>
-              <h3>Alterar Pagamento</h3>
-              <p>Tem certeza de que deseja modificar o pagamento deste usuário?</p>
-          </div>  
-          <div className='buttonsModal'>
-              <button onClick={handlePayment} className='buttonSlide' autoFocus={true}>Confirmar</button>
-              <button onClick={closeModalPayment} className='buttonSlide'>Cancelar</button>   
-          </div> 
-        </div>
-      </Gmodal>
-      {/*------------------------------------Modal editar apt */}
-      <Gmodal isOpen={isOpenEditApt}
-      onClose={closeModalEditApt}
-      className='modal'>
-          <form className='modalContainer' onSubmit={handleEditApt}>
-            <div className='beforeButtons'>
-              <h3>Editar apartamento</h3>
-              <p>Tem certeza de que deseja alterar o apartamento do usuário?
-              </p>
+        </form>
+    </Gmodal>
+    {/*------------------------------------Modal editar apt */}
 
-              <div className="modalOptions">
-                <select value={towerAptEditIndex} onChange={changeOptionTower}
-                style={{marginRight:'16px'}}>
-                  {allTowersList.filter((item)=>item.apartment.length >0
-                  ).map((item, index)=>{
-                    return(
-                      <option key={item.id} value={index}>
-                        Torre - {item.numberTower}
-                      </option>
-                    )
-                  })}
-                </select>
-
-                <select value={aptEditIndex} onChange={changeOptionApt}>
-                  {allAptList.filter((item)=>item.tower_id === allTowersList[towerAptEditIndex].id
-                  ).map((item, index)=>{
-                    return(
-                      <option key={item.id} value={index}>
-                        Apartamento - {item.numberApt}
-                      </option>
-                    )
-                  })}
-                </select>
-              </div>
-            </div>
-            <div className='buttonsModal'>
-              <button type="submit" className='buttonSlide' autoFocus={true}>Confirmar</button>
-              <button onClick={closeModalEditApt} className='buttonSlide'>Cancelar</button>   
-            </div>
-          </form>
-      </Gmodal>
-{/*----------------------Filtrar por torre------------------------------*/}
-        <Gmodal isOpen={isOpenFilterByTower}
+    <Gmodal isOpen={isOpenFilterByTower}
         onClose={closeMModalFilterByTower}
         className='modal'>
         <div className='modalContainer'> 
@@ -484,6 +439,7 @@ if (loadingPage){
           </div> 
         </div>
       </Gmodal>
+      {/*----------------------Filtrar por torre------------------------------*/}
     </>
     )
 }

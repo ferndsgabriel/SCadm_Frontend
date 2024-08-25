@@ -9,9 +9,13 @@ import {FaXmark,FaCheck} from "react-icons/fa6";
 import { IoPeopleOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { formatDate, formatHours } from "../../utils/formatted";
-import { Gmodal } from "../../components/myModal";
-import { ViewGuest } from "../../components/modals/guest";
-import { AllTaxed } from "../../components/modals/taxed";
+
+import Gmodal from "../../components/myModal";
+
+import SetReservationModal from "../../components/modalsReservation/setReservation";
+import ViewGuestModal from "../../components/modalsReservation/viewGuest";
+import AllTaxed from "../../components/modalsReservation/allTaxed";
+import DeleteReservationModal from "../../components/modalsReservation/deleteReservation";
 
 type AllReservationsProps = {
   id: string,
@@ -103,7 +107,7 @@ export default function Reservation({ reservationsNull, reservationsTrue, towers
 
   useEffect(() => {
     refreshDate();
-  }, []);
+  }, [closeModalSetReservation, closeModalDeleteReservation]);
 
   // -----------------------Passar para o formato data minhas datas number --------------------------/////////
   function formatInDate(date: number) {
@@ -221,28 +225,7 @@ function closeModalSetReservation() {
   setIsOpenSetReservation(false);
 }
 
-async function handleSetReservation() {
-  if (!reservation_id || reservationStatus === null){
-    toast.warning('Informe os dados!');
-  }
-  try {
-    await setupApi.put('/adm/setreservations', {
-      reservation_id: reservation_id,
-      status:reservationStatus,
-    });
-    reservationStatus ?(
-      toast.success("Reserva aprovada.")
-    ):(
-      toast.success("Reserva recusada.")
-    );
-    refreshDate();
-    closeModalSetReservation()
-  } 
-  catch (error) {
-    console.log(error);
-    toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-  }
-}
+
 //---------------------------------------------------------------------------------------------------//
 const filterAll = trueReservations;
   
@@ -284,6 +267,7 @@ function closeModalGuest() {
   setReservation_id('');
   setIsOpenGuest(false);
 }
+
 function openModalDeleteReservation(id:string){
   setReservation_id(id);
   setIsOpenDeleteReservation(true);
@@ -292,22 +276,6 @@ function openModalDeleteReservation(id:string){
 function closeModalDeleteReservation(){
   setReservation_id('');
   setIsOpenDeleteReservation(false);
-}
-
-async function handleDeleteReservation(){
-  try{
-    await setupApi.delete('/adm/reservation',{
-      data:{
-        reservation_id:reservation_id
-      }
-    })
-    toast.success('Reserva cancelada com sucesso.');
-    refreshDate();
-    closeModalDeleteReservation();
-  }catch(error){
-    console.log(error);
-    toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-  }
 }
 
 function openTaxed(){
@@ -470,63 +438,34 @@ function closedTaxed(){
 
 
       {/*- ------Modal aprovar ou recusar reservas ------------------ */}
-      <Gmodal
-      isOpen={isOpenSetReservation}
+      <SetReservationModal 
+      isOpen={isOpenSetReservation} 
       onClose={closeModalSetReservation}
-      className='modal'
-      > 
-        <div className='modalContainer'>
-          <div className='beforeButtons'>
-            <h3>Validar reserva</h3>
-            {reservationStatus?(
-            <p>Tem certeza de que deseja aprovar a reserva?</p>
-            ):(
-              <p>Tem certeza que deseja recusar a reserva?</p>
-            )}
-          </div>
-          <div className='buttonsModal'>
-            <button onClick={handleSetReservation} className='buttonSlide' autoFocus={true}>Confirmar</button>
-            <button onClick={closeModalSetReservation} className='buttonSlide'>Cancelar</button>
-          </div>
-        </div>
-        </Gmodal>
+      reservation_id={reservation_id}
+      reservationStatus={reservationStatus}/>
 
-        {/* -------------Modal ver lista de convidados -------------------*/}
-        <Gmodal
-          isOpen={isOpenGuest}
-          onClose={closeModalGuest}
-          className={styles.modalGuest}>
-            <ViewGuest idViewGuest={reservation_id} closeModal={closeModalGuest}/>
-        </Gmodal>
+      {/* -------------Modal ver lista de convidados -------------------*/}
+
+      <ViewGuestModal
+        isOpen={isOpenGuest}
+        onClose={closeModalGuest}
+        idViewGuest={reservation_id}
+        /> 
 
         {/* -------------Modal ver taxados  -------------------*/}
-        <Gmodal isOpen={isOpenTaxed}
+        <AllTaxed 
         onClose={closedTaxed}
-        className={styles.modalTaxed}>
-          <AllTaxed closeFunction={closedTaxed}/>
-        </Gmodal>
+        isOpen={isOpenTaxed}
+        />
 
+        
       {/*- ------Modal deletarReservas ------------------ */}
-      <Gmodal
-      isOpen={isOpenDeleteReservation}
-      onClose={closeModalDeleteReservation}
-      className='modal'
-      > 
-        <div className='modalContainer'>
-          <div className='beforeButtons'>
-            <h3>Deletar reserva</h3>
-            <p>
-            Reserva associada a um apartamento antes adimplente,
-            agora está vinculada a um condomínio inadimplente.
-            Deseja prosseguir com a exclusão?
-            </p>
-          </div>
-          <div className='buttonsModal'>
-            <button onClick={handleDeleteReservation} className='buttonSlide' autoFocus={true}>Confirmar</button>
-            <button onClick={closeModalDeleteReservation} className='buttonSlide'>Cancelar</button>
-          </div>
-        </div>
-        </Gmodal>
+      <DeleteReservationModal
+        isOpen={isOpenDeleteReservation}
+        onClose={closeModalDeleteReservation}
+        reservation_id={reservation_id}
+      />
+
 
         {/*----------------------Filtrar por torre------------------------------*/}
         <Gmodal isOpen={isOpenFilterByTower}

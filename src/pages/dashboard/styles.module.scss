@@ -61,7 +61,7 @@
             flex-direction: column;
             gap: 1.6rem;    
             .carousel{
-                padding: 0.4rem;
+                padding: 0.4rem 0.1rem;
                 .totalValues{
                     display: flex;
                     flex-direction: column;
@@ -96,6 +96,7 @@
                         opacity: 0.8;
                     }
                 }
+
             }
             .barChart{
                 display: flex;

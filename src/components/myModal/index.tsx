@@ -10,14 +10,11 @@ interface ModalProps {
     className?:string
 }
 
-export const Gmodal: React.FC<ModalProps> = ({ isOpen, onClose, children, className }) => {
+export default function Gmodal ({ isOpen, onClose, children, className }:ModalProps) {
     const overlayRef = useRef<HTMLDivElement>(null);
     const mainRef = useRef<HTMLDivElement>(null);
     const {dark} = useContext (ThemeContext);
 
-    if (!isOpen) {
-        return null; 
-    }
 
     function clickClose(e: React.MouseEvent<HTMLDivElement>): void {
         if (e.target === overlayRef.current) {
@@ -35,16 +32,21 @@ export const Gmodal: React.FC<ModalProps> = ({ isOpen, onClose, children, classN
     window.addEventListener('keydown', escClose);
 
     return (
-        <div
-        className={styles.overlay}
-        onClick={clickClose}
-        ref={overlayRef}
-        style={{
-          backgroundColor: dark ? 'rgba(22,31,40,0.7)' : 'rgba(255,255,255,0.5)', // ou a cor que preferir
-        }}>
-        <div className={className} ref={mainRef}>
-            {children}
-        </div>
-    </div>
+        <>
+            {isOpen ? (
+                <div
+                    className={styles.overlay}
+                    onClick={clickClose}
+                    ref={overlayRef}
+                    style={{
+                    backgroundColor: dark ? 'rgba(22,31,40,0.7)' : 'rgba(255,255,255,0.5)', 
+                    }}>
+                    <div className={className} ref={mainRef}>
+                        {children}
+                    </div>
+                </div>
+            ):null}
+        </>
+        
     )
 }

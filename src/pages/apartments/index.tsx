@@ -11,7 +11,14 @@ import { IoClose } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { TbTower } from "react-icons/tb";
 import { MdApartment, MdEdit } from "react-icons/md";
-import { Gmodal } from "../../components/myModal";
+import Gmodal from "../../components/myModal";
+
+import NewTowerModal from "../../components/modalsApartments/newTower";
+import DeleteTowerModal from "../../components/modalsApartments/deleteTower";
+import EditTowerModal from "../../components/modalsApartments/editTower";
+import CreateAptModal from "../../components/modalsApartments/createApt";
+import EditAptModal from "../../components/modalsApartments/editApt";
+import DeleteAptModal from "../../components/modalsApartments/deleteApt";
 
 type TowersProps = {
     id:string,
@@ -32,27 +39,21 @@ interface aptPropsInterface {
 
 export default function Apartments({Alltowers, AllApts}:aptPropsInterface){
 
-const SetupApi = SetupApiClient();
 const [towers, setTowers] = useState(Alltowers || null);
 const [apts, setApts] = useState(AllApts || null);
 const [isOpenCreateTower, setIsOpenCreateTower] = useState(false);
-const [createTowerInput, setCreateTowerInput] = useState ('');
 const [tower_id, setTower_id] = useState('');
 const [isOpenTowerDelete, setIsOpenTowerDelete] = useState (false);
 const [numberTowerDelete, setNumberTowerDelete] = useState ('');
-const [newTowerEdit, setNewTowerEdit] = useState ('');
 const [isOpenTowerEdit, setIsOpenTowerEdit] = useState (false);
 const [numberTowerEdit, setNumberTowerEdit] = useState ('');
 const [optionTower, setOptionTower] = useState(0);
-const [changeTowerCreateApt, setChangeTowerCreateApt] = useState(0);
 const [isOpenCreateApt, setIsOpenCreateApt] = useState (false);
-const [createAptInput, setCreateAptInput] = useState ('');
 const [apartment_id, setApartment_id] = useState('');
 const [isOpenDeleteApartament, setIsOpenDeleteApartment] = useState(false);
 const [numberAptDelete, setNumberAptDelete] = useState('');
 const [isOpenAptEdit, setIsOpenAptEdit] = useState(false);
 const [numberAptEdit, setNumberAptEdit] = useState('');
-const [inputNewApt, setInputNewApt] = useState ('');
 const [loadingPage, setLoadingPage] = useState (true);
 
 
@@ -72,7 +73,12 @@ async function refreshDate(){
 }
 useEffect(()=>{
     refreshDate();
-},[]);
+},[closeModalCreateTower, 
+    closeModalTowerDelete, 
+    closeModalTowerEdit, 
+    closeModalCreateApt,
+    closeModalEditApt,
+    closeModalDeleteApartment]);
 
 // ----------------------------- criar torre
 function openModalCreateTower(){
@@ -81,27 +87,8 @@ function openModalCreateTower(){
 
 function closeModalCreateTower(){
     setIsOpenCreateTower(false);
-    setCreateTowerInput('');
 }
 
-async function handleCreateTower(e:FormEvent){
-    e.preventDefault();
-    if (createTowerInput === ""){
-        toast.warning('Por favor, insira a torre desejada.');
-        return;
-    }
-    try{
-        await SetupApi.post('/adm/towers',{          
-            numberTower:createTowerInput
-        });
-        toast.success('Torre criada com sucesso.');
-        setCreateTowerInput("");
-        refreshDate();
-        closeModalCreateTower();
-    }catch(error){
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-    }
-}
 
 // ----------------------------- Deletar torre
 function openModalTowerDelete(id:string, number:string){
@@ -116,46 +103,8 @@ function closeModalTowerDelete(){
     setIsOpenTowerDelete(false);
 }
 
-async function DeleteTower(){
-    if (tower_id === ''){
-        toast.warning('Por favor, insira a torre desejada.');
-        return;
-    }
-    try{
-        await SetupApi.delete('/adm/towers',{
-            data:{
-                tower_id:tower_id
-            }
-        });
-        setOptionTower(0);
-        refreshDate();
-        toast.success('Torre excluída com sucesso.');
-        closeModalTowerDelete();
-    }catch(error){
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-        console.log(error);
-    }
-}
 
  // ----------------------------- editar torre
-async function HandleEditTower(e:FormEvent){
-    e.preventDefault();
-    if (tower_id === '' || newTowerEdit === '')
-    toast.warning('Por favor, insira a nova torre.');
-    try{
-        await SetupApi.put('/adm/towers',{
-            tower_id:tower_id,
-            newTower:newTowerEdit
-        })
-        refreshDate();
-        toast.success('Torre editada com sucesso.');
-        closeModalTowerEdit();
-    }catch(error){
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-        console.log(error);
-    }
-}
-
 function openModalTowerEdit(id:string, number:string){
     setTower_id(id);
     setNumberTowerEdit(number);
@@ -165,7 +114,6 @@ function openModalTowerEdit(id:string, number:string){
 function closeModalTowerEdit(){
     setTower_id('');
     setNumberTowerEdit('');
-    setNewTowerEdit('');
     setIsOpenTowerEdit(false);
 }
 
@@ -175,43 +123,14 @@ function handleViewApts(e: React.ChangeEvent<HTMLSelectElement>) {
     setOptionTower(towerIndex);
 };
 
-
-// ----------------------------- criar apt
-function handleTowerCreateApt(e: React.ChangeEvent<HTMLSelectElement>) {
-    const towerIndex = parseInt (e.target.value);
-    setChangeTowerCreateApt(towerIndex);
-    console.log(towerIndex);
-}
-
 function openModalCreateApt(){
     setIsOpenCreateApt(true);
 }
 
 function closeModalCreateApt(){
     setIsOpenCreateApt(false);
-    setCreateAptInput('');
 }
 
-async function handleCreateApt(e:FormEvent){
-    e.preventDefault();
-    if (createAptInput === '' ){
-        toast.warning('Por favor, insira o número do apartamento.');
-        return;
-    }
-    try{
-        await SetupApi.post("/adm/apt",{
-            numberApt:createAptInput,
-            tower:towers[changeTowerCreateApt].id
-        });
-        toast.success('Apartamento criado com sucesso!');
-        refreshDate();
-        closeModalCreateApt();
-    }
-    catch(error){
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-        console.log(error);
-    }
-}
 // ----------------------------- deletar apt
 function openModalDeleteApartment(id:string, number:string){
     setApartment_id(id);
@@ -225,28 +144,6 @@ function closeModalDeleteApartment(){
     setIsOpenDeleteApartment(false);
 }
 
-async function handleDeleteApt(){
-    if (apartment_id === ""){
-        toast.warning('Por favor, insira o número do apartamento.');
-        return;
-    }
-    try{
-        await SetupApi.delete("/adm/apt",{
-            data:{
-                apartment_id:apartment_id
-            }
-            
-        })
-        toast.success('Apartamento excluído com sucesso.');
-        refreshDate();
-        setApartment_id('');
-        closeModalDeleteApartment()
-    }catch(error){
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-        console.log(error);
-    }
-}
-
 // ----------------------------- editar apt
 function openModalEditApt(id:string, number:string){
     setApartment_id(id);
@@ -257,26 +154,7 @@ function openModalEditApt(id:string, number:string){
 function closeModalEditApt(){
     setApartment_id('');
     setNumberAptEdit('');
-    setInputNewApt('');
     setIsOpenAptEdit(false);
-}
-async function handleEditApt(e:FormEvent){
-    e.preventDefault();
-    if (inputNewApt === ""){
-        toast.warning('Por favor, insira o número do apartamento.');
-        return;
-    }
-    try{
-        await SetupApi.put("/adm/apt",{
-            apartment_id:apartment_id,
-            newApt:inputNewApt
-        })
-        toast.success('Apartamento editado com sucesso.');
-        refreshDate();
-        closeModalEditApt();
-    }catch(error){
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-    }
 }
 
 // -------------------------------------------------------------------------//
@@ -380,126 +258,48 @@ async function handleEditApt(e:FormEvent){
             </div>
             
         
+            <NewTowerModal
+            isOpen={isOpenCreateTower}
+            onClose={closeModalCreateTower}/>
             {/* ----------------- Modal criar torre ------------------- */}
-            <Gmodal isOpen={isOpenCreateTower}
-            onClose={closeModalCreateTower}
-            className='modal'>
-            <form className='modalContainer' onSubmit={handleCreateTower}>
-                <div className='beforeButtons'>
-                    <h3>Criar torre</h3>
-                    <p>Insira o valor para a nova torre:</p>
-                    <input placeholder="Digite aqui a torre:" 
-                    className='inputModal' autoFocus={true}
-                    value={createTowerInput}
-                    onChange={(e)=> setCreateTowerInput(e.target.value)}/>
-                </div>
-                <div className='buttonsModal'>
-                    <button type="submit" className='buttonSlide'>Criar</button>
-                    <button onClick={closeModalCreateTower} className='buttonSlide'>Cancelar</button>
-                </div>
-            </form>
-            </Gmodal>
-
+            
+            <DeleteTowerModal 
+            isOpen={isOpenTowerDelete}
+            onClose={closeModalTowerDelete} 
+            numberTowerDelete={numberTowerDelete}
+            tower_id={tower_id}
+            />
             {/* ----------------- Modal deletar torre ------------------- */}
-            <Gmodal isOpen={isOpenTowerDelete}
-            onClose={closeModalTowerDelete}
-            className='modal'>
-                <div className='modalContainer'>
-                    <div className='beforeButtons'>
-                        <h3>Deletar torre</h3>
-                        <p>Tem certeza de que deseja excluir permanentemente a Torre {numberTowerDelete}?</p>
-                    </div>
-                    <div className='buttonsModal'>
-                        <button onClick={DeleteTower} className='buttonSlide' autoFocus={true}>Deletar</button>
-                        <button onClick={closeModalTowerDelete} className='buttonSlide'>Cancelar</button>
-                    </div>
-                </div>
-            </Gmodal>
-        
-            {/* ----------------- Modal editar torre ------------------- */}
-            <Gmodal isOpen={isOpenTowerEdit}
+
+            <EditTowerModal
+            isOpen={isOpenTowerEdit}
             onClose={closeModalTowerEdit}
-            className='modal'>
-                <form className='modalContainer' onSubmit={HandleEditTower}>
-                    <div className='beforeButtons'>
-                        <h3>Editar torre</h3>
-                        <p>Altere o valor da Torre {numberTowerEdit}:</p>
-                        <input placeholder="Digite aqui a torre:" 
-                        className='inputModal' autoFocus={true}
-                        value={newTowerEdit}
-                        onChange={(e)=> setNewTowerEdit(e.target.value)}/>
-                    </div>
-                    <div className='buttonsModal'>
-                        <button type="submit" className='buttonSlide'>Confirmar</button>
-                        <button onClick={closeModalTowerEdit} className='buttonSlide'>Cancelar</button>
-                    </div>
-                </form>
-            </Gmodal>
+            tower_id={tower_id}
+            numberTowerEdit={numberTowerEdit}
+            />
+            {/* ----------------- Modal editar torre ------------------- */}
 
-            {/* ----------------- Modal criar apartamento ------------------- */}
-            <Gmodal isOpen={isOpenCreateApt}
+            <CreateAptModal
+            isOpen={isOpenCreateApt}
             onClose={closeModalCreateApt}
-            className='modal'>
-                <form className='modalContainer' onSubmit={handleCreateApt}>
-                    <div className='beforeButtons'>
-                        <h3>Criar apartamento</h3>
-                        <p>Selecione a torre:</p>
-                        <select value={changeTowerCreateApt} onChange={handleTowerCreateApt}>
-                            {towers.map((item, index)=>{
-                                return(
-                                    <option key={item.id} value={index}>
-                                        {item.numberTower}
-                                    </option>
-                                )
-                            })}
-                        </select>
-                        <input placeholder="Digite o novo apartamento:" 
-                        className='inputModal' autoFocus={true}
-                        value={createAptInput}
-                        onChange={(e)=> setCreateAptInput(e.target.value)}/>
-                    </div>
-                    <div className='buttonsModal'>
-                        <button type="submit" className='buttonSlide'>Criar</button>
-                        <button onClick={closeModalCreateApt} className='buttonSlide'>Cancelar</button>
-                    </div>
-                </form>
-            </Gmodal>
+            />
+            {/* ----------------- Modal criar apartamento ------------------- */}
 
-            {/* ----------------- Modal edit apartamento ------------------- */}
-            <Gmodal isOpen={isOpenAptEdit}
+            <EditAptModal
+            isOpen={isOpenAptEdit}
             onClose={closeModalEditApt}
-            className='modal'>
-                <form className='modalContainer' onSubmit={handleEditApt}>
-                    <div className='beforeButtons'>
-                        <h3>Editar apartamento</h3>
-                        <p>Altere o apartamento {numberAptEdit}:</p>
-                        <input placeholder="Digite o apartamento:" 
-                        className='inputModal' autoFocus={true}
-                        value={inputNewApt}
-                        onChange={(e)=> setInputNewApt(e.target.value)}/>
-                    </div>
-                    <div className='buttonsModal'>
-                        <button type="submit" className='buttonSlide'>Confirmar</button>
-                        <button onClick={closeModalEditApt} className='buttonSlide'>Cancelar</button>
-                    </div>
-                </form>
-            </Gmodal>
+            apartment_id={apartment_id}
+            numberAptEdit={numberAptEdit}
+            />
+            {/* ----------------- Modal edit apartamento ------------------- */}
 
-            {/* ----------------- Modal deletar apartamento ------------------- */}
-            <Gmodal isOpen={isOpenDeleteApartament}
+            <DeleteAptModal
+            isOpen={isOpenDeleteApartament}
             onClose={closeModalDeleteApartment}
-            className='modal'>
-            <div className='modalContainer'>
-                <div className='beforeButtons'>
-                    <h3>Deletar apartamento</h3>
-                    <p>Tem certeza de que deseja excluir permanentemente o Apartamento {numberAptDelete}?</p>
-                </div>
-                <div className='buttonsModal'>
-                    <button onClick={handleDeleteApt} className='buttonSlide' autoFocus={true}>Deletar</button>
-                    <button onClick={closeModalDeleteApartment} className='buttonSlide'>Cancelar</button>
-                </div>
-            </div>
-            </Gmodal>
+            apartment_id={apartment_id}
+            numberAptDelete={numberAptDelete}
+            />
+            {/* ----------------- Modal deletar apartamento ------------------- */}
         </>
     )
 }

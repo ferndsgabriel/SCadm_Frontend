@@ -193,18 +193,19 @@ export default function Dashboard() {
                         </label>
                     </article>
 
+                    {/*
                     <article className={styles.dashboardOptions}>
                         <button onClick={()=>setCalendarSection(0)}
                         className={calendarSection === 0 ? styles.buttonStyle : ''}>Dashboard</button>
                         <button onClick={()=>setCalendarSection(1)}
                         className={calendarSection === 1 ? styles.buttonStyle : ''}>Seção 2</button>
                     </article>
+                    */}
 
                     
                     <section className={styles.allCalendar}>
-
-                        <article className={styles.carousel}>               
-                            <Carousel responsive={responsive}>
+                        <article className={styles.carouselContainer}>               
+                            <Carousel responsive={responsive} className={styles.carousel}>
                                 <article className={styles.totalValues}>
                                     <span>
                                         <h3>Total arrecadado com taxas</h3>
@@ -412,7 +413,7 @@ export default function Dashboard() {
                         </article>
 
                         <article className={styles.barChart}>
-                        <h3>Avaliação de reservas</h3>
+                        <h3>Avaliações de reservas</h3>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
                                     layout="vertical"

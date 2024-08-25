@@ -40,8 +40,6 @@ export default function Home(){
     try{
       await singIn(data);
     }catch(err){
-      console.log(err)
-    }finally{
       setLoading(false);
     }
   }
@@ -75,7 +73,9 @@ export default function Home(){
           Entrar
         </Button>
       </form>
-      <div className={styles.othersOptions}>
+      
+      {!loading && (
+        <div className={styles.othersOptions}>
         <Link href={"/recovery"} className={styles.link}>
           <p>Recuperar conta</p>
         </Link>
@@ -83,6 +83,8 @@ export default function Home(){
           Não tem uma conta? Cadastre-se
         </Link>
       </div>
+      )}
+
     </main>
     </>
   )
