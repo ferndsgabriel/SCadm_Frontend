@@ -60,6 +60,7 @@
             .questionsArea{
                 display: flex;
                 flex-direction: column;
+                max-width: 100rem;
                 .cardQuestion:nth-child(odd){
                     background-color: var(--Transparente);
                 }
