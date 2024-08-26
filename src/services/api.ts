@@ -23,7 +23,6 @@ export const SetupApiClient = (ctx = undefined) =>{
         (error: AxiosError)=>{
             if (error.response.status === 401){
                 if (typeof window !== 'undefined'){
-                    //chamar função de deslogar user
                     singOut();
                 }
             } else{

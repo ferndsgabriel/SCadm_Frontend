@@ -3,7 +3,7 @@ import Header from "../../components/header";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import style from "./styles.module.scss";
 import { SetupApiClient } from "../../services/api";
-import { useState, useEffect, FormEvent} from "react";
+import { useState, useEffect, useCallback, useMemo} from "react";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 import {AiOutlineSearch} from "react-icons/ai";
@@ -11,10 +11,10 @@ import {BiEdit} from "react-icons/bi";
 import {FaXmark,FaCheck } from "react-icons/fa6";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { Loading } from "../../components/loading";
-import Gmodal  from "../../components/myModal";
-
 import NewUsersModal from "../../components/modalsUsers/newUsers";
 import ChangeStatesModal from "../../components/modalsUsers/changeStates";
+import EditAptUsersModal from "../../components/modalsUsers/editApt";
+import FilterUserModal from "../../components/modalsUsers/filterUsersByTower";
 
 type UserProps = {
   cpf: string,
@@ -35,30 +35,26 @@ type UserProps = {
       numberTower:string
     }
   }
-}
+}[];
+
 type AptProps = {
   id: string;
   numberApt: string;
   tower_id: string;
   user: any[]; 
-}
+}[]
 type TowersProps = {
   id:string,
   numberTower:string 
   apartment:[]
-}
-interface UserPropsInterface {
-  newUsers: UserProps[];
-  allUsers: UserProps[];
-  Alltowers: TowersProps[];
-  AllApts:AptProps[];
-}
+}[]
 
-export default function start({newUsers, allUsers, Alltowers, AllApts}:UserPropsInterface) {
-const [allUsersRequest, SetAllUserRequest] = useState (newUsers);
-const [allResidents, SetAllResidents] = useState (allUsers);
-const [allTowersList, setAllTowersList] = useState(Alltowers);
-const [allAptList, setAllAptList] = useState(AllApts);
+
+export default function start() {
+const [allUsersRequest, SetAllUserRequest] = useState <UserProps>([]);
+const [allResidents, SetAllResidents] = useState <UserProps>([]);
+const [allTowersList, setAllTowersList] = useState <TowersProps>([]);
+const [allAptList, setAllAptList] = useState <AptProps>([]);
 const [accountStatus, setAccountStatus] = useState(null);
 const [isOpenNewUsers, setIsOpenNewUsers] = useState (false);
 const [idNewUsers, setIdNewUsers] = useState ('');
@@ -67,59 +63,66 @@ const [isOpenPayment, setIsOpenPayment] = useState(false);
 const [apartament_id, setapartament_id] = useState ('');
 const [isOpenEditApt, setIsOpenEditApt] = useState (false);
 const [user_id, setUserId] = useState('');
-const [towerAptEditIndex, setTowerAptEditIndex] = useState(0);
-const [aptEditIndex, setAptEditIndex] = useState(0);
 const [loadingPage, setLoadingPage] = useState (true);
 const [indexFilter, setIndexFilter] = useState(0);
-const [isOpenFilterByTower, setIsOpenFilterByTower] = useState(false);
 const [towerFilter, setTowerFilter] = useState(0);
 const [loadingExcel, setLoadingExcel] = useState(false);
-const [loadingModal, setLoadingModal] = useState(false);
-
+const [isOpenFilterByTower, setIsOpenFilterByTower] = useState(false);
 const SetupApi = SetupApiClient();
 
-async function refreshDate(){
-  try{
-      const response = await SetupApi.get("/adm/users");
-      const response2 = await SetupApi.get("/adm/filter");
-      SetAllUserRequest(response.data);
-      SetAllResidents(response2.data);
-      setLoadingPage(false)
-  }catch(err){
-    console.log('Erro ao obter dados do servidor');
-    setTimeout(refreshDate, 500);
-  }
-}
 
-useEffect(()=>{
-  refreshDate();
-},[closeModalNewUsers, closeModalPayment]);
+
+useEffect(() => {
+  async function refreshData() {
+    if (loadingPage || !isOpenNewUsers || !isOpenPayment || !loadingExcel || !isOpenEditApt) {
+      try {
+        const [users, residents, towers, apartments] = await Promise.all([
+          SetupApi.get("/adm/users"),
+          SetupApi.get("/adm/filter"),
+          SetupApi.get('/towers'),
+          SetupApi.get('/apts')
+        ]);
+
+        SetAllUserRequest(users.data);
+        SetAllResidents(residents.data);
+        setAllTowersList(towers.data);
+        setAllAptList(apartments.data);
+      } catch (err) {
+        console.log('Erro ao obter dados do servidor');
+      } finally {
+        setLoadingPage(false);
+      }
+    }
+  }
+
+  refreshData();
+}, [isOpenNewUsers, isOpenPayment, loadingPage, loadingExcel, isOpenEditApt]);
 
 
 //------------------- -Aprovar ou recusar novos moradores ------------------------//
-function openModalNewUsers(id:string, setAccount:boolean) {
-    setAccountStatus(setAccount);
-    setIsOpenNewUsers(true);
-    setIdNewUsers(id);
-}
+const openModalNewUsers = useCallback((id:string, setAccount:boolean)=>{
+  setAccountStatus(setAccount);
+  setIsOpenNewUsers(true);
+  setIdNewUsers(id);
+},[isOpenNewUsers]);
 
-function closeModalNewUsers() {
+const closeModalNewUsers = useCallback(()=>{
   setIsOpenNewUsers(false);
   setAccountStatus(null);
   setIdNewUsers('');
-}
-//--------------------Alterar pagamento -------------------------//
+},[isOpenNewUsers]);
 
-function openModalPayment(id:string){
+
+//--------------------Alterar pagamento -------------------------//
+const openModalPayment = useCallback((id:string)=>{
   setIsOpenPayment(true);
   setapartament_id(id);
-}
+},[isOpenPayment]);
 
-function closeModalPayment(){
+const closeModalPayment = useCallback(()=>{
   setapartament_id('');
   setIsOpenPayment(false);
-}
-
+},[isOpenPayment]);
 
 
 //-------------------- Pagamento automatico excel -------------------------//
@@ -131,7 +134,6 @@ async function HandleExcel(excel){
       data.append('excel', excelFile);
       await SetupApi.post('/adm/excel', data);
       toast.success('Tabela importada com sucesso.')
-      refreshDate();
   }catch(error){
     toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
   }finally{
@@ -147,46 +149,8 @@ function openModalEditApt(id:string){
 }
 function closeModalEditApt(){
   setUserId('');
-  setAptEditIndex(0);
-  setTowerAptEditIndex(0);
   setIsOpenEditApt(false);
-
 }
-
-function changeOptionTower(e:React.ChangeEvent<HTMLSelectElement>){
-  const indexOption = parseInt (e.target.value);
-  setAptEditIndex(0);
-  setTowerAptEditIndex(indexOption);
-}
-function changeOptionApt(e:React.ChangeEvent<HTMLSelectElement>){
-  const indexOption = parseInt (e.target.value);
-  setAptEditIndex(indexOption);
-}
-
-async function handleEditApt(e:FormEvent){
-  e.preventDefault();
-  const allAptInTower = allAptList.filter((item)=>item.tower_id === 
-  allTowersList[towerAptEditIndex].id
-  );
-
-  const idApt = allAptInTower[aptEditIndex].id;
-  setLoadingModal(true);
-  try{
-    await SetupApi.put('/adm/aptuser',{
-      apartment_id:idApt ,
-      user_id:user_id
-    });
-    toast.success('Apartamento alterado com sucesso.');
-    refreshDate();
-    closeModalEditApt();
-  }catch(error){
-    console.log(error)
-    toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-  }finally{
-    setLoadingModal(false);
-  }
-}
-
 
 //-------------------- Filters -------------------------//
 const filterByName = allResidents.filter((item) => {
@@ -209,7 +173,10 @@ const filterNoPayment = allResidents.filter((item)=>{
   return item.apartment.payment === false
 });
 
-const filteredUsers = [filterByName, filterByTower, filterPayment, filterNoPayment ];
+const filteredUsers = useMemo(() => {
+  return [filterByName, filterByTower, filterPayment, filterNoPayment];
+}, [allResidents, searchResident, towerFilter]);
+
 
 //------------------------- alterar a torre do filtro -------------------//
 function handleChangeFilter(e:React.ChangeEvent<HTMLSelectElement>){
@@ -223,15 +190,12 @@ function handleChangeFilter(e:React.ChangeEvent<HTMLSelectElement>){
 function openModalFilterByTower(){
   setIsOpenFilterByTower(true);
 }
-function closeMModalFilterByTower(){
+function closeModalFilterByTower(){
   setIsOpenFilterByTower(false);
   setIndexFilter(0);
   setTowerFilter(0);
 }
-function changeTowerFilter(e:React.ChangeEvent<HTMLSelectElement>){
-  const indexOption = parseInt(e.target.value);
-  setTowerFilter(indexOption);
-}
+
 
 //--------------------/////////////////// -------------------------//
 if (loadingPage){
@@ -354,12 +318,15 @@ if (loadingPage){
       </div>
       
 
-    <NewUsersModal
-    isOpen={isOpenNewUsers}
-    onClose={closeModalNewUsers}
-    accountStatus={accountStatus}
-    idNewUsers={idNewUsers}
-    />
+    {isOpenNewUsers && (
+      <NewUsersModal
+        isOpen={isOpenNewUsers}
+        onClose={closeModalNewUsers}
+        accountStatus={accountStatus}
+        idNewUsers={idNewUsers}
+      />
+    )}
+
     {/*------------------------------------Modal novos usuarios*/}
     <ChangeStatesModal
       isOpen={isOpenPayment}
@@ -368,106 +335,31 @@ if (loadingPage){
     />
     {/*------------------------------------Modal pagamento apt */}
 
-    <Gmodal isOpen={isOpenEditApt}
-    onClose={closeModalEditApt}
-    className='modal'>
-        <form className='modalContainer' onSubmit={handleEditApt}>
-          <div className='beforeButtons'>
-            <h3>Editar apartamento</h3>
-            <p>Tem certeza de que deseja alterar o apartamento do usuário?
-            </p>
-
-            <div className="modalOptions">
-              <select value={towerAptEditIndex} onChange={changeOptionTower}
-              style={{marginRight:'16px'}}>
-                {allTowersList.filter((item)=>item.apartment.length >0
-                ).map((item, index)=>{
-                  return(
-                    <option key={item.id} value={index}>
-                      Torre - {item.numberTower}
-                    </option>
-                  )
-                })}
-              </select>
-
-              <select value={aptEditIndex} onChange={changeOptionApt}>
-                {allAptList.filter((item)=>item.tower_id === allTowersList[towerAptEditIndex].id
-                ).map((item, index)=>{
-                  return(
-                    <option key={item.id} value={index}>
-                      Apartamento - {item.numberApt}
-                    </option>
-                  )
-                })}
-              </select>
-            </div>
-          </div>
-          <div className='buttonsModal'>
-            <button className='buttonSlide'
-            autoFocus={true} disabled={loadingModal}>Confirmar</button>
-            {!loadingModal && (
-            <button onClick={closeModalEditApt} className='buttonSlide'>Cancelar</button>
-            )}
-        </div>
-        </form>
-    </Gmodal>
+    <EditAptUsersModal
+      isOpen={isOpenEditApt} 
+      onClose={closeModalEditApt} 
+      userId={user_id} 
+      allTowersList={allTowersList} 
+      allAptList={allAptList}
+    />
     {/*------------------------------------Modal editar apt */}
-
-    <Gmodal isOpen={isOpenFilterByTower}
-        onClose={closeMModalFilterByTower}
-        className='modal'>
-        <div className='modalContainer'> 
-          <div className='beforeButtons'>
-              <h3>Filtrar por torre</h3>
-              <p>Selecione a torre</p>
-
-              <select value={towerFilter} onChange={changeTowerFilter}autoFocus={true}>
-                {allTowersList.filter((item)=>item.apartment.length > 0
-                ).map((item, index)=>{
-                  return(
-                    <option key={item.id} value={index}>
-                      {item.numberTower}
-                    </option>
-                  )
-                })}
-              </select>
-          </div>
-          
-          <div className='buttonsModal'>
-              <button onClick={()=>setIsOpenFilterByTower(false)} className='buttonSlide' autoFocus={true}>Filtrar</button>
-              <button onClick={closeMModalFilterByTower} className='buttonSlide'>Cancelar</button>   
-          </div> 
-        </div>
-      </Gmodal>
+      <FilterUserModal
+      isOpen={isOpenFilterByTower} 
+      onClose={closeModalFilterByTower} 
+      setTowerFilter={setTowerFilter} 
+      towerFilter={towerFilter} 
+      allTowersList={allTowersList} 
+      setIsOpenFilterByTower={setIsOpenFilterByTower}
+      />
       {/*----------------------Filtrar por torre------------------------------*/}
+
     </>
-    )
+  )
 }
-export const getServerSideProps = canSSRAuth(async (ctx) => {
-      try {
-        const SetupApi = SetupApiClient(ctx);
-        const response = await SetupApi.get("/adm/users");
-        const response2 = await SetupApi.get("/adm/filter");
-        const response3 = await SetupApi.get('/towers');
-        const response4 = await SetupApi.get('/apts');
-        console.log(response.data)
-        return {
-          props: {
-            newUsers: response.data,
-            allUsers: response2.data,
-            Alltowers:response3.data,
-            AllApts:response4.data
-          },
-        };
-      } catch (error) {
-      console.error('Erro ao obter dados da api');
-      return {
-          props: {
-            newUsers: [],
-            allUsers: [],
-            Alltowers:[],
-            AllApts:[]
-          },
-      };
+
+
+export const getServerSideProps = canSSRAuth (async ()=>{
+  return{
+    props:{}
   }
-});
+})

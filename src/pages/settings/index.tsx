@@ -21,9 +21,6 @@ type admPropsItens = {
     lastname: String;
     phone_number:String
 }
-interface admInterface{
-    admProps: admPropsItens
-}
 interface FAQItem {
     question: string;
     answers: string[];
@@ -33,8 +30,8 @@ interface FAQData {
     faq: FAQItem[];
 }
 
-export default function Settings({admProps}: admInterface){
-    const [admDate, setadmDate] = useState(admProps || null);
+export default function Settings(){
+    const [admDate, setadmDate] = useState<admPropsItens>();
     const [inputPass, setInputPass] = useState(false);
     const [oldPass, setOldPass] = useState ('');
     const [newPass, setNewPass] = useState ('');
@@ -236,22 +233,8 @@ export default function Settings({admProps}: admInterface){
 }
 
 
-export const getServerSideProps = canSSRAuth(async (ctx) => {
-    try {
-        const SetupApi = SetupApiClient(ctx);
-        const response = await SetupApi.get('/adm/me');
-        return {
-            props: {
-                admProps: response.data
-            }
-        };
-    } 
-    catch (error) {
-    console.error('Erro ao obter dados da api');
-        return {
-            props: {
-                admProps: []
-            },
-        };
-    }   
-});
+export const getServerSideProps = canSSRAuth (async ()=>{
+    return{
+        props:{}
+    }
+})

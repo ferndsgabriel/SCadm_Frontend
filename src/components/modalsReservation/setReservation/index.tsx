@@ -38,7 +38,7 @@ export default function SetReservationModal({isOpen, onClose, reservation_id, re
         <Gmodal isOpen={isOpen} onClose={onClose} className='modal'>
             <form className='modalContainer' onSubmit={handleSetReservation}>
                 <div className='beforeButtons'>
-                    <h3>Validar reserva</h3>
+                    <h3>{reservationStatus? 'Validar reserva' : 'Recusar reserva' } </h3>
                     {reservationStatus?(
                     <p>Você tem certeza de que deseja confirmar esta reserva?</p>
                     ):(

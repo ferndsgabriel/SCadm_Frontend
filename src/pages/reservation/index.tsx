@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Header from "../../components/header";
 import { Loading } from "../../components/loading";
 import { canSSRAuth } from "../../utils/canSSRAuth";
@@ -7,11 +7,7 @@ import styles from "./styles.module.scss";
 import { AiOutlineLeft, AiOutlineRight} from "react-icons/ai";
 import {FaXmark,FaCheck} from "react-icons/fa6";
 import { IoPeopleOutline } from "react-icons/io5";
-import { toast } from "react-toastify";
 import { formatDate, formatHours } from "../../utils/formatted";
-
-import Gmodal from "../../components/myModal";
-
 import SetReservationModal from "../../components/modalsReservation/setReservation";
 import ViewGuestModal from "../../components/modalsReservation/viewGuest";
 import AllTaxed from "../../components/modalsReservation/allTaxed";
@@ -42,23 +38,19 @@ type AllReservationsProps = {
       phone_number:string
     }
   }
-};
+}[];
 
 type TowersProps = {
   id:string,
   numberTower:string 
   apartment:[]
-}
+}[]
 
-interface CalendarProps {
-  reservationsTrue: AllReservationsProps[];
-  reservationsNull: AllReservationsProps[];
-  towers:TowersProps[];
-}
 
-export default function Reservation({ reservationsNull, reservationsTrue, towers }: CalendarProps) {
-  const [newReservations, setNewReservations] = useState(reservationsNull || null);
-  const [trueReservations, setTrueReservations] = useState(reservationsTrue || null);
+
+export default function Reservation() {
+  const [newReservations, setNewReservations] = useState <AllReservationsProps>([]);
+  const [trueReservations, setTrueReservations] = useState<AllReservationsProps>([]);
   const [loading, setLoading] = useState(true);
   const [calendar, setCalendar] = useState([]);
   const monthNow = new Date().getMonth();
@@ -67,7 +59,6 @@ export default function Reservation({ reservationsNull, reservationsTrue, towers
   const [yearCalendar, setYearCalendar] = useState(yearNow);
   const [nextMonthBoolean, setNextMonthBoolean] = useState(false);
 
-  const setupApi = SetupApiClient();
 
   const monthString = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril',
@@ -78,36 +69,43 @@ export default function Reservation({ reservationsNull, reservationsTrue, towers
   const [reservationTrueCalendar, SetReservationTrueCalendar] = useState([]);
   const [reservationNewCalendar, setReservationNewCalendar] = useState([]);
   const [daysBefore, setDaysBefore] = useState([]);
-
-  const [listTowers, setListTowers] = useState(towers || null);
+  const [listTowers, setListTowers] = useState <TowersProps>([]);
   const [isOpenSetReservation, setIsOpenSetReservation] = useState(false);
   const [reservationStatus, setReservationStatus] = useState(null);
   const [reservation_id, setReservation_id] = useState('');
   const [isOpenGuest, setIsOpenGuest] = useState(false);
   const [isOpenTaxed, setIsOpenTaxed] = useState (false);
-  const [loadingPage, setLoadingPage] = useState (true);
-  const [indexFilter, setIndexFilter] = useState(0);
-  const [isOpenFilterByTower, setIsOpenFilterByTower] = useState(false);
-  const [towerFilter, setTowerFilter] = useState(0);
   const [isOpenDeleteReservation, setIsOpenDeleteReservation] = useState(false);
-
+  const [towerFilter, setTowerFilter] = useState<string>('0'); 
   // --------------------------------------------------------/////////
-  async function refreshDate() {
-    try {
-      const setupApi = SetupApiClient();
-      const response = await setupApi.get("/adm/reservations");
-      const response2 = await setupApi.get("/adm/actreservations");
-      setNewReservations(response.data);
-      setTrueReservations(response2.data);
-      setLoading(false);
-    } catch (err) {
-      setTimeout(refreshDate, 500);
-    }
+
+
+  useEffect(()=>{
+
+    async function getDate() {
+
+      if (loading || !isOpenDeleteReservation || !isOpenDeleteReservation){
+        try {
+          const setupApi = SetupApiClient();
+          const response = await setupApi.get("/adm/reservations");
+          const response2 = await setupApi.get("/adm/actreservations");
+          const response3 = await setupApi.get('/towers');
+
+          setNewReservations(response.data);
+          setTrueReservations(response2.data);
+          setListTowers(response3.data);
+
+        } catch (err) {
+          console.log(err)
+        }finally{
+          setLoading(false);
+        }
+      }
   }
 
-  useEffect(() => {
-    refreshDate();
-  }, [closeModalSetReservation, closeModalDeleteReservation]);
+    getDate();
+  },[isOpenSetReservation, isOpenDeleteReservation, loading]);
+
 
   // -----------------------Passar para o formato data minhas datas number --------------------------/////////
   function formatInDate(date: number) {
@@ -213,49 +211,27 @@ export default function Reservation({ reservationsNull, reservationsTrue, towers
   }, [monthCalendar, reservationTrueCalendar, reservationNewCalendar, yearCalendar]);
 
 //---------------------------------------------------------------------------------------------------------///
-function openModalSetReservation(id: string, status: boolean) {
-  setReservationStatus(status);
-  setReservation_id(id);
-  setIsOpenSetReservation(true);
-}
 
-function closeModalSetReservation() {
+const closeModalSetReservation = useCallback(() => {
   setReservationStatus(null);
   setReservation_id('');
   setIsOpenSetReservation(false);
-}
+}, [setIsOpenSetReservation]);
 
+const openModalSetReservation = useCallback((id: string, status: boolean) => {
+  setReservationStatus(status);
+  setReservation_id(id);
+  setIsOpenSetReservation(true);
+}, [setIsOpenSetReservation]);
 
 //---------------------------------------------------------------------------------------------------//
-const filterAll = trueReservations;
   
-  
-const filterByTower = trueReservations.filter((item) => {
-  return item.apartment.tower.id === listTowers[towerFilter].id;
-});
+const filterTower = towerFilter === "0" ? trueReservations :
+trueReservations.filter((item) => item.apartment.tower.id == towerFilter)
 
-const filteredUsers = [filterAll, filterByTower];
 
-function handleChangeFilter(e:React.ChangeEvent<HTMLSelectElement>){
-  const indexOption = parseInt(e.target.value);
-  if (indexOption === 1){
-    openModalFilterByTower();
-  }
-  setIndexFilter(indexOption);
-}
-
-function openModalFilterByTower(){
-  setIsOpenFilterByTower(true);
-}
-function closeMModalFilterByTower(){
-  setIsOpenFilterByTower(false);
-  setIndexFilter(0);
-  setTowerFilter(0);
-}
-
-function changeTowerFilter(e:React.ChangeEvent<HTMLSelectElement>){
-  const indexOption = parseInt(e.target.value);
-  setTowerFilter(indexOption);
+function handleChangeFilter(e: React.ChangeEvent<HTMLSelectElement>) {
+  setTowerFilter(e.target.value);
 }
 
 function openModalGuest(id: string, guest: string) {
@@ -268,15 +244,16 @@ function closeModalGuest() {
   setIsOpenGuest(false);
 }
 
-function openModalDeleteReservation(id:string){
-  setReservation_id(id);
-  setIsOpenDeleteReservation(true);
-}
-
-function closeModalDeleteReservation(){
+const closeModalDeleteReservation = useCallback(() => {
   setReservation_id('');
   setIsOpenDeleteReservation(false);
-}
+}, [setIsOpenDeleteReservation]);
+
+const openModalDeleteReservation = useCallback((id:string) => {
+  setReservation_id(id);
+  setIsOpenDeleteReservation(true);
+}, [setIsOpenDeleteReservation]);
+
 
 function openTaxed(){
   setIsOpenTaxed(true);
@@ -386,12 +363,18 @@ function closedTaxed(){
           {trueReservations.length > 0 ?(
             <section className={styles.section3}>
               <h2>Reservas aceitas</h2>
-              <select value={indexFilter} onChange={handleChangeFilter} className={styles.select}>
-                <option value={0}>Todas</option>
-                <option value={1}>Torre</option>
+              <select onChange={handleChangeFilter} className={styles.select}>
+                <option value={'0'}>Todas</option>
+                {listTowers.length > 0 && (
+                  listTowers.map((item, index)=>(
+                    <option value={item.id}
+                    key={item.id}>Torre {item.numberTower}</option>
+                  ))
+                )}
               </select>
+
               <div className={styles.cards}>
-                {filteredUsers[indexFilter].map((item, index)=>{
+                {filterTower.map((item, index)=>{
                   return(
                     <div key={item.id} className={`${styles.card} ${!item.apartment.payment? styles.noPayment : ''}`}>
                       <div className={styles.userInfo}>
@@ -465,60 +448,13 @@ function closedTaxed(){
         onClose={closeModalDeleteReservation}
         reservation_id={reservation_id}
       />
-
-
-        {/*----------------------Filtrar por torre------------------------------*/}
-        <Gmodal isOpen={isOpenFilterByTower}
-        onClose={closeMModalFilterByTower}
-        className='modal'>
-        <div className='modalContainer'> 
-          <div className='beforeButtons'>
-              <h3>Filtrar por torre</h3>
-              <p>Selecione a torre</p>
-              <select value={towerFilter} onChange={changeTowerFilter}autoFocus={true}>
-                {listTowers.filter((item)=>item.apartment.length > 0
-                ).map((item, index)=>{
-                  return(
-                    <option key={item.id} value={index}>
-                      {item.numberTower}
-                    </option>
-                  )
-                })}
-              </select>
-          </div>
-          
-          <div className='buttonsModal'>
-              <button onClick={()=>setIsOpenFilterByTower(false)} className='buttonSlide'>Filtrar</button>
-              <button onClick={closeMModalFilterByTower} className='buttonSlide'>Não</button>   
-          </div> 
-        </div>
-      </Gmodal>
-
     </>
   );
 }
 
-export const getServerSideProps = canSSRAuth(async (ctx) => {
-  try {
-    const SetupApi = SetupApiClient(ctx);
-    const response1 = await SetupApi.get("/adm/reservations");
-    const response2 = await SetupApi.get("/adm/actreservations");
-    const response3 = await SetupApi.get('/towers');
-    return {
-      props: {
-        reservationsNull: response1.data,
-        reservationsTrue: response2.data,
-        towers:response3.data,
-      }
-    };
-  } catch (error) {
-    console.error('Erro ao obter dados da api');
-    return {
-      props: {
-        reservationsNull: [],
-        reservationsTrue: [],
-        towers:[]
-      },
-    };
+
+export const getServerSideProps = canSSRAuth (async ()=>{
+  return{
+    props:{}
   }
-});
+})
