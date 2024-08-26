@@ -11,33 +11,43 @@
             flex-direction: column;
             align-items: start;
             gap: 1.6rem;
-            .labelDate{
-                border: solid 1px var(--Text);
+            .dateAndLarge{
                 display: flex;
-                position: relative;
-                padding: 0.4rem 3.6rem;
-                border-radius: 5px;
-                &:hover{
-                    background-color: var(--Transparente);
+                align-items: center;
+                gap: 1.6rem;
+                button{
+                    display: none;
                 }
-                cursor: pointer;
-                .inputContainer{
-                    visibility: hidden;
-                }
-                .newStyle{
+                .labelDate{
                     display: flex;
                     align-items: center;
-                    gap: 1.2rem;
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    svg{
-                        font-size: 1.2rem;
+                    justify-content: end;
+                    cursor: pointer;
+                    position: relative;
+                    .inputContainer{
+                        visibility: hidden;
+                        width: 0;
+                        position: absolute;
+                        left:0;
+                        bottom: 0;
+                    }
+                    .newStyle{
+                        display: flex;
+                        align-items: center;
+                        gap: 1.2rem;
+                        padding: 0.4rem 3.6rem;
+                        border-radius: 5px;
+                        border: solid 1px var(--Text);
+                        display: flex;
+                        svg{
+                            font-size: 1.2rem;
+                        }
+                        &:hover{
+                            background-color: var(--Transparente);
+                        }
                     }
                 }
             }
-
         }
         .dashboardOptions{
             background-color: var(--Transparente);
@@ -127,6 +137,24 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
+                .labelDate{
+                    .newStyle{
+                        display: flex;
+                        align-items: center;
+                        gap: 1.2rem;
+                        padding: 0.4rem 3.6rem;
+                        border-radius: 5px;
+                        border: solid 1px var(--Text);
+                        display: flex;
+                        svg{
+                            font-size: 1.2rem;
+                        }
+                        &:hover{
+                            background-color: var(--Transparente);
+                        }
+                    }
+                }
+                
             }
             .allCalendar{
                 width: 100%;
@@ -192,6 +220,16 @@
         .container{
             max-width: 100%;
             margin: auto;
+                .legends{
+                .dateAndLarge{
+                    button{
+                        display: flex;
+                        &:hover{
+                            transform: scale(0.9);
+                        }
+                    }
+                }
+            }
             .allCalendar{
                 width: 100%;
                 display: grid;
@@ -242,6 +280,13 @@
                     }
                 }
             }            
+        }
+    }
+    .large{
+        max-width: 100% ;
+        margin-left: 0;
+        .container{
+            padding:2.4rem;
         }
     }
 }

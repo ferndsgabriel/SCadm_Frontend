@@ -15,6 +15,9 @@ import { FaCalendarDays } from "react-icons/fa6";
 import { Loading } from "../../components/loading";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { ImEnlarge } from "react-icons/im";
+import { MdCloseFullscreen } from "react-icons/md";
+
 
 type DashboardType = {
     TotalCollection:number;
@@ -67,6 +70,7 @@ export default function Dashboard() {
     const [dateFilter, setDateFilter] = useState(dateMin);
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
+    const [large, setLarge] = useState(false);
     const [calendarSection, setCalendarSection] = useState(0);
 
     const COLORS = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)', 'var(--Error)'];
@@ -169,28 +173,35 @@ export default function Dashboard() {
         return <Loading />;
     }
     return (
-        <>
-            <Header />
-            <div className={styles.bodyArea}>
+        <>  
+            {!large && <Header /> }
+            <div className={`${styles.bodyArea} ${large? styles.large : ''} `}>
                 <main className={styles.container}>
                     <article className={styles.legends}>
                         <h1>Dashboard</h1>
-                        <label className={styles.labelDate}>
-                            <input
-                                type="date"
-                                value={dateFilter}
-                                onChange={(e) => setDateFilter(e.target.value)}
-                                max={formattedDate}
-                                min={dateMin}
-                                ref={dateInputRef}
-                                className={styles.inputContainer}
+                        <div className={styles.dateAndLarge}>
+                            <label className={styles.labelDate}>
+                                <input
+                                    type="date"
+                                    value={dateFilter}
+                                    onChange={(e) => setDateFilter(e.target.value)}
+                                    max={formattedDate}
+                                    min={dateMin}
+                                    ref={dateInputRef}
+                                    className={styles.inputContainer}
 
-                            />
-                            <div onClick={openDate} className={styles.newStyle}>
-                                <p>{formatDateToBr(dateFilter)}</p>
-                                < FaCalendarDays  />
-                            </div>
-                        </label>
+                                />
+                                <div onClick={openDate} className={styles.newStyle}>
+                                    <p>{formatDateToBr(dateFilter)}</p>
+                                    < FaCalendarDays  />
+                                </div>
+                            </label>
+                            {large ? (
+                                <button onClick={()=>setLarge(false)}><MdCloseFullscreen/></button>
+                            ):(
+                                <button onClick={()=>setLarge(true)}><ImEnlarge/></button>
+                            )}           
+                        </div>
                     </article>
 
                     {/*
