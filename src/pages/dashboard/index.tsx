@@ -17,7 +17,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { ImEnlarge } from "react-icons/im";
 import { MdCloseFullscreen } from "react-icons/md";
-
+import Head from "next/head";
 
 type DashboardType = {
     TotalCollection:number;
@@ -176,6 +176,9 @@ export default function Dashboard() {
     }
     return (
         <>  
+            <Head>
+                <title>SalãoCondo - Dashboard</title>
+            </Head>
             {!large && <Header /> }
             <div className={`${styles.bodyArea} ${large? styles.large : ''} `}>
                 <main className={styles.container}>

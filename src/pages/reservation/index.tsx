@@ -4,11 +4,10 @@ import { Loading } from "../../components/loading";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
 import styles from "./styles.module.scss";
-import { AiOutlineLeft, AiOutlineRight} from "react-icons/ai";
+import Head from "next/head";
 import {FaXmark,FaCheck} from "react-icons/fa6";
 import { IoPeopleOutline } from "react-icons/io5";
 import { formatDate, formatHours } from "../../utils/formatted";
-
 import SetReservationModal from "../../components/modals/modalsReservation/setReservation";
 import ViewGuestModal from "../../components/modals/modalsReservation/viewGuest";
 import AllTaxedModal from "../../components/modals/modalsReservation/allTaxed";
@@ -150,6 +149,9 @@ function closedTaxed(){
 
   return (
     <>
+      <Head>
+        <title>SalãoCondo - Reservas</title>
+      </Head>
       <Header/>
       <div className={styles.bodyArea}>
         <main className={styles.container}>
