@@ -153,6 +153,7 @@ export default function Dashboard() {
                 textAnchor="middle"
                 dominantBaseline="middle" // Centraliza verticalmente
                 style={{ fontSize: '12px' }}
+                fontWeight='bold'
             >
                 {value}
             </text>
@@ -288,14 +289,17 @@ export default function Dashboard() {
                                         nameKey="category"
                                         outerRadius={'100%'}
                                         fill="var(--Primary-normal)"
+                            
                                         labelLine={false}
                                         label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
                                             const radius = innerRadius + (outerRadius - innerRadius) / 2;
                                             const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                                             const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
                                             return (
-                                                <text x={x} y={y} fill="var(--White)" textAnchor="middle" dominantBaseline="central"
-                                                style={{ fontSize: '12px' }}>
+                                                <text x={x} y={y} fill="var(--White)" 
+                                                textAnchor="middle" 
+                                                dominantBaseline="central"
+                                                style={{ fontSize: '12px', fontWeight:"bold" }}>
                                                     {value !== 0 ? value : null}
                                                 </text>
                                             );
@@ -344,10 +348,12 @@ export default function Dashboard() {
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                         <LabelList  style={{backgroundColor:'red'}}
+                                            content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} 
                                             dataKey="value" 
                                             fontSize="14px" 
-                                            position="top" 
-                                            fill="var(--Text)" 
+                                            position="insideTop" 
+                                            fill="var(--White)"
+                                            fontWeight='bold' 
                                         />
                                     </Bar>
                                 </BarChart>
@@ -371,7 +377,7 @@ export default function Dashboard() {
                                             const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
                                             return (
                                                 <text x={x} y={y} fill="var(--White)" textAnchor="middle" dominantBaseline="central"
-                                                style={{ fontSize: '12px' }}>
+                                                style={{ fontSize: '12px', fontWeight:"bold" }}>
                                                     {value !== 0 ? value : null}
                                                 </text>
                                             );
@@ -488,7 +494,7 @@ export default function Dashboard() {
                                         {dashboardList.WithMoreReservation.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
                                         ))}
-                                        <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px' }} />
+                                        <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px', fontWeight:"bold" }} />
                                     </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
