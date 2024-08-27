@@ -26,8 +26,6 @@ export default function Home() {
   const [checkbox, setCheckbox] = useState(false);
   const [isOpen, setIsOpen] = useState (false);
 
-
-
   async function handleRegister(e: FormEvent) {
     e.preventDefault();
 
@@ -73,8 +71,14 @@ export default function Home() {
       pass,
       phone_number,
     };
-    await singUp(data);
-    setLoading(false);
+
+    try{
+      await singUp(data);
+    }catch(error){
+      console.log(error);
+    }finally{
+      setLoading(false);
+    }
   }
 
   const isEmailOfType = (email) => {
