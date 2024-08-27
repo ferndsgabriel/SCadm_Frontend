@@ -11,12 +11,12 @@ import { FaUser } from "react-icons/fa";
 import { TbTower } from "react-icons/tb";
 import { MdApartment, MdEdit } from "react-icons/md";
 
-import NewTowerModal from "../../components/modalsApartments/newTower";
-import DeleteTowerModal from "../../components/modalsApartments/deleteTower";
-import EditTowerModal from "../../components/modalsApartments/editTower";
-import CreateAptModal from "../../components/modalsApartments/createApt";
-import EditAptModal from "../../components/modalsApartments/editApt";
-import DeleteAptModal from "../../components/modalsApartments/deleteApt";
+import NewTowerModal from "../../components/modals/modalsApartments/newTower";
+import DeleteTowerModal from "../../components/modals/modalsApartments/deleteTower";
+import EditTowerModal from "../../components/modals/modalsApartments/editTower";
+import CreateAptModal from "../../components/modals/modalsApartments/createApt";
+import EditAptModal from "../../components/modals/modalsApartments/editApt";
+import DeleteAptModal from "../../components/modals/modalsApartments/deleteApt";
 
 type TowersProps = {
     id:string,
@@ -51,16 +51,19 @@ const [numberAptDelete, setNumberAptDelete] = useState('');
 const [isOpenAptEdit, setIsOpenAptEdit] = useState(false);
 const [numberAptEdit, setNumberAptEdit] = useState('');
 const [loadingPage, setLoadingPage] = useState (true);
-
+const SetupApi = SetupApiClient();
 
 
 useEffect(()=>{
     async function refreshDate(){
-        if (loadingPage && !isOpenCreateTower || !isOpenTowerDelete || !isOpenTowerEdit || !isOpenCreateApt || !isOpenDeleteApartament ){
+        if (loadingPage || 
+        !(isOpenCreateTower || isOpenTowerDelete || isOpenTowerEdit || isOpenCreateApt || isOpenDeleteApartament ))
+        {
             try{
-                const SetupApi = SetupApiClient();
-                const response = await SetupApi.get('/apts');
-                const response2 = await SetupApi.get('/towers');
+                const [response, response2] = await Promise.all([
+                    await SetupApi.get('/apts'),
+                    await SetupApi.get('/towers'),
+                ])
                 setTowers(response2.data);
                 setApts(response.data);
             }catch(err){

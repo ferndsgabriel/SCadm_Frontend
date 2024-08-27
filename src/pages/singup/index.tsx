@@ -11,7 +11,7 @@ import {isMobilePhone, isEmail} from 'validator'
 import zxcvbn from 'zxcvbn';
 import { canSSRGuest } from "../../utils/canSSRGuest";
 import { onlyString } from "../../utils/formatted";
-import TermsModal from "../../components/modalTerms";
+import TermsModal from "../../components/modals/modalTerms";
 
 export default function Home() {
   const { singUp } = useContext(AuthContext);

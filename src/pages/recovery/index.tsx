@@ -9,7 +9,7 @@ import { ThemeContext } from "../../contexts/ThemeContext";
 import {isEmail} from 'validator';
 import { toast } from "react-toastify";
 import { SetupApiClient } from "../../services/api";
-import RecoveryModal from "../../components/modalRecovery";
+import RecoveryModal from "../../components/modals/modalRecovery";
 
 export default function Recovery(){
 const [email, setEmail] = useState ('');

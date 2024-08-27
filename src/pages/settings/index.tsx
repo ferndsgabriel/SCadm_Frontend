@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import zxcvbn from 'zxcvbn';
 import { Loading } from "../../components/loading";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
-import DeleteAccountModal from "../../components/modalsSettings/deleteAccount";
+import DeleteAccountModal from "../../components/modals/modalsSettings/deleteAccount";
 
 type admPropsItens = {
     email: String;
@@ -37,6 +37,7 @@ export default function Settings(){
     const [newPass, setNewPass] = useState ('');
     const [isOpen, setIsOpen] = useState (false);
     const [loading, setLoading ] = useState(true);
+    const setupApi = SetupApiClient();
 
     const faqData = require ("../../faq.json");
     const faq: FAQData = faqData as FAQData;
@@ -49,28 +50,28 @@ export default function Settings(){
         });
     };
 
-    const setupApi = SetupApiClient();
 
-    async function refreshDate(){
-        try{
-            
-            const response = await setupApi.get('/adm/me');
-            setadmDate(response.data)
-            setLoading(false);
-        }catch(err){
-            console.log('Erro ao obter dados do servidor');
-            setTimeout(refreshDate, 500);
-        }
-    }
     useEffect(()=>{
+        async function refreshDate(){
+            try{
+                const response = await setupApi.get('/adm/me');
+                setadmDate(response.data)
+                
+            }catch(err){
+                console.log('Erro ao obter dados do servidor');
+            }finally{
+                setLoading(false);
+            }
+        }
+
         refreshDate();
     },[]);
 
     function changeInputPass(){
         setInputPass(true);
     }
-    function 
-    cancelPass(e:FormEvent){
+
+    function cancelPass(e:FormEvent){
         e.preventDefault();
         setInputPass(false);
         setOldPass('');
@@ -99,7 +100,6 @@ export default function Settings(){
             })
             toast.success("A senha foi alterada com êxito!");
             cancelPass(e);
-            refreshDate();
 
         }catch(error){
             console.log(error)

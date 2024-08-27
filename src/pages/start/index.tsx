@@ -11,10 +11,10 @@ import {BiEdit} from "react-icons/bi";
 import {FaXmark,FaCheck } from "react-icons/fa6";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { Loading } from "../../components/loading";
-import NewUsersModal from "../../components/modalsUsers/newUsers";
-import ChangeStatesModal from "../../components/modalsUsers/changeStates";
-import EditAptUsersModal from "../../components/modalsUsers/editApt";
-import FilterUserModal from "../../components/modalsUsers/filterUsersByTower";
+import NewUsersModal from "../../components/modals/modalsUsers/newUsers";
+import ChangeStatesModal from "../../components/modals/modalsUsers/changeStates";
+import EditAptUsersModal from "../../components/modals/modalsUsers/editApt";
+import FilterUserModal from "../../components/modals/modalsUsers/filterUsersByTower";
 
 type UserProps = {
   cpf: string,
@@ -74,7 +74,7 @@ const SetupApi = SetupApiClient();
 
 useEffect(() => {
   async function refreshData() {
-    if (loadingPage || !isOpenNewUsers || !isOpenPayment || !loadingExcel || !isOpenEditApt) {
+    if (loadingPage || !(isOpenNewUsers || isOpenPayment || loadingExcel || isOpenEditApt)) {
       try {
         const [users, residents, towers, apartments] = await Promise.all([
           SetupApi.get("/adm/users"),

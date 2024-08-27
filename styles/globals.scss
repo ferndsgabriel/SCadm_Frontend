@@ -220,7 +220,7 @@ body{
       border-top: solid 2px var(--Primary-normal);
       border-right: solid 2px var(--Primary-normal);
       animation: spin infinite 1s;
-  
+      color: transparent;
       &:hover {
         color: var(--White);
   

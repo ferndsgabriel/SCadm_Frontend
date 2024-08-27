@@ -77,7 +77,6 @@ export default function Dashboard() {
     const COLORS3 = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)'];
 
     
-    console.log(dashboardList)
 
     function openDate() {
         if (dateInputRef.current) {
@@ -121,22 +120,25 @@ export default function Dashboard() {
 
     const getDaysBetween = daysBetween(formattedDate, dateFilter)
 
-    async function refreshData(value:string) {
-        const dateToDate = value !== '' ? new Date(value) : new Date('2024-01-01')
-        setLoading(true);
-        try {
-            const response = await setupApi.post('/adm/dashboard',{
-                period:dateToDate
-            });
-            setDashboardList(response.data);
-            setLoading(false);
-        } catch (error) {
-            console.log('Erro ao obter dados da API.');
-            setTimeout(refreshData, 500);
-        }
-    }
+
 
     useEffect(() => {
+        
+        async function refreshData(value:string) {
+            const dateToDate = value !== '' ? new Date(value) : new Date('2024-01-01');
+            setLoading(true);
+            try {
+                const response = await setupApi.post('/adm/dashboard',{
+                    period:dateToDate
+                });
+                setDashboardList(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.log('Erro ao obter dados da API.');
+                setTimeout(refreshData, 500);
+            }
+        }
+
         refreshData(dateFilter);
     }, [dateFilter]);
 
