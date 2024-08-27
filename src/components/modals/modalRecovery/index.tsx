@@ -1,4 +1,4 @@
-import style from "../../../styles/Home.module.scss";;
+import style from "../../../../styles/Home.module.scss";
 import Gmodal from "../default";
 import { useContext, FormEvent, useState, useEffect } from "react";
 import { ThemeContext } from "../../../contexts/ThemeContext";
