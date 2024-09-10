@@ -152,8 +152,6 @@ function Chat() {
               body:data.content,
               icon: './Icon.svg'
             });
-          }else{
-            alert("tste vc é gay")
           }
           return data.conversation_id === currentApartmentId?.conversation_id
             ? [...prev, data]
