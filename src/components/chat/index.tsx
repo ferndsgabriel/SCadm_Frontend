@@ -365,7 +365,7 @@ function Chat() {
                     />
                   </div>
                   
-                  <ul className={styles.bodyConversation} ref={bodyRef}>
+                  <ul className={`${styles.bodyConversation} ${styles.bodyConversationNew}`} ref={bodyRef}>
                     {filteredApts.map((item) => (
                       <>
                         {item.user && item.user.length > 0 && (
