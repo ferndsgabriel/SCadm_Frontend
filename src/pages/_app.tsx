@@ -3,7 +3,6 @@ import  "../../styles/globals.scss";
 import { AuthProvider } from "../contexts/AuthContexts";
 import ThemeProvider from "../contexts/ThemeContext";
 import { ToastContainer } from "react-toastify";
-import Head from "next/head";
 import Router from "next/router";
 import NProgress from 'nprogress';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,6 +22,7 @@ export default function App({ Component, pageProps }:AppProps) {
   
   
   Router.events.on('routeChangeError', () => NProgress.done());
+
   return (
     <>
         <ToastContainer

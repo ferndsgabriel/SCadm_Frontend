@@ -15,6 +15,7 @@ import NewUsersModal from "../../components/modals/modalsUsers/newUsers";
 import ChangeStatesModal from "../../components/modals/modalsUsers/changeStates";
 import EditAptUsersModal from "../../components/modals/modalsUsers/editApt";
 import FilterUserModal from "../../components/modals/modalsUsers/filterUsersByTower";
+import Chat from "../../components/chat";
 
 type UserProps = {
   cpf: string,
@@ -207,6 +208,7 @@ if (loadingPage){
       <Head>
         <title>SalãoCondo - Início</title>
       </Head>
+      <Chat/>
       <Header/>
       <div className={style.bodyArea}>
         <main className={style.container}>

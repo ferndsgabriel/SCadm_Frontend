@@ -40,18 +40,19 @@ async function handleCodigo (e:FormEvent){
         return
     }
 
+    const AptClient = SetupApiClient();
     setLoadingButton(true);
     try{
-        await setupApi.post('adm/cod',{
+        await AptClient.post('adm/cod',{
             email:email
         })
-        toast.success('Código de recuperação enviado com sucesso para seu e-mail.');
-        openModal()
+        toast.info('Se o endereço de email informado estiver cadastrado, você receberá um código de recuperação em breve.');
+        openModal();
     }catch(error){{
-        toast.warning(error.response && error.response.data.error || 'Erro desconhecido');
-        console.log(error)
+        toast.info('Se o endereço de email informado estiver cadastrado, você receberá um código de recuperação em breve.');
+        openModal();
     }}finally{
-        setLoadingButton(false)
+        setLoadingButton(false);
     }
 }
 

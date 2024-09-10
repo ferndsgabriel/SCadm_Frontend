@@ -13,6 +13,7 @@ import ViewGuestModal from "../../components/modals/modalsReservation/viewGuest"
 import AllTaxedModal from "../../components/modals/modalsReservation/allTaxed";
 import DeleteReservationModal from "../../components/modals/modalsReservation/deleteReservation";
 import Calendar from "../../components/calendar";
+import Chat from "../../components/chat";
 
 type AllReservationsProps = {
   id: string,
@@ -152,6 +153,7 @@ function closedTaxed(){
       <Head>
         <title>SalãoCondo - Reservas</title>
       </Head>
+      <Chat/>
       <Header/>
       <div className={styles.bodyArea}>
         <main className={styles.container}>

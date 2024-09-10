@@ -13,6 +13,7 @@ import zxcvbn from 'zxcvbn';
 import { Loading } from "../../components/loading";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import DeleteAccountModal from "../../components/modals/modalsSettings/deleteAccount";
+import Chat from "../../components/chat";
 
 type admPropsItens = {
     email: String;
@@ -125,7 +126,9 @@ export default function Settings(){
             <Head>
                 <title>SalãoCondo - Configurações</title>
             </Head>
-            <Header/>
+            <Chat/>
+            <Header/>   
+            
             <div className={style.bodyArea}>
                 
                 <main className={style.container}>

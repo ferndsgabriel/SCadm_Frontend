@@ -3,7 +3,6 @@ import { parseCookies } from "nookies";
 import { singOut } from "../contexts/AuthContexts";
 
 
-//export const baseURL = "http://192.168.15.63:3333";
 export const baseURL = process.env.NEXT_PUBLIC_BASE_URL ;
 
 
