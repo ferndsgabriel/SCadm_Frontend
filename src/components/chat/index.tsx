@@ -144,7 +144,6 @@ function Chat() {
               : msg
           );
         } else {
-          console.log(data)
 
           if (Notification.permission === 'granted') {
             
@@ -156,7 +155,6 @@ function Chat() {
           return data.conversation_id === currentApartmentId?.conversation_id
             ? [...prev, data]
             : prev;
-            
         }
       });
     });
@@ -216,13 +214,20 @@ function Chat() {
   
 
   useEffect(() => {
-    if (Notification.permission === 'default') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          console.log('Permissão de notificação concedida.');
+    const requestNotificationPermission = async () => {
+      if (Notification.permission === 'default') {
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            console.log('Permissão de notificação concedida.');
+          }
+        } catch (error) {
+          console.error('Erro ao solicitar permissão de notificação:', error);
         }
-      });
-    }
+      }
+    };
+  
+    requestNotificationPermission();
   }, []);
   
   function joinConversation({apartment_id, numberApt, numberTower, conversation_id}:apartamentProps) {
