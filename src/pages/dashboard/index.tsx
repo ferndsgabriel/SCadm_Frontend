@@ -416,7 +416,7 @@ export default function Dashboard() {
                         </article>
 
                         <article className={styles.barChart}>
-                        <h3>Avaliações de reservas</h3>
+                            <h3>Avaliações de reservas</h3>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
                                     layout="vertical"
@@ -425,7 +425,7 @@ export default function Dashboard() {
                                         top: 20, right: 20, left: 20, bottom: 20,
                                     }}
                                     barSize={20}
-                                    >
+                                >
                                     <XAxis
                                         type="number"
                                         domain={[0, 5]}
@@ -441,10 +441,10 @@ export default function Dashboard() {
                                     <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                     <Bar dataKey="media">
                                         {dashboardList.Avaliation.data.map((entry, index) => (
-                                        <Cell
-                                            key={`cell-${index}`}
-                                            fill={getColorForRating(entry.media)}
-                                        />
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={getColorForRating(entry.media)}
+                                            />
                                         ))}
                                         <LabelList
                                             dataKey="media"
@@ -452,7 +452,8 @@ export default function Dashboard() {
                                             fill="#fff"
                                             fontWeight='bold'
                                             fontSize={12}
-                                            />
+                                            formatter={(value) => value == 0 ? '' : value} // Se for 0, não exibe nada
+                                        />
                                     </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
