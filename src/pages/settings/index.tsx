@@ -2,10 +2,10 @@ import Head from "next/head";
 import Header from "../../components/header";
 import { Input } from "../../components/ui/input";
 import {FiLogOut} from "react-icons/fi";
-import {ChangeEvent, FormEvent, useState, useEffect} from "react";
+import {useContext, FormEvent, useState, useEffect} from "react";
+import { AuthContext } from "../../contexts/AuthContexts";
 import style from './styles.module.scss';
 import {AiTwotoneDelete} from "react-icons/ai";
-import { singOut } from "../../contexts/AuthContexts";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
 import { toast } from "react-toastify";
@@ -15,13 +15,7 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import DeleteAccountModal from "../../components/modals/modalsSettings/deleteAccount";
 import Chat from "../../components/chat";
 
-type admPropsItens = {
-    email: String;
-    id: String;
-    name: String;
-    lastname: String;
-    phone_number:String
-}
+
 interface FAQItem {
     question: string;
     answers: string[];
@@ -32,14 +26,12 @@ interface FAQData {
 }
 
 export default function Settings(){
-    const [admDate, setadmDate] = useState<admPropsItens>();
+
     const [inputPass, setInputPass] = useState(false);
     const [oldPass, setOldPass] = useState ('');
     const [newPass, setNewPass] = useState ('');
     const [isOpen, setIsOpen] = useState (false);
-    const [loading, setLoading ] = useState(true);
-    const setupApi = SetupApiClient();
-
+    const {user, signOut } = useContext(AuthContext);
     const faqData = require ("../../faq.json");
     const faq: FAQData = faqData as FAQData;
     const [expandedQuestions, setExpandedQuestions] = useState({});
@@ -50,23 +42,6 @@ export default function Settings(){
             [question]: !expandedQuestions[question]
         });
     };
-
-
-    useEffect(()=>{
-        async function refreshDate(){
-            try{
-                const response = await setupApi.get('/adm/me');
-                setadmDate(response.data)
-                
-            }catch(err){
-                console.log('Erro ao obter dados do servidor');
-            }finally{
-                setLoading(false);
-            }
-        }
-
-        refreshDate();
-    },[]);
 
     function changeInputPass(){
         setInputPass(true);
@@ -117,10 +92,6 @@ export default function Settings(){
     }
 
 
-    if (loading){
-        return <Loading/>;
-    }
-
     return(
         <>
             <Head>
@@ -137,10 +108,10 @@ export default function Settings(){
                     <section className={style.section1}>
                         <h2>Dados</h2>
                         <div className={style.conteudo1}>
-                            <p>Nome: {admDate.name}</p>
-                            <p>Sobrenome: {admDate.lastname}</p>
-                            <p>Email: {admDate.email}</p>
-                            <p>Telefone: {admDate.phone_number}</p>
+                            <p>Nome: {user.name}</p>
+                            <p>Sobrenome: {user.lastname}</p>
+                            <p>Email: {user.email}</p>
+                            <p>Telefone: {user.phone_number}</p>
                         </div>
                     </section>
 
@@ -221,7 +192,7 @@ export default function Settings(){
                     <span className={style.section5}>
                         <h2>Fazer logout</h2>
                         <div className={style.areaButton}>
-                            <button onClick={singOut} className="buttonSlide"><span>Sair da conta<FiLogOut/></span></button>
+                            <button onClick={signOut} className="buttonSlide"><span>Sair da conta<FiLogOut/></span></button>
                         </div>
                     </span>
                 </main>

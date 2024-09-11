@@ -1,17 +1,18 @@
-import {createContext, ReactNode, useState} from "react";
-import {destroyCookie, setCookie, parseCookies} from "nookies"
+import {createContext, ReactNode, useState, useEffect} from "react";
+import {destroyCookie, setCookie} from "nookies";
 import Router from "next/router";
 import { api } from "../services/apiClient";
 import { toast } from "react-toastify";
+import { Loading } from "../components/loading";
 
 
 
 type AuthContextData = {
     user: UserProps;
     isAuthenticated: boolean;
-    singIn: (credentials: CredentialProps) =>Promise<void>;
-    singOut:()=>void
-    singUp:(Credentials: SingUpProps ) =>Promise<void>;
+    signIn: (credentials: CredentialProps) =>Promise<void>;
+    signOut:()=>void
+    signUp:(Credentials: SignUpProps ) =>Promise<void>;
 }
 
 type UserProps = {
@@ -26,7 +27,7 @@ type CredentialProps = {
     email: string;
     pass: string;
 }
-type SingUpProps = {
+type SignUpProps = {
     email:string;
     cod:string;
     name: string;
@@ -40,50 +41,72 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext ({} as AuthContextData);
 
-export function singOut(){
-    try{
-        destroyCookie(undefined, "@SalaoCondoAdm.token");
-        Router.push('/')
-
-    }catch{
-        console.log('Error ao deslogar');
-    }
-}
-
-
 export function AuthProvider ({children}:AuthProviderProps){
     const [user, setUser] = useState<UserProps>();
     const isAuthenticated = !!user;
+    const [isLoading, setIsLoading] = useState(true);
 
-    async function singIn({email, pass}:CredentialProps) {
+    function signOut(){
+        try{
+            destroyCookie(undefined, "@SalaoCondoAdm.token");
+            Router.push('/')
+        }catch{
+            console.log('Error ao deslogar');
+        }
+    }
+
+    useEffect(()=>{
+        async function getItens() {
+            try {
+                const response = await api('adm/me');
+                setUser(response.data);
+
+                const sessionToken = response.data.sessionToken;
+
+                const sessionStorage = localStorage.getItem('@SalaoCondoAdm.sessionToken');
+                const sessionParse = sessionStorage ? JSON.parse(sessionStorage ) : '';
+                
+                if ( sessionParse !== sessionToken){
+                    signOut();
+                }
+            } catch (error) {
+                signOut();
+            }finally{
+                setIsLoading(false);
+            }
+        }
+        getItens();
+    },[]);
+    async function signIn({email, pass}:CredentialProps) {
         try{
             const response = await api.post("/adm/session",{
                 pass:pass,
                 email:email,
-            })
-            const {id, name, lastname, token, phone_number} = response.data
+            });
+
+            const {data} = response.data;
+            const {token} = response.data;
+            const sessionToken = data.sessionToken
+
+            const sessionParse = JSON.stringify(sessionToken);
+            localStorage.setItem('@SalaoCondoAdm.sessionToken', sessionParse);
+
             setCookie (undefined, "@SalaoCondoAdm.token", token,{
                 maxAge:60*60*24*30,
-                path:"/", //quais caminhos terão acesso ao cookies, se
-                //deixarmos barra, vai ser todos
+                path:"/"
             });
             
-            setUser({
-                id,
-                name,
-                lastname,
-                email,
-                phone_number
-            });
+            setUser(data);
+
             api.defaults.headers['Authorization'] = `Bearer ${token}`
-            Router.push("/reservation")
+            Router.push("/reservation");
         }
         catch(error){
             toast.warning(error.response || error.response.data.error || 'Erro desconhecido');
         }
     }
 
-    async function singUp ({name, lastname, cod, email, pass, phone_number}:SingUpProps){
+    async function signUp ({name, lastname, cod, email, pass, phone_number}:SignUpProps){
         try{
             const response = await api.post('/adm',{
                 name:name,
@@ -101,9 +124,13 @@ export function AuthProvider ({children}:AuthProviderProps){
         }
     }
 
+    if (isLoading){
+        return <Loading/>
+    }
+
     return(
         <AuthContext.Provider 
-        value={{user, isAuthenticated, singIn,singOut,singUp}}>
+        value={{user, isAuthenticated, signIn,signOut,signUp}}>
             {children}
         </AuthContext.Provider>
     );

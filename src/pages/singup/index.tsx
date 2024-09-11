@@ -14,7 +14,7 @@ import { onlyString } from "../../utils/formatted";
 import TermsModal from "../../components/modals/modalTerms";
 
 export default function Home() {
-  const { singUp } = useContext(AuthContext);
+  const { signUp } = useContext(AuthContext);
   const { dark } = useContext(ThemeContext);
   const [name, setName] = useState('');
   const [lastname, setLastname] = useState('');
@@ -73,7 +73,7 @@ export default function Home() {
     };
 
     try{
-      await singUp(data);
+      await signUp(data);
     }catch(error){
       console.log(error);
     }finally{
