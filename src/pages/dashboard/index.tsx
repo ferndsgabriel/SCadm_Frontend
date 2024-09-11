@@ -18,6 +18,8 @@ import "react-multi-carousel/lib/styles.css";
 import { ImEnlarge } from "react-icons/im";
 import { MdCloseFullscreen } from "react-icons/md";
 import Head from "next/head";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 type DashboardType = {
     TotalCollection:number;
@@ -65,13 +67,12 @@ export default function Dashboard() {
     const setupApi = SetupApiClient();
     const dateInputRef = useRef(null);
     const onDay = new Date();
-    const formattedDate = `${onDay.getFullYear()}-${String(onDay.getMonth() + 1).padStart(2, '0')}-${String(onDay.getDate()).padStart(2, '0')}`;
-    const dateMin = '2024-01-01';
-    const [dateFilter, setDateFilter] = useState(dateMin);
+    const min = new Date(2024, 0, 1);
+    const [dateFilter, setDateFilter] = useState(onDay);
+
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
     const [large, setLarge] = useState(false);
-    const [calendarSection, setCalendarSection] = useState(0);
 
     const COLORS = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)', 'var(--Error)'];
     const COLORS3 = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)'];
@@ -110,22 +111,14 @@ export default function Dashboard() {
         }
     };
 
-    function daysBetween(date1:string, date2:string) {
-        const startDate = new Date(date1) as any;
-        const endDate = new Date(date2) as any;
-        const diffTime = Math.abs(endDate- startDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        return diffDays;
-    }
 
-    const getDaysBetween = daysBetween(formattedDate, dateFilter)
 
 
 
     useEffect(() => {
         
-        async function refreshData(value:string) {
-            const dateToDate = value !== '' ? new Date(value) : new Date('2024-01-01');
+        async function refreshData(value:Date) {
+            const dateToDate =  value || new Date();
             setLoading(true);
             try {
                 const response = await setupApi.post('/adm/dashboard',{
@@ -147,11 +140,11 @@ export default function Dashboard() {
         if (value === 0) return null;
         return (
             <text
-                x={x + width / 2} // Centraliza horizontalmente
-                y={y + 10} // Ajuste vertical para ficar dentro da barra
+                x={x + width / 2} 
+                y={y + 10} 
                 fill="white"
                 textAnchor="middle"
-                dominantBaseline="middle" // Centraliza verticalmente
+                dominantBaseline="middle" 
                 style={{ fontSize: '12px' }}
                 fontWeight='bold'
             >
@@ -186,22 +179,16 @@ export default function Dashboard() {
                     <article className={styles.legends}>
                         <h1>Dashboard</h1>
                         <div className={styles.dateAndLarge}>
-                            <label className={styles.labelDate}>
-                                <input
-                                    type="date"
-                                    value={dateFilter}
-                                    onChange={(e) => setDateFilter(e.target.value)}
-                                    max={formattedDate}
-                                    min={dateMin}
-                                    ref={dateInputRef}
-                                    className={styles.inputContainer}
-
+                            <DatePicker
+                                selected={dateFilter || undefined} 
+                                onChange={(date: Date | null) => setDateFilter(date)}
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="dia/mês/ano"
+                                maxDate={onDay}
+                                minDate={min}
+                                className={styles.inputDate}
+                                calendarClassName={styles.calendar}
                                 />
-                                <div onClick={openDate} className={styles.newStyle}>
-                                    <p>{formatDateToBr(dateFilter)}</p>
-                                    < FaCalendarDays  />
-                                </div>
-                            </label>
                             {large ? (
                                 <button onClick={()=>setLarge(false)}><MdCloseFullscreen/></button>
                             ):(
@@ -228,9 +215,8 @@ export default function Dashboard() {
                                         <h3>Total arrecadado com taxas</h3>
                                         <MdOutlineAttachMoney />
                                     </span>
-                                    <h4>R$ {dashboardList.TotalCollection.toFixed(2)}</h4>
-                                    <p>Últimos {getDaysBetween} dias</p>
-                                </article>
+                                    <h4>R$ {dashboardList.TotalCollection}</h4>
+                                                                    </article>
                                 
                                 <article className={styles.totalValues}>
                                     <span>
@@ -238,8 +224,7 @@ export default function Dashboard() {
                                         <CiCalendarDate />
                                     </span>
                                     <h4>{dashboardList.AllReservationMade}</h4>
-                                    <p>Últimos {getDaysBetween} dias</p>
-                                </article>
+                                                                    </article>
 
                                 <article className={styles.totalValues}>
                                     <span>
@@ -247,8 +232,7 @@ export default function Dashboard() {
                                         <FaUsers />
                                     </span>
                                     <h4>{dashboardList.Users}</h4>
-                                    <p>Últimos {getDaysBetween} dias</p>
-                                </article>
+                                                                    </article>
 
                                 <article className={styles.totalValues}>
                                     <span>
@@ -256,8 +240,7 @@ export default function Dashboard() {
                                         <RiAdminFill />
                                     </span>
                                     <h4>{dashboardList.Adms}</h4>
-                                    <p>Últimos {getDaysBetween} dias</p>
-                                </article>
+                                                                    </article>
 
                                 <article className={styles.totalValues}>
                                     <span>
@@ -265,8 +248,7 @@ export default function Dashboard() {
                                         <MdOutlineApartment />
                                     </span>
                                     <h4>{dashboardList.Apartaments}</h4>
-                                    <p>Últimos {getDaysBetween} dias</p>
-                                </article>
+                                                                    </article>
 
                                 <article className={styles.totalValues} >
                                     <span>
@@ -274,8 +256,7 @@ export default function Dashboard() {
                                         <GiWhiteTower />
                                     </span>
                                     <h4>{dashboardList.Towers}</h4>
-                                    <p>Últimos {getDaysBetween} dias</p>
-                                </article>
+                                                                    </article>
                             </Carousel>
                         </article>
 

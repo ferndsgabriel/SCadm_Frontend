@@ -18,34 +18,16 @@
                 button{
                     display: none;
                 }
-                .labelDate{
-                    display: flex;
-                    align-items: center;
-                    justify-content: end;
-                    cursor: pointer;
-                    position: relative;
-                    .inputContainer{
-                        visibility: hidden;
-                        width: 0;
-                        position: absolute;
-                        left:0;
-                        bottom: 0;
-                    }
-                    .newStyle{
-                        display: flex;
-                        align-items: center;
-                        gap: 1.2rem;
-                        padding: 0.4rem 3.6rem;
-                        border-radius: 5px;
-                        border: solid 1px var(--Text);
-                        display: flex;
-                        svg{
-                            font-size: 1.2rem;
-                        }
-                        &:hover{
-                            background-color: var(--Transparente);
-                        }
-                    }
+                .calendar{
+                    transform: scale(1.5) translateY(2.4rem);
+                                    }
+                .inputDate{
+                    color: var(--Text);
+                    border: solid 1px var(--Text);
+                    padding: 0.8rem;
+                    border-radius: 5px;
+                    text-align: center;
+                    z-index: 9999;
                 }
             }
         }
@@ -72,6 +54,7 @@
             gap: 1.6rem;    
             .carousel{
                 padding: 0.4rem 0.1rem;
+                z-index: 0;
                 .totalValues{
                     display: flex;
                     flex-direction: column;
