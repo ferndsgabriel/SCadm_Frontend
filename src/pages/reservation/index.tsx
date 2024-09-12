@@ -21,7 +21,7 @@ type AllReservationsProps = {
   start: number,
   finish: number,
   cleaningService: boolean,
-  guest: string | null,
+  GuestList:[]
   name:string,
   email:string,
   phone_number:string,
@@ -49,6 +49,15 @@ type TowersProps = {
 }[]
 
 
+interface listGuestProps{
+  apartament:string,
+  cleaningService:boolean,
+  date:number,
+  start:number,
+  finish:number,
+  guest:{name:string, rg:string}[]
+}
+
 
 export default function Reservation() {
   const [newReservations, setNewReservations] = useState <AllReservationsProps>([]);
@@ -60,6 +69,7 @@ export default function Reservation() {
   const [reservation_id, setReservation_id] = useState('');
   const [isOpenGuest, setIsOpenGuest] = useState(false);
   const [isOpenTaxed, setIsOpenTaxed] = useState (false);
+  const [guestData, setGuestData] = useState<listGuestProps>();
   const [isOpenDeleteReservation, setIsOpenDeleteReservation] = useState(false);
   const [towerFilter, setTowerFilter] = useState<string>('0'); 
   const setupApi = SetupApiClient();
@@ -115,8 +125,23 @@ function handleChangeFilter(e: React.ChangeEvent<HTMLSelectElement>) {
   setTowerFilter(e.target.value);
 }
 
-function openModalGuest(id: string, guest: string) {
-  setReservation_id(id);
+function openModalGuest(guest:[], 
+  towerNumber:string, 
+  apartamentNumber:string, 
+  cleaning:boolean, 
+  date:number, 
+  start:number, 
+  finish:number) {
+
+  const data:listGuestProps = {
+    apartament: `Torre ${towerNumber} - Apartamento ${apartamentNumber}`,
+    cleaningService: cleaning,
+    date: date,
+    finish: finish,
+    guest: guest,
+    start: start
+  }
+  setGuestData(data);
   setIsOpenGuest(true);
 }
 
@@ -232,12 +257,20 @@ function closedTaxed(){
                       </div>
 
                       <div className={styles.buttonsCard}>
-                        {item.guest ? (
-                          <button onClick={() => openModalGuest(item.id, item.guest)} className="buttonSlide">
+                        
+                          <button onClick={() => openModalGuest(
+                            item.GuestList,
+                            item.apartment.tower.numberTower,
+                            item.apartment.numberApt,
+                            item.cleaningService,
+                            item.date,
+                            item.start,
+                            item.finish)} 
+                          className="buttonSlide">
                             Convidados <IoPeopleOutline/>
                           </button>   
-                        ) : null}
-                        {item.apartment.payment?(null):(
+                        
+                        {!item.apartment.payment && (
                           <button onClick={()=>openModalDeleteReservation(item.id)}className="buttonSlide">
                             Deletar<FaXmark/>
                           </button>
@@ -245,7 +278,7 @@ function closedTaxed(){
                       </div>
                     </div>
                   )
-                })}
+                })} 
               </div>
           </section>
           ):null}
@@ -273,7 +306,7 @@ function closedTaxed(){
       <ViewGuestModal
         isOpen={isOpenGuest}
         onClose={closeModalGuest}
-        idViewGuest={reservation_id}
+        data={guestData}
         /> 
 
         {/* -------------Modal ver taxados  -------------------*/}
