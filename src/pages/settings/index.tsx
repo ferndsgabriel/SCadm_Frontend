@@ -10,7 +10,6 @@ import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
 import { toast } from "react-toastify";
 import zxcvbn from 'zxcvbn';
-import { Loading } from "../../components/loading";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import DeleteAccountModal from "../../components/modals/modalsSettings/deleteAccount";
 import Chat from "../../components/chat";
@@ -207,8 +206,8 @@ export default function Settings(){
 }
 
 
-export const getServerSideProps = canSSRAuth (async ()=>{
-    return{
-        props:{}
-    }
-})
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+    return {
+        props: {}
+    };
+}, ["admin"]);

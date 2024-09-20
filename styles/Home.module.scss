@@ -58,6 +58,11 @@
                 color: var(--Light);
             }
         }
+        .moreOptions{
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
     }
 }
 
@@ -78,9 +83,12 @@
         margin: auto;
         .othersOptions{
             width: 100%;
-            align-items: center;
+            align-items: start;
             justify-content: space-between;
             flex-direction: row;
+            .moreOptions{
+                align-items: end;
+            }
         }
     }
 }

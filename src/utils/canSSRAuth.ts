@@ -2,13 +2,18 @@ import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult
 import { parseCookies, destroyCookie } from "nookies";
 import { AuthTokenError } from "../services/error/AuthTokenError";
 
-export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
+// Adiciona uma função para verificar o nível de acesso (role)
+export function canSSRAuth<P>(fn: GetServerSideProps<P>, allowedRoles: string[]) {
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx);
-    const token = cookies["@SalaoCondoAdm.token"];
+    const adminToken = cookies["@SalaoCondoAdm.token"];
+    const porterToken = cookies["@SalaoCondoPort.token"];
+
+    const token = adminToken || porterToken;
 
     if (!token) {
-      destroyCookie(ctx, "@SalaoCondoAdm.token"); 
+      destroyCookie(ctx, "@SalaoCondoAdm.token");
+      destroyCookie(ctx, "@SalaoCondoPort.token");
       return {
         redirect: {
           destination: "/",
@@ -18,10 +23,11 @@ export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
     }
 
     try {
-      return await fn(ctx);
-    } catch (err) {
-      if (err instanceof AuthTokenError || (err.response && err.response.status === 401)) {
-        destroyCookie(ctx, "@SalaoCondoAdm.token"); 
+      if (allowedRoles.includes("admin") && adminToken) {
+        return await fn(ctx); 
+      } else if (allowedRoles.includes("porter") && porterToken) {
+        return await fn(ctx);
+      } else {
         return {
           redirect: {
             destination: "/",
@@ -29,7 +35,18 @@ export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
           },
         };
       }
-      throw err; 
+    } catch (err) {
+      if (err instanceof AuthTokenError || (err.response && err.response.status === 401)) {
+        destroyCookie(ctx, "@SalaoCondoAdm.token");
+        destroyCookie(ctx, "@SalaoCondoPort.token");
+        return {
+          redirect: {
+            destination: "/",
+            permanent: false,
+          },
+        };
+      }
+      throw err;
     }
   };
 }

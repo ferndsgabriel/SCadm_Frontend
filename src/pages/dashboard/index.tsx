@@ -9,7 +9,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { MdOutlineApartment } from "react-icons/md";
 import { GiWhiteTower } from "react-icons/gi";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
-PieChart, Pie, Cell, LabelList, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis} from 'recharts';
+PieChart, Pie, Cell, LabelList, Line, LineChart} from 'recharts';
 import { CiCalendarDate } from "react-icons/ci";
 import { FaCalendarDays } from "react-icons/fa6";
 import { Loading } from "../../components/loading";
@@ -39,10 +39,10 @@ type DashboardType = {
         value:number 
     }[];
     OccupancyRate:{
-        name: string,
-        convidados: string, 
-        limite: number
-    }[];
+        occupied: number;
+        limit: number;
+        attended:number
+    };
     Payers:{
         name:string,
         Inadimplentes:number,
@@ -58,14 +58,18 @@ type DashboardType = {
     }
     WithMoreReservation:{
         name:string,
-        reservas:number
-    }[]
+        reservas:number | string
+    }[];
+    ReservationsPerMonth:{
+        month: number;
+        reservations: number;
+    }[];
+    AverageTimeToAccept:string;
 };
 
 
 export default function Dashboard() {
     const setupApi = SetupApiClient();
-    const dateInputRef = useRef(null);
     const onDay = new Date();
     const min = new Date(2024, 0, 1);
     const [dateFilter, setDateFilter] = useState(onDay);
@@ -73,24 +77,11 @@ export default function Dashboard() {
     const [dashboardList, setDashboardList] = useState<DashboardType>();
     const [loading, setLoading] = useState(true);
     const [large, setLarge] = useState(false);
+    const [calendarSection, setCalendarSection] = useState(0);
 
     const COLORS = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)', 'var(--Error)'];
     const COLORS3 = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)'];
 
-    
-
-    function openDate() {
-        if (dateInputRef.current) {
-            dateInputRef.current.showPicker();
-        }
-    };
-
-    function formatDateToBr(date:string){
-        const year = date.substring(0, 4);
-        const month = date.substring(5,7);
-        const day = date.substring(8, 10);
-        return `${day}/${month}/${year}`
-    }
 
     const responsive = {
         desktop2: {
@@ -110,9 +101,6 @@ export default function Dashboard() {
             items: 1
         }
     };
-
-
-
 
 
     useEffect(() => {
@@ -146,7 +134,6 @@ export default function Dashboard() {
                 textAnchor="middle"
                 dominantBaseline="middle" 
                 style={{ fontSize: '12px' }}
-                fontWeight='bold'
             >
                 {value}
             </text>
@@ -168,6 +155,16 @@ export default function Dashboard() {
     if (loading) {
         return <Loading />;
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    const data = [
+        { name: 'Limpeza', media: 4.5 },
+        { name: 'Espaço', media: 4.0 },
+        { name: 'Rapidez', media: 4.2 },
+        { name: 'Facilidade', media: 4.8 },
+    ];
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <>  
             <Head>
@@ -197,291 +194,317 @@ export default function Dashboard() {
                         </div>
                     </article>
 
-                    {/*
+                    
                     <article className={styles.dashboardOptions}>
                         <button onClick={()=>setCalendarSection(0)}
-                        className={calendarSection === 0 ? styles.buttonStyle : ''}>Dashboard</button>
+                        className={calendarSection === 0 ? styles.buttonStyle : ''}>Seção 1</button>
                         <button onClick={()=>setCalendarSection(1)}
                         className={calendarSection === 1 ? styles.buttonStyle : ''}>Seção 2</button>
                     </article>
-                    */}
+                    
 
                     
                     <section className={styles.allCalendar}>
-                        <article className={styles.carouselContainer}>               
-                            <Carousel responsive={responsive} className={styles.carousel}>
-                                <article className={styles.totalValues}>
-                                    <span>
-                                        <h3>Total arrecadado com taxas</h3>
-                                        <MdOutlineAttachMoney />
-                                    </span>
-                                    <h4>R$ {dashboardList.TotalCollection}</h4>
-                                                                    </article>
-                                
-                                <article className={styles.totalValues}>
-                                    <span>
-                                        <h3>Quantidade de reservas</h3>
-                                        <CiCalendarDate />
-                                    </span>
-                                    <h4>{dashboardList.AllReservationMade}</h4>
-                                                                    </article>
+                        {calendarSection === 0 ?(
+                            <>
+                                <article className={styles.carouselContainer}>               
+                                    <Carousel responsive={responsive} className={styles.carousel}>
+                                        <article className={styles.totalValues}>
+                                            <span>
+                                                <h3>Total arrecadado com taxas</h3>
+                                                <MdOutlineAttachMoney />
+                                            </span>
+                                            <h4>R$ {dashboardList.TotalCollection}</h4>
+                                                                            </article>
+                                        
+                                        <article className={styles.totalValues}>
+                                            <span>
+                                                <h3>Quantidade de reservas</h3>
+                                                <CiCalendarDate />
+                                            </span>
+                                            <h4>{dashboardList.AllReservationMade}</h4>
+                                                                            </article>
 
-                                <article className={styles.totalValues}>
-                                    <span>
-                                        <h3>Moradores cadastrados</h3>
-                                        <FaUsers />
-                                    </span>
-                                    <h4>{dashboardList.Users}</h4>
-                                                                    </article>
+                                        <article className={styles.totalValues}>
+                                            <span>
+                                                <h3>Moradores cadastrados</h3>
+                                                <FaUsers />
+                                            </span>
+                                            <h4>{dashboardList.Users}</h4>
+                                                                            </article>
 
-                                <article className={styles.totalValues}>
-                                    <span>
-                                        <h3>Administradores cadastrados</h3>
-                                        <RiAdminFill />
-                                    </span>
-                                    <h4>{dashboardList.Adms}</h4>
-                                                                    </article>
+                                        <article className={styles.totalValues}>
+                                            <span>
+                                                <h3>Administradores cadastrados</h3>
+                                                <RiAdminFill />
+                                            </span>
+                                            <h4>{dashboardList.Adms}</h4>
+                                                                            </article>
 
-                                <article className={styles.totalValues}>
-                                    <span>
-                                        <h3>Apartamentos cadastrados</h3>
-                                        <MdOutlineApartment />
-                                    </span>
-                                    <h4>{dashboardList.Apartaments}</h4>
-                                                                    </article>
+                                        <article className={styles.totalValues}>
+                                            <span>
+                                                <h3>Apartamentos cadastrados</h3>
+                                                <MdOutlineApartment />
+                                            </span>
+                                            <h4>{dashboardList.Apartaments}</h4>
+                                                                            </article>
 
-                                <article className={styles.totalValues} >
-                                    <span>
-                                        <h3>Torres cadastradas</h3>
-                                        <GiWhiteTower />
-                                    </span>
-                                    <h4>{dashboardList.Towers}</h4>
-                                                                    </article>
-                            </Carousel>
-                        </article>
+                                        <article className={styles.totalValues} >
+                                            <span>
+                                                <h3>Torres cadastradas</h3>
+                                                <GiWhiteTower />
+                                            </span>
+                                            <h4>{dashboardList.Towers}</h4>
+                                                                            </article>
+                                    </Carousel>
+                                </article>
 
-                        <article className={styles.barChart}>
-                            <h3>Valores arrecadados com taxas</h3>
-                            <ResponsiveContainer width="100%">
-                                <PieChart>
-                                    <Pie 
-                                        data={dashboardList.TotalCollectionDetails}
-                                        dataKey="value"
-                                        nameKey="category"
-                                        outerRadius={'100%'}
-                                        fill="var(--Primary-normal)"
-                            
-                                        labelLine={false}
-                                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
-                                            const radius = innerRadius + (outerRadius - innerRadius) / 2;
-                                            const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                                            const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                                            return (
-                                                <text x={x} y={y} fill="var(--White)" 
-                                                textAnchor="middle" 
-                                                dominantBaseline="central"
-                                                style={{ fontSize: '12px', fontWeight:"bold" }}>
-                                                    {value !== 0 ? value : null}
-                                                </text>
-                                            );
-                                        }}
-                                    >
-                                    
-                                        <Cell key="Confirmadas" fill="var(--Sucess)" />
-                                        <Cell key="Taxadas" fill="var(--Error)" />
-                                        <Cell key="Limpeza" fill="var(--Primary-normal)" />
-                                    </Pie>
-                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
-                                    <Legend 
-                                        layout="horizontal" 
-                                        verticalAlign="top" 
-                                        align="left" 
-                                        wrapperStyle={{ fontSize: '14px' }}
-                                        content={() => (
-                                            <div>
-                                                <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Confirmadas</div>
-                                                <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Canceladas</div>
-                                                <div style={{ color: 'var(--Primary-normal)',fontWeight:'bold' }}>● Limpezas</div>
-                                            </div>
-                                        )}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </article>
-
-                        <article className={styles.barChart}> 
-                            <h3>Quantidade de reservas</h3>
-                            <ResponsiveContainer width="100%" height="100%" >
-                                <BarChart data={dashboardList.ReservationMadeDetails} 
-                                > 
-                                    <XAxis 
-                                        dataKey="name" 
-                                        tick={{ fontSize: '12px', fill: 'var(--Text)' }} 
-                                        tickMargin={0}
-                                    />
-                                    <YAxis 
-                                        tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
-                                        width={12}
-                                    />
-                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
-                                    <Bar dataKey="value" fill="#8884d8" style={{backgroundColor:'red'}}>
-                                        {dashboardList.ReservationMadeDetails.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
-                                        <LabelList  style={{backgroundColor:'red'}}
-                                            content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} 
-                                            dataKey="value" 
-                                            fontSize="14px" 
-                                            position="insideTop" 
-                                            fill="var(--White)"
-                                            fontWeight='bold' 
-                                        />
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </article>
-                    
-                        <article className={styles.barChart}>
-                            <h3>Média de ocupação do salão</h3>
-                            <ResponsiveContainer width="100%">
-                                <PieChart>
-                                    <Pie 
-                                        data={dashboardList.OccupancyRate}
-                                        dataKey="value"
-                                        nameKey="name"
-                                        outerRadius={'100%'}
-                                        fill="var(--Blue)"
-                                        labelLine={false}
-                                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
-                                            const radius = innerRadius + (outerRadius - innerRadius) / 2;
-                                            const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                                            const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                                            return (
-                                                <text x={x} y={y} fill="var(--White)" textAnchor="middle" dominantBaseline="central"
-                                                style={{ fontSize: '12px', fontWeight:"bold" }}>
-                                                    {value !== 0 ? value : null}
-                                                </text>
-                                            );
-                                        }}
-                                    >
-                                        <Cell key="Disponível" fill="var(--Blue)" />
-                                        <Cell key="Ocupado" fill="var(--Primary-normal)" />
-                                    </Pie>
-                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
-                                    <Legend 
-                                        layout="horizontal" 
-                                        verticalAlign="top" 
-                                        align="left" 
-                                        wrapperStyle={{ fontSize: '14px' }}
-                                        content={() => (
-                                            <div>
-                                                <div style={{ color: 'var(--Blue)', fontWeight:'bold' }}>● Disponível</div>
-                                                <div style={{ color: 'var(--Primary-normal)', fontWeight:'bold' }}>● Ocupado</div>
-                                            </div>
-                                        )}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </article>
-
-                        <article className={styles.barChart}>
-                            <h3>Adimplentes e Inadimplentes</h3>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={dashboardList.Payers}>
-                                    <YAxis 
-                                        tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
-                                        width={12}
-                                    />
-                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
-                                    <Legend 
-                                        layout="horizontal" 
-                                        verticalAlign="top" 
-                                        align="left" 
-                                        wrapperStyle={{ fontSize: '14px' }}
-                                        content={() => (
-                                            <div style={{marginBottom:'24px'}}>
-                                                <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Adimplentes</div>
-                                                <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Inadimplentes</div>
-                                            </div>
-                                        )}
-                                    />
-                                    <Bar dataKey="Adimplentes" fill="var(--Sucess)">
-                                        <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                    </Bar>
-                                    <Bar dataKey="Inadimplentes" fill="var(--Error)">
-                                        <LabelList content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} />
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </article>
-
-                        <article className={styles.barChart}>
-                            <h3>Avaliações de reservas</h3>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    layout="vertical"
-                                    data={dashboardList.Avaliation.data}
-                                    margin={{
-                                        top: 20, right: 20, left: 20, bottom: 20,
-                                    }}
-                                    barSize={20}
-                                >
-                                    <XAxis
-                                        type="number"
-                                        domain={[0, 5]}
-                                        ticks={[0, 1, 2, 3, 4, 5]}
-                                        tick={{ fontSize: 12, fill: 'var(--Text)' }}
-                                    />
-                                    <YAxis
-                                        type="category"
-                                        dataKey="name"
-                                        tick={{ fontSize: 12, fill: 'var(--Text)' }}
-                                        width={40}
-                                    />
-                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
-                                    <Bar dataKey="media">
-                                        {dashboardList.Avaliation.data.map((entry, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                fill={getColorForRating(entry.media)}
+                                <article className={styles.barChart}>
+                                    <h3>Quantidade de reservas por mês</h3>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart
+                                            data={dashboardList.ReservationsPerMonth}
+                                            margin={{
+                                            top: 20, right: 30, left: 20, bottom: 5,
+                                            }}
+                                        >
+                                            <XAxis dataKey="month" 
+                                            tick={{ fontSize: '12px', fill: 'var(--Text)' }} 
+                                            tickMargin={0}
                                             />
-                                        ))}
-                                        <LabelList
-                                            dataKey="media"
-                                            position="insideRight"
-                                            fill="#fff"
-                                            fontWeight='bold'
-                                            fontSize={12}
-                                            formatter={(value) => value == 0 ? '' : value} // Se for 0, não exibe nada
-                                        />
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                            <h3>Total de avaliações - {dashboardList.Avaliation.qtd}</h3>
-                        </article>
+                                            <YAxis tick={{ fontSize: '12px', fill: 'var(--Text)'}}  
+                                            width={30}/>
+                                            <Tooltip cursor={{ fill: 'var(--Transparente)' }}/>
+                                            <Line type="monotone" dataKey="reservations" stroke="var(--Primary-normal)" activeDot={{ r: 4 }} />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </article>
 
-                        <article className={styles.barChart}>
-                            <h3>Apartamentos com mais reservas</h3>
-                            <ResponsiveContainer width="100%" height="100%"style={{marginRight:'24px'}}>
-                                <BarChart 
-                                data={dashboardList.WithMoreReservation} layout="vertical">
-                                    <XAxis type="number" tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
-                                        width={12}/>
-                                    <YAxis 
-                                        tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
-                                        width={12} type="category"
-                                    />
-                                    <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
-                                    <Bar dataKey="reservas" fill="#8884d8">
-                                        {dashboardList.WithMoreReservation.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
-                                        ))}
-                                        <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px', fontWeight:"bold" }} />
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </article>
+                                <article className={styles.barChart}> 
+                                    <h3>Quantidade de reservas feitas</h3>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={dashboardList.ReservationMadeDetails} 
+                                        > 
+                                            <XAxis 
+                                                dataKey="name" 
+                                                tick={{ fontSize: '12px', fill: 'var(--Text)' }} 
+                                                tickMargin={0}
+                                            />
+                                            <YAxis 
+                                                tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
+                                                width={30}
+                                            />
+                                            <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
+                                            <Bar dataKey="value" fill="#8884d8" style={{backgroundColor:'red'}}>
+                                                {dashboardList.ReservationMadeDetails.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                ))}
+                                                <LabelList  style={{backgroundColor:'red'}}
+                                                    content={({ x, y, value, width }) => <CustomLabel x={x} y={y} value={value} width={width} />} 
+                                                    dataKey="value" 
+                                                    fontSize="14px" 
+                                                    position="insideTop" 
+                                                    fill="var(--White)"
+                                                />
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </article>
+                            
+                                <article className={styles.barChart}>
+                                    <h3>Valores arrecadados com taxas</h3>
+                                    <ResponsiveContainer width="100%" height="100%">                           
+                                        <PieChart>
+                                            <Pie 
+                                                data={dashboardList.TotalCollectionDetails}
+                                                dataKey="value"
+                                                nameKey="category"
+                                                outerRadius={'100%'}
+                                                fill="var(--Primary-normal)"
+                                    
+                                                labelLine={false}
+                                                label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                                    const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                                                    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                                    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                                                    return (
+                                                        <text x={x} y={y} fill="var(--White)" 
+                                                        textAnchor="middle" 
+                                                        dominantBaseline="central"
+                                                        style={{ fontSize: '12px'}}>
+                                                            {value !== 0 ? value : null}
+                                                        </text>
+                                                    );
+                                                }}
+                                            >
+                                            
+                                                <Cell key="Confirmadas" fill="var(--Sucess)" />
+                                                <Cell key="Taxadas" fill="var(--Error)" />
+                                                <Cell key="Limpeza" fill="var(--Primary-normal)" />
+                                            </Pie>
+                                            <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
+                                            <Legend 
+                                                layout="horizontal" 
+                                                verticalAlign="top" 
+                                                align="left" 
+                                                wrapperStyle={{ fontSize: '12px' }}
+                                                content={() => (
+                                                    <div>
+                                                        <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Confirmadas</div>
+                                                        <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Canceladas</div>
+                                                        <div style={{ color: 'var(--Primary-normal)',fontWeight:'bold' }}>● Limpezas</div>
+                                                    </div>
+                                                )}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </article>
 
+                                <article className={styles.barChart}>
+                                    <h3>Adimplentes e Inadimplentes</h3>
+                                    <ResponsiveContainer width="100%" height="100%">                           
+                                        <PieChart>
+                                            <Pie 
+                                                data={dashboardList.Payers}
+                                                dataKey="value"
+                                                nameKey="category"
+                                                outerRadius={'100%'}
+                                                fill="var(--Primary-normal)"
+                                    
+                                                labelLine={false}
+                                                label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                                    const radius = innerRadius + (outerRadius - innerRadius) / 2;
+                                                    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                                    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                                                    return (
+                                                        <text x={x} y={y} fill="var(--White)" 
+                                                        textAnchor="middle" 
+                                                        dominantBaseline="central"
+                                                        style={{ fontSize: '12px'}}>
+                                                            {value !== 0 ? value : null}
+                                                        </text>
+                                                    );
+                                                }}
+                                            >
+                                            
+                                                <Cell key="Confirmadas" fill="var(--Sucess)" />
+                                                <Cell key="Taxadas" fill="var(--Error)" />
+                                            </Pie>
+                                            <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
+                                            <Legend 
+                                                layout="horizontal" 
+                                                verticalAlign="top" 
+                                                align="left" 
+                                                wrapperStyle={{ fontSize: '12px' }}
+                                                content={() => (
+                                                    <div>
+                                                        <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Adimplentes</div>
+                                                        <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Inadimplentes</div>
+                                                    </div>
+                                                )}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </article>
+
+
+                            </>
+                        ):(
+                            <>
+                                <article className={styles.media}>
+                                    <div>
+                                        <h3>Tempo para aprovar uma reserva</h3>
+                                        <h4>{dashboardList.AverageTimeToAccept}</h4>
+                                    </div>
+                                    <p>Tempo médio para uma reserva ser aprovada</p>
+                                </article>
+
+                                <article className={styles.media}>
+                                    <div>
+                                        <h3>Média de convidados por reserva</h3>
+                                        <h4>{dashboardList.OccupancyRate.occupied}/{dashboardList.OccupancyRate.limit}</h4>
+                                    </div>
+                                    <p>Média de convidados por reserva em comparação com o limite de {dashboardList.OccupancyRate.limit}</p>
+                                </article>
+
+                                <article className={styles.media}>
+                                    <div>
+                                        <h3>Presença Média</h3>
+                                        <h4>{dashboardList.OccupancyRate.occupied}/{dashboardList.OccupancyRate.attended}</h4>
+                                    </div>
+                                    <p>Média de convidados presentes por reserva em comparação a média de convidados</p>
+                                </article>
+                                
+                                <article 
+                                className={`${styles.media} ${styles.barChart}`}>
+                                    <h3 style={{fontWeight:'bold'}}>Avaliações de reservas - {dashboardList.Avaliation.qtd}</h3>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                layout="vertical"
+                                                data={dashboardList.Avaliation.data}
+                                                margin={{
+                                                    top: 20, right: 20, left: 20, bottom: 20,
+                                                }}
+                                                barSize={20}
+                                            >
+                                                <XAxis
+                                                    type="number"
+                                                    domain={[0, 5]}
+                                                    ticks={[0, 1, 2, 3, 4, 5]}
+                                                    tick={{ fontSize: 12, fill: 'var(--Text)' }}
+                                                />
+                                                <YAxis
+                                                    type="category"
+                                                    dataKey="name"
+                                                    tick={{ fontSize: 12, fill: 'var(--Text)' }}
+                                                    width={46}
+                                                />
+                                                <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
+                                                <Bar dataKey="media">
+                                                    {dashboardList.Avaliation.data.map((entry, index) => (
+                                                        <Cell
+                                                            key={`cell-${index}`}
+                                                            fill={getColorForRating(entry.media)}
+                                                        />
+                                                    ))}
+                                                    <LabelList
+                                                        dataKey="media"
+                                                        position="insideRight"
+                                                        fill="#fff"
+                                                        fontWeight='bold'
+                                                        fontSize={12}
+                                                        formatter={(value:any) => value == 0 ? '' : value} 
+                                                    />
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                </article>
+
+                                <article className={`${styles.media} ${styles.barChart}`}>
+                                    <h3>Apartamentos com mais reservas</h3>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart 
+                                        data={dashboardList.WithMoreReservation} layout="vertical">
+                                            <XAxis type="number" tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
+                                                width={12}/>
+                                            <YAxis 
+                                                tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
+                                                width={20} 
+                                                type="category" 
+                                                tickFormatter={(value, index: number) => (index + 1).toString()} 
+                                            />
+                                            <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
+                                            <Bar dataKey="reservas" fill="#8884d8">
+                                                {dashboardList.WithMoreReservation.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS3[index % COLORS3.length]} />
+                                                ))}
+                                                <LabelList dataKey="name" position="center" style={{ fill: 'white',  fontSize:'12px'}} />
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </article>
+                            </>
+                        )}
                     </section>
                 </main>
             </div>
@@ -493,4 +516,4 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     return {
         props: {}
     };
-})
+}, ["admin"]);

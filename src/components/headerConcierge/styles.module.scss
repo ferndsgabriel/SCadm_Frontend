@@ -1,0 +1,97 @@
+
+  .headerAreaConcierge{
+    width: 100%;
+    height: 7rem;
+    background-color: var(--Primary-normal);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    box-shadow: 0px 3px 12px var(--Black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.4rem;
+    user-select: none;
+    img{
+      display: none;
+    }
+
+  .ulCocierge{
+    display: flex;
+    list-style: none;
+    align-items: center;
+    justify-content: end;
+    gap: 0.8rem;
+    .li{
+      a, button{
+        color: var(--White);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        font-size: 1.4rem;
+      }
+      .activeNav{
+        font-weight: bold;
+      }
+    }
+    .liTheme{
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      width: 100%;
+      padding: 1.2rem;
+      .labelTheme{
+        width: 6.3rem;
+        border-radius: 40px;
+        height: 2.4rem;
+        display: flex;
+        align-items: center;
+        padding: 0.8rem;
+        cursor: pointer;
+        input{
+          display: none;
+        }
+      }
+      .labelDark{
+        background-color: var(--Primary-dark);
+      }
+      .labelLight{
+        background-color: var(--White);
+        justify-content: end;
+        svg{
+          color: var(--Primary-normal);
+        }
+      }
+    }
+  }
+}
+  
+
+
+@media (min-width:768px){
+  .headerAreaConcierge{
+    img{
+      display: block;
+      width: 20rem;
+    }
+    .ulCocierge{
+      gap: 1.6rem;
+      .li{
+        a{
+          font-size: 1.6rem;
+          &:hover{
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+  .breakArea{
+    margin-bottom: 7rem;
+    display: block;
+  }

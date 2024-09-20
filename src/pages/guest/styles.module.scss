@@ -1,0 +1,118 @@
+.container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3.2rem;
+    padding: 4.2rem 2.4rem;
+    h1{
+        margin-bottom: 1.6rem;
+    }
+    h2{
+        opacity: 0.7;
+        font-size: 1.8rem;
+    }
+    .section1{
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.8rem;
+        .reservationDetails{
+            display: flex;
+            align-items: start;
+            gap: 4.2rem;
+            h3{
+                font-size: 1.4rem;
+                font-weight: 500;
+            }
+
+        }
+    }
+
+    .labelSearch{
+        border: 1px solid var(--Transparente);
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 1.2rem;
+        border-radius: 5px;
+        width: 100%;
+        max-width: 40rem;
+        svg{
+            color: var(--Primary-normal);
+        }
+        input{
+            width: 100%;
+        }
+    }
+
+    table{
+        width: 100%;
+        box-shadow: 2px 2px 10px 2px  var(--Transparente);
+        border-radius: 10px;
+        overflow: hidden;
+        outline: none;
+        border-collapse: collapse;
+        thead{
+            align-items: start;
+            border-bottom: 1px solid var(--Transparente);
+            tr{
+                height: 4.2rem;
+                font-size: 1.4rem;
+                color: var(--Primary-normal);
+            }
+        }
+        tbody{
+            tr{
+                text-align: center;
+                height:4.2rem;
+                font-size: 1.4rem;
+                &:nth-child(even){
+                    background-color: var(--Transparente);
+                }
+            }
+        }
+    }
+
+}
+
+
+@media (min-width:768px){
+    .container{
+        .section1, .section2, .section3{
+            .containerReservations{
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+    }
+}
+
+@media (min-width:1280px){
+    .container{
+        .section1, .section2, .section3{
+            .containerReservations{
+                grid-template-columns: repeat(3,1fr);
+            }
+        }
+    }
+}
+
+.containerRepagination{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 3.2rem;
+    .buttonPage{
+        border: solid 1px var(--Transparente);
+        height: 4.2rem;
+        aspect-ratio: 1/1;
+        border-radius: 100%;
+        &:hover{
+            box-shadow: 2px 2px 2px  var(--Transparente);
+        }
+    }
+    .active{
+        background-color: var(--Primary-normal);
+        color: var(--White);
+    }
+}

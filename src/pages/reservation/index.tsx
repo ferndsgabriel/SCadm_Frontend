@@ -327,8 +327,8 @@ function closedTaxed(){
 }
 
 
-export const getServerSideProps = canSSRAuth (async ()=>{
-  return{
-    props:{}
-  }
-})
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  return {
+      props: {}
+  };
+}, ["admin"]);

@@ -81,13 +81,21 @@ export default function Home(){
       
       {!loading && (
         <div className={styles.othersOptions}>
-        <Link href={"/recovery"} className={styles.link}>
-          <p>Recuperar conta</p>
-        </Link>
-        <Link href={"/singup"} className={styles.link}>
-          Não tem uma conta? Cadastre-se
-        </Link>
-      </div>
+
+          <Link href={"/recovery"} className={styles.link}>
+            Recuperar conta
+          </Link>
+          
+          <div className={styles.moreOptions}>  
+            <Link href={"/signup"} className={styles.link}>
+              Não tem uma conta? Cadastre-se
+            </Link>
+            <Link href={"/signinconcierge"} className={styles.link}>
+                Entrar como portaria
+            </Link>
+          </div>
+
+        </div>
       )}
 
     </main>
