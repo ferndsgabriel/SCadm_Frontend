@@ -101,7 +101,7 @@
                 padding: 0.8rem;
                 height: 400px;
                 h3{
-                    font-weight: bold;
+                    font-weight: 400;
                     font-size: 1.4rem;
                     text-align: start;
                     margin-left: 0.4rem;
@@ -129,7 +129,37 @@
                 }
             }
         }
-
+        .buttonPrint{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            background-color: var(--Primary-normal);
+            width: fit-content;
+            margin: auto;
+            margin-top: 3.2rem;
+            color: var(--White);
+            padding: 1.2rem 1.6rem;
+            border-radius: 5px;
+            &:not(:disabled):hover{
+                background-color: var(--Primary-dark);
+            }
+            &:disabled{
+                cursor:not-allowed;
+                font-size: 0;
+                border-left: solid 3px var(--Primary-normal);
+                border-top: solid 3px var(--Primary-normal);
+                width: 24px;
+                aspect-ratio: 1/1;
+                border-radius: 100%;
+                background-color: transparent;
+                animation: spin infinite 1s;
+                padding: 0;
+                svg{
+                    font-size: 0;
+                }
+            }
+        }
     }
 }
 
@@ -299,3 +329,11 @@
     }
 }
 
+@keyframes spin{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}

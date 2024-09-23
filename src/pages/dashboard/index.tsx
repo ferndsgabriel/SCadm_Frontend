@@ -2,16 +2,15 @@ import styles from "./styles.module.scss";
 import Header from "../../components/header";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState} from "react";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { RiAdminFill } from "react-icons/ri";
-import { MdOutlineApartment } from "react-icons/md";
+import { MdOutlineApartment, MdOutlineLocalPrintshop } from "react-icons/md";
 import { GiWhiteTower } from "react-icons/gi";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
 PieChart, Pie, Cell, LabelList, Line, LineChart} from 'recharts';
 import { CiCalendarDate } from "react-icons/ci";
-import { FaCalendarDays } from "react-icons/fa6";
 import { Loading } from "../../components/loading";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -20,6 +19,7 @@ import { MdCloseFullscreen } from "react-icons/md";
 import Head from "next/head";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import html2canvas from 'html2canvas';
 
 type DashboardType = {
     TotalCollection:number;
@@ -82,6 +82,7 @@ export default function Dashboard() {
     const COLORS = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)', 'var(--Error)'];
     const COLORS3 = ['var(--Sucess)', 'var(--Primary-normal)', 'var(--Blue)'];
 
+    const [loadingPrint, setLoadingPrint] = useState(false);
 
     const responsive = {
         desktop2: {
@@ -145,26 +146,187 @@ export default function Dashboard() {
         const colors = {
             5: 'var(--Sucess)',    
             4: 'var(--Blue)',      
-            3: '#9C975E',            
-            2: '#7B593B',           
-            1: 'var(--Error)'        
+            3: '#FBC02D',            
+            2: '#FFB74D',           
+            1: '#E57373'        
         };
         return colors[roundedRating] || 'rgba(0, 0, 0, 0.1)';
     };
+
+
+
+
+    const printSection1 = async () => {
+
+        setLoadingPrint(true);
+        
+        try {
+            const elementIds = [
+                'print1', 'print2', 'print3', 'print4', 'print5', 'print6', 
+                'print7', 'print8', 'print9', 'print10',
+            ];
+
+                
+            const canvases = await Promise.all(
+                elementIds.map(id => 
+                    html2canvas(document.getElementById(id), { useCORS: true })
+                )
+            );
+            const imgDataArray = canvases.map(canvas => canvas.toDataURL('image/png'));
+            const printWindow = window.open('', '_blank');
+            if (printWindow) {
+                printWindow.document.open();
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                }
+                                .datacontainer {
+                                    margin-top: 20px;
+                                    border-bottom: 1px solid black;
+                                    padding-bottom: 16px;
+                                }
+                                .grid-area {
+                                    display: grid;
+                                    grid-template-columns: repeat(2, 1fr);
+                                    gap: 8px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="datacontainer">
+                                <h3>Quantidades</h3>
+                                <div class="grid-area">    
+                                    ${imgDataArray.slice(0, 6).map(img => `<img src="${img}" style="width: 100%;"/>`).join('')}
+                                </div>
+                            </div>
+                            <div class="datacontainer">
+                                <h3>Quantidade de reservas por mês</h3>
+                                <img src="${imgDataArray[6]}" style="width: 100%;"/>
+                            </div>
+                            <div class="datacontainer">
+                                <h3>Quantidade de reservas</h3>
+                                <img src="${imgDataArray[7]}" style="width: 100%;"/>
+                            </div>
+                            <div class="datacontainer">
+                                <h3>Valores arrecadados com reservas</h3>
+                                <img src="${imgDataArray[8]}" style="width: 100%;"/>
+                            </div>
+                            <div class="datacontainer">
+                                <h3>Adimplentes e Inadimplentes</h3>
+                                <img src="${imgDataArray[9]}" style="width: 100%;"/>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+        
+                printWindow.onload = () => {
+                    setTimeout(() => {
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+                };
+            }
+        } catch (error) {
+            console.log(error);
+        }finally{
+            setLoadingPrint(false);
+        }
+    };
+    
+    
+    const printSection2 = async () => {
+        setLoadingPrint(true);
+        try{
+            const elementIds = [
+                'print1', 'print2', 'print3', 'print4', 'print5'
+            ];
+        
+            const canvases = await Promise.all(
+                elementIds.map(id => 
+                    html2canvas(document.getElementById(id), { useCORS: true })
+                )
+            );
+            const imgDataArray = canvases.map(canvas => canvas.toDataURL('image/png'));
+        
+            const printWindow = window.open('', '_blank');
+            if (printWindow) {
+                printWindow.document.open();
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                }
+                                .datacontainer {
+                                    margin-top: 20px;
+                                    border-bottom: 1px solid black;
+                                    padding-bottom: 16px;
+                                }
+                                .grid-area {
+                                    display: grid;
+                                    grid-template-columns: repeat(2, 1fr);
+                                    gap: 8px;
+                                }
+                                .last {
+                                    grid-column-start: 1;
+                                    grid-column-end: 3;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="datacontainer">
+                                <h3>Médias</h3>
+                                <div class="grid-area">    
+                                    ${imgDataArray.slice(0, 3).map((img, index) => 
+                                        `<div class="${index === 2 ? 'last' : ''}"><img src="${img}" style="height:184px; width: 100%;"/></div>`
+                                    ).join('')}
+                                </div>
+                            </div>
+
+                            <div class="datacontainer">
+                                <h3>Avaliações de reservas</h3>
+                                <img src="${imgDataArray[3]}" style="width: 100%;"/>
+                            </div>
+
+                            <div class="datacontainer">
+                                <h3>Apartamentos com mais reservas</h3>
+                                <img src="${imgDataArray[4]}" style="width: 100%;"/>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+        
+                printWindow.onload = () => {
+                    setTimeout(() => {
+                        printWindow.print();
+                        printWindow.close();
+                    }, 500);
+                };
+            }
+        } catch (error) {
+            console.log(error);
+        }finally{
+            setLoadingPrint(false);
+        }
+    };
+    
+    
+    
+    
+    
+    
+    
 
     if (loading) {
         return <Loading />;
     }
 
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    const data = [
-        { name: 'Limpeza', media: 4.5 },
-        { name: 'Espaço', media: 4.0 },
-        { name: 'Rapidez', media: 4.2 },
-        { name: 'Facilidade', media: 4.8 },
-    ];
-    //////////////////////////////////////////////////////////////////////////////////////////////////
     return (
         <>  
             <Head>
@@ -173,8 +335,9 @@ export default function Dashboard() {
             {!large && <Header /> }
             <div className={`${styles.bodyArea} ${large? styles.large : ''} `}>
                 <main className={styles.container}>
-                    <article className={styles.legends}>
-                        <h1>Dashboard</h1>
+                    <a target="_self"></a>
+                    <article className={styles.legends}> 
+                        <h1>Dashboard</h1>  
                         <div className={styles.dateAndLarge}>
                             <DatePicker
                                 selected={dateFilter || undefined} 
@@ -207,61 +370,61 @@ export default function Dashboard() {
                     <section className={styles.allCalendar}>
                         {calendarSection === 0 ?(
                             <>
-                                <article className={styles.carouselContainer}>               
+                                <article className={styles.carouselContainer} >               
                                     <Carousel responsive={responsive} className={styles.carousel}>
-                                        <article className={styles.totalValues}>
+                                        <article className={styles.totalValues} id="print1">
                                             <span>
-                                                <h3>Total arrecadado com taxas</h3>
+                                                <h3>Total arrecadado com reservas</h3>
                                                 <MdOutlineAttachMoney />
                                             </span>
                                             <h4>R$ {dashboardList.TotalCollection}</h4>
-                                                                            </article>
+                                        </article>
                                         
-                                        <article className={styles.totalValues}>
+                                        <article className={styles.totalValues} id="print2">
                                             <span>
                                                 <h3>Quantidade de reservas</h3>
                                                 <CiCalendarDate />
                                             </span>
                                             <h4>{dashboardList.AllReservationMade}</h4>
-                                                                            </article>
+                                        </article>
 
-                                        <article className={styles.totalValues}>
+                                        <article className={styles.totalValues} id="print3">
                                             <span>
                                                 <h3>Moradores cadastrados</h3>
                                                 <FaUsers />
                                             </span>
                                             <h4>{dashboardList.Users}</h4>
-                                                                            </article>
+                                        </article>
 
-                                        <article className={styles.totalValues}>
+                                        <article className={styles.totalValues} id="print4">
                                             <span>
                                                 <h3>Administradores cadastrados</h3>
                                                 <RiAdminFill />
                                             </span>
                                             <h4>{dashboardList.Adms}</h4>
-                                                                            </article>
+                                        </article>
 
-                                        <article className={styles.totalValues}>
+                                        <article className={styles.totalValues} id="print5">
                                             <span>
                                                 <h3>Apartamentos cadastrados</h3>
                                                 <MdOutlineApartment />
                                             </span>
                                             <h4>{dashboardList.Apartaments}</h4>
-                                                                            </article>
+                                        </article>
 
-                                        <article className={styles.totalValues} >
+                                        <article className={styles.totalValues} id="print6">
                                             <span>
                                                 <h3>Torres cadastradas</h3>
                                                 <GiWhiteTower />
                                             </span>
                                             <h4>{dashboardList.Towers}</h4>
-                                                                            </article>
+                                        </article>
                                     </Carousel>
                                 </article>
 
                                 <article className={styles.barChart}>
                                     <h3>Quantidade de reservas por mês</h3>
-                                    <ResponsiveContainer width="100%" height="100%">
+                                    <ResponsiveContainer width="100%" height="100%" id='print7'>
                                         <LineChart
                                             data={dashboardList.ReservationsPerMonth}
                                             margin={{
@@ -281,8 +444,8 @@ export default function Dashboard() {
                                 </article>
 
                                 <article className={styles.barChart}> 
-                                    <h3>Quantidade de reservas feitas</h3>
-                                    <ResponsiveContainer width="100%" height="100%">
+                                    <h3>Quantidade de reservas</h3>
+                                    <ResponsiveContainer width="100%" height="100%"  id='print8'>
                                         <BarChart data={dashboardList.ReservationMadeDetails} 
                                         > 
                                             <XAxis 
@@ -311,9 +474,9 @@ export default function Dashboard() {
                                     </ResponsiveContainer>
                                 </article>
                             
-                                <article className={styles.barChart}>
-                                    <h3>Valores arrecadados com taxas</h3>
-                                    <ResponsiveContainer width="100%" height="100%">                           
+                                <article className={styles.barChart} >
+                                    <h3>Valores arrecadados com reservas</h3>
+                                    <ResponsiveContainer width="100%" height="100%" id='print9'>                           
                                         <PieChart>
                                             <Pie 
                                                 data={dashboardList.TotalCollectionDetails}
@@ -338,9 +501,9 @@ export default function Dashboard() {
                                                 }}
                                             >
                                             
-                                                <Cell key="Confirmadas" fill="var(--Sucess)" />
+                                                <Cell key="Concluídas" fill="var(--Sucess)" />
                                                 <Cell key="Taxadas" fill="var(--Error)" />
-                                                <Cell key="Limpeza" fill="var(--Primary-normal)" />
+                                                <Cell key="Serviços de Limpeza" fill="var(--Primary-normal)" />
                                             </Pie>
                                             <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                             <Legend 
@@ -350,9 +513,9 @@ export default function Dashboard() {
                                                 wrapperStyle={{ fontSize: '12px' }}
                                                 content={() => (
                                                     <div>
-                                                        <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Confirmadas</div>
-                                                        <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Canceladas</div>
-                                                        <div style={{ color: 'var(--Primary-normal)',fontWeight:'bold' }}>● Limpezas</div>
+                                                        <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Concluídas</div>
+                                                        <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Taxadas</div>
+                                                        <div style={{ color: 'var(--Primary-normal)',fontWeight:'bold' }}>● Serviços de Limpeza</div>
                                                     </div>
                                                 )}
                                             />
@@ -362,7 +525,7 @@ export default function Dashboard() {
 
                                 <article className={styles.barChart}>
                                     <h3>Adimplentes e Inadimplentes</h3>
-                                    <ResponsiveContainer width="100%" height="100%">                           
+                                    <ResponsiveContainer width="100%" height="100%" id='print10'>                           
                                         <PieChart>
                                             <Pie 
                                                 data={dashboardList.Payers}
@@ -411,7 +574,7 @@ export default function Dashboard() {
                             </>
                         ):(
                             <>
-                                <article className={styles.media}>
+                                <article className={styles.media} id='print1'>
                                     <div>
                                         <h3>Tempo para aprovar uma reserva</h3>
                                         <h4>{dashboardList.AverageTimeToAccept}</h4>
@@ -419,7 +582,7 @@ export default function Dashboard() {
                                     <p>Tempo médio para uma reserva ser aprovada</p>
                                 </article>
 
-                                <article className={styles.media}>
+                                <article className={styles.media} id='print2'>
                                     <div>
                                         <h3>Média de convidados por reserva</h3>
                                         <h4>{dashboardList.OccupancyRate.occupied}/{dashboardList.OccupancyRate.limit}</h4>
@@ -427,7 +590,7 @@ export default function Dashboard() {
                                     <p>Média de convidados por reserva em comparação com o limite de {dashboardList.OccupancyRate.limit}</p>
                                 </article>
 
-                                <article className={styles.media}>
+                                <article className={styles.media} id='print3'>
                                     <div>
                                         <h3>Presença Média</h3>
                                         <h4>{dashboardList.OccupancyRate.occupied}/{dashboardList.OccupancyRate.attended}</h4>
@@ -437,8 +600,8 @@ export default function Dashboard() {
                                 
                                 <article 
                                 className={`${styles.media} ${styles.barChart}`}>
-                                    <h3 style={{fontWeight:'bold'}}>Avaliações de reservas - {dashboardList.Avaliation.qtd}</h3>
-                                        <ResponsiveContainer width="100%" height="100%">
+                                    <h3>Avaliações de reservas - {dashboardList.Avaliation.qtd}</h3>
+                                        <ResponsiveContainer width="100%" height="100%" id='print4'>
                                             <BarChart
                                                 layout="vertical"
                                                 data={dashboardList.Avaliation.data}
@@ -482,7 +645,7 @@ export default function Dashboard() {
 
                                 <article className={`${styles.media} ${styles.barChart}`}>
                                     <h3>Apartamentos com mais reservas</h3>
-                                    <ResponsiveContainer width="100%" height="100%">
+                                    <ResponsiveContainer width="100%" height="100%" id='print5'>
                                         <BarChart 
                                         data={dashboardList.WithMoreReservation} layout="vertical">
                                             <XAxis type="number" tick={{ fontSize: '12px', fill: 'var(--Text)'}} 
@@ -506,6 +669,10 @@ export default function Dashboard() {
                             </>
                         )}
                     </section>
+                    <button className={styles.buttonPrint} disabled={loadingPrint}
+                    onClick={calendarSection === 0 ? printSection1 : printSection2}>
+                        <MdOutlineLocalPrintshop/> Imprimir dashboard
+                    </button>
                 </main>
             </div>
         </>

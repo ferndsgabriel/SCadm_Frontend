@@ -292,6 +292,7 @@ function Chat() {
   return (
     <>
       {isOpen?(
+        
         <article className={styles.container}>
           {apartmentId !== null ? (
             <>
