@@ -28,10 +28,8 @@ type DashboardType = {
     Apartaments:number;
     Towers:number;
     TotalCollectionDetails:{
-        category: number; 
-        tax: number; 
-        confirmed: number; 
-        cleaning: number
+        category: string; 
+        value: number;
     }[];
     AllReservationMade:number;
     ReservationMadeDetails:{
@@ -44,9 +42,8 @@ type DashboardType = {
         attended:number
     };
     Payers:{
-        name:string,
-        Inadimplentes:number,
-        Adimplentes:number
+        category:string;
+        value:number;
     }[];
     Avaliation: {
         data:{
@@ -374,7 +371,7 @@ export default function Dashboard() {
                                     <Carousel responsive={responsive} className={styles.carousel}>
                                         <article className={styles.totalValues} id="print1">
                                             <span>
-                                                <h3>Total arrecadado com reservas</h3>
+                                                <h3>Total arrecadado com taxas</h3>
                                                 <MdOutlineAttachMoney />
                                             </span>
                                             <h4>R$ {dashboardList.TotalCollection}</h4>
@@ -475,7 +472,7 @@ export default function Dashboard() {
                                 </article>
                             
                                 <article className={styles.barChart} >
-                                    <h3>Valores arrecadados com reservas</h3>
+                                    <h3>Valores arrecadados com taxas</h3>
                                     <ResponsiveContainer width="100%" height="100%" id='print9'>                           
                                         <PieChart>
                                             <Pie 
@@ -484,24 +481,26 @@ export default function Dashboard() {
                                                 nameKey="category"
                                                 outerRadius={'100%'}
                                                 fill="var(--Primary-normal)"
-                                    
                                                 labelLine={false}
                                                 label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                                    const total = dashboardList.TotalCollectionDetails.reduce((acc, item) => acc + item.value, 0);
+                                                    
+                                                    const percentage = ((value / total) * 100).toFixed(2);
+                                                    
                                                     const radius = innerRadius + (outerRadius - innerRadius) / 2;
                                                     const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                                                     const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+
                                                     return (
                                                         <text x={x} y={y} fill="var(--White)" 
-                                                        textAnchor="middle" 
-                                                        dominantBaseline="central"
-                                                        style={{ fontSize: '12px'}}>
-                                                            {value !== 0 ? value : null}
+                                                            textAnchor="middle" 
+                                                            dominantBaseline="central"
+                                                            style={{ fontSize: '12px'}}>
+                                                            {value !== 0 ? `${percentage}%` : null}
                                                         </text>
                                                     );
                                                 }}
                                             >
-                                            
-                                                <Cell key="Concluídas" fill="var(--Sucess)" />
                                                 <Cell key="Taxadas" fill="var(--Error)" />
                                                 <Cell key="Serviços de Limpeza" fill="var(--Primary-normal)" />
                                             </Pie>
@@ -511,13 +510,17 @@ export default function Dashboard() {
                                                 verticalAlign="top" 
                                                 align="left" 
                                                 wrapperStyle={{ fontSize: '12px' }}
-                                                content={() => (
-                                                    <div>
-                                                        <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Concluídas</div>
-                                                        <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Taxadas</div>
-                                                        <div style={{ color: 'var(--Primary-normal)',fontWeight:'bold' }}>● Serviços de Limpeza</div>
-                                                    </div>
-                                                )}
+                                                content={() => {
+                                                    const taxedData = dashboardList.TotalCollectionDetails.find(item => item.category === 'Taxadas');
+                                                    const cleaningServiceData = dashboardList.TotalCollectionDetails.find(item => item.category === 'Serviços de Limpeza');
+                                                    
+                                                    return (
+                                                        <div>
+                                                            <div style={{ color: 'var(--Error)', fontWeight: 'bold' }}>● Taxadas - {taxedData ? taxedData.value : 0}</div>
+                                                            <div style={{ color: 'var(--Primary-normal)', fontWeight: 'bold' }}>● Serviços de Limpeza - {cleaningServiceData ? cleaningServiceData.value : 0}</div>
+                                                        </div>
+                                                    );
+                                                }}
                                             />
                                         </PieChart>
                                     </ResponsiveContainer>
@@ -533,25 +536,28 @@ export default function Dashboard() {
                                                 nameKey="category"
                                                 outerRadius={'100%'}
                                                 fill="var(--Primary-normal)"
-                                    
                                                 labelLine={false}
                                                 label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                                    const total = dashboardList.Payers.reduce((acc, item) => acc + item.value, 0);
+                                                    
+                                                    const percentage = ((value / total) * 100).toFixed(2);
+                                                    
                                                     const radius = innerRadius + (outerRadius - innerRadius) / 2;
                                                     const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                                                     const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+
                                                     return (
                                                         <text x={x} y={y} fill="var(--White)" 
-                                                        textAnchor="middle" 
-                                                        dominantBaseline="central"
-                                                        style={{ fontSize: '12px'}}>
-                                                            {value !== 0 ? value : null}
+                                                            textAnchor="middle" 
+                                                            dominantBaseline="central"
+                                                            style={{ fontSize: '12px'}}>
+                                                            {value !== 0 ? `${percentage}%` : null}
                                                         </text>
                                                     );
                                                 }}
                                             >
-                                            
-                                                <Cell key="Confirmadas" fill="var(--Sucess)" />
-                                                <Cell key="Taxadas" fill="var(--Error)" />
+                                                <Cell key="Adimplentes" fill="var(--Sucess)" />
+                                                <Cell key="Inadimplentes" fill="var(--Error)" />
                                             </Pie>
                                             <Tooltip cursor={{ fill: 'var(--Transparente)' }} />
                                             <Legend 
@@ -559,18 +565,27 @@ export default function Dashboard() {
                                                 verticalAlign="top" 
                                                 align="left" 
                                                 wrapperStyle={{ fontSize: '12px' }}
-                                                content={() => (
-                                                    <div>
-                                                        <div style={{ color: 'var(--Sucess)',fontWeight:'bold' }}>● Adimplentes</div>
-                                                        <div style={{ color: 'var(--Error)',fontWeight:'bold' }}>● Inadimplentes</div>
-                                                    </div>
-                                                )}
+                                                content={() => {
+                                                    const compliantData = dashboardList.Payers.find(item => item.category === 'Adimplentes');
+                                                    const defaulterData = dashboardList.Payers.find(item => item.category === 'Inadimplentes');
+                                                    const total = dashboardList.Payers.reduce((acc, item) => acc + item.value, 0);
+                                                    
+
+                                                    return (
+                                                        <div>
+                                                            <div style={{ color: 'var(--Sucess)', fontWeight: 'bold' }}>
+                                                                ● Adimplentes - {compliantData ? `${compliantData.value}` : '0'}
+                                                            </div>
+                                                            <div style={{ color: 'var(--Error)', fontWeight: 'bold' }}>
+                                                                ● Inadimplentes - {defaulterData ? `${defaulterData.value}` : '0'}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }}
                                             />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </article>
-
-
                             </>
                         ):(
                             <>
@@ -600,7 +615,11 @@ export default function Dashboard() {
                                 
                                 <article 
                                 className={`${styles.media} ${styles.barChart}`}>
-                                    <h3>Avaliações de reservas - {dashboardList.Avaliation.qtd}</h3>
+                                    <div style={{ display: 'flex', gap:'12px', justifyContent: 'space-between'}}>
+                                        <h3>Avaliações de reservas</h3>
+                                        <h3>Quantidade de Avaliações - {dashboardList.Avaliation.qtd}</h3>
+                                    </div>
+                                    
                                         <ResponsiveContainer width="100%" height="100%" id='print4'>
                                             <BarChart
                                                 layout="vertical"
@@ -644,7 +663,7 @@ export default function Dashboard() {
                                 </article>
 
                                 <article className={`${styles.media} ${styles.barChart}`}>
-                                    <h3>Apartamentos com mais reservas</h3>
+                                    <h3>Top 3 Apartamentos com mais reservas</h3>
                                     <ResponsiveContainer width="100%" height="100%" id='print5'>
                                         <BarChart 
                                         data={dashboardList.WithMoreReservation} layout="vertical">
