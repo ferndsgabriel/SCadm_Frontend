@@ -3,8 +3,8 @@ import { parseCookies, destroyCookie } from "nookies";
 import Router from "next/router";
 
 // Obtém a URL base da API do ambiente
-//export const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-export const baseURL = 'http://192.168.15.63:3333';
+export const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+//export const baseURL = 'http://192.168.15.63:3333';
 
 function signOut() {
     try {
