@@ -3,8 +3,8 @@ import Header from "../../components/header";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { SetupApiClient } from "../../services/api";
 import { useEffect, useState} from "react";
-import { MdOutlineAttachMoney } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
+import { TbMoneybag } from "react-icons/tb";
 import { RiAdminFill } from "react-icons/ri";
 import { MdOutlineApartment, MdOutlineLocalPrintshop } from "react-icons/md";
 import { GiWhiteTower } from "react-icons/gi";
@@ -372,7 +372,7 @@ export default function Dashboard() {
                                         <article className={styles.totalValues} id="print1">
                                             <span>
                                                 <h3>Total arrecadado com taxas</h3>
-                                                <MdOutlineAttachMoney />
+                                                <TbMoneybag />
                                             </span>
                                             <h4>R$ {dashboardList.TotalCollection}</h4>
                                         </article>
@@ -516,8 +516,8 @@ export default function Dashboard() {
                                                     
                                                     return (
                                                         <div>
-                                                            <div style={{ color: 'var(--Error)', fontWeight: 'bold' }}>● Taxadas - {taxedData ? taxedData.value : 0}</div>
-                                                            <div style={{ color: 'var(--Primary-normal)', fontWeight: 'bold' }}>● Serviços de Limpeza - {cleaningServiceData ? cleaningServiceData.value : 0}</div>
+                                                            <div style={{ color: 'var(--Error)', fontWeight: 'bold' }}>● Taxadas - {taxedData ? `R$ ${taxedData.value},00` : `R$ 0,00`}</div>
+                                                            <div style={{ color: 'var(--Primary-normal)', fontWeight: 'bold' }}>● Serviços de Limpeza - {cleaningServiceData ? `R$ ${cleaningServiceData.value},00` : `R$ 0,00`}</div>
                                                         </div>
                                                     );
                                                 }}
@@ -527,7 +527,7 @@ export default function Dashboard() {
                                 </article>
 
                                 <article className={styles.barChart}>
-                                    <h3>Adimplentes e Inadimplentes</h3>
+                                    <h3>Status de pagamento</h3>
                                     <ResponsiveContainer width="100%" height="100%" id='print10'>                           
                                         <PieChart>
                                             <Pie 
@@ -608,7 +608,7 @@ export default function Dashboard() {
                                 <article className={styles.media} id='print3'>
                                     <div>
                                         <h3>Presença Média</h3>
-                                        <h4>{dashboardList.OccupancyRate.occupied}/{dashboardList.OccupancyRate.attended}</h4>
+                                        <h4>{dashboardList.OccupancyRate.attended}/{dashboardList.OccupancyRate.occupied}</h4>
                                     </div>
                                     <p>Média de convidados presentes por reserva em comparação a média de convidados</p>
                                 </article>
